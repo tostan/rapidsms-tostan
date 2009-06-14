@@ -240,7 +240,7 @@ def ChannelConnectionFromMessage(msg,save=True):
 
     # try to get an existing ChannelConnection
     chan_con=None
-    rs=ChannelConnection.objects.filter(user_id__exact=u_id, \
+    rs=ChannelConnection.objects.filter(user_identifier__exact=u_id, \
                                             communication_channel__exact=comm_c)
     if len(rs)==0:
         # didn't find an existing connection, which means this specific

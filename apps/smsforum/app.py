@@ -195,7 +195,7 @@ class App(rapidsms.app.App):
             return rep
         
         v = Location.objects.get(name=village)
-        rep = Reporter(location=v, identity=msg.connection.identity)
+        rep = Contact(location=v, identity=msg.connection.identity)
         rep.save()
         
         # attach the reporter to the current connection
@@ -228,7 +228,7 @@ class App(rapidsms.app.App):
             #some default behaviour
             msg.respond( _("You must join a village before sending messages") )
             return
-        recipients = Reporter.objects.all().filter(location=sender.location)
+        recipients = Contact.objects.all().filter(location=sender.location)
         
         # it makes sense to complete all of the sending
         # before sending the confirmation sms

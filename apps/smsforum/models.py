@@ -15,26 +15,6 @@ from apps.locations.models import *
 #       of ReporterGroup, which can't be nested. i'm
 #       not sure how it happened in the first place.
 
-class Role(models.Model):
-    """Basic representation of a role that someone can have.  For example,
-       'supervisor' or 'data entry clerk'"""
-    name = models.CharField(max_length=160)
-    code = models.CharField(max_length=20, blank=True, null=True,\
-        help_text="Abbreviation")
-    patterns = models.ManyToManyField(Pattern, null=True, blank=True)
-    
-    def match(self, token):
-        return self.regex and re.match(self.regex, token, re.IGNORECASE)
-    
-    @property
-    def regex(self):
-        # convenience accessor for joining patterns
-        return Pattern.join(self.patterns)
-    
-    def __unicode__(self):
-        return self.name
-
-
 class ReporterGroup(models.Model):
     title       = models.CharField(max_length=30, unique=True)
     parent      = models.ForeignKey("self", related_name="children", null=True, blank=True)
@@ -56,7 +36,7 @@ class ReporterGroup(models.Model):
         return self.reporters.all().count()
 
 
-class Reporter(models.Model):
+class Contact(models.Model):
     """This model represents a KNOWN person, that can be identified via
        their alias and/or connection(s). Unlike the RapidSMS Person class,
        it should not be used to represent unknown reporters, since that
@@ -68,11 +48,10 @@ class Reporter(models.Model):
 
     first_name = models.CharField(max_length=30, blank=True)
     last_name  = models.CharField(max_length=30, blank=True)
-    groups     = models.ManyToManyField(ReporterGroup, related_name="reporters", blank=True)
+    groups     = models.ManyToManyField(ReporterGroup, related_name="contacts", blank=True)
     
     # here are some fields that don't belong here
-    location   = models.ForeignKey(Location, related_name="reporters", null=True, blank=True)
-    role       = models.ForeignKey(Role, related_name="reporters", null=True, blank=True)
+    location   = models.ForeignKey(Location, related_name="contacts", null=True, blank=True)
 
     def __unicode__(self):
         return self.connection().identity
@@ -154,7 +133,7 @@ class Reporter(models.Model):
                        "last_name" : reporter.last_name,
                        "location" : reporter.location,
                        "role" : reporter.role } 
-            existing_reps = Reporter.objects.filter(**filters)
+            existing_reps = Contact.objects.filter(**filters)
             for existing_rep in existing_reps:
                 if existing_rep == existing_conn.reporter:
                     return True
@@ -224,7 +203,7 @@ class Reporter(models.Model):
     
     
     def connection(self):
-        """Returns the connection object last used by this Reporter.
+        """Returns the connection object last used by this Contact.
            The field is (probably) updated by app.py when receiving
            a message, so depends on _incoming_ messages only."""
         
@@ -240,7 +219,7 @@ class Reporter(models.Model):
 
     
     def last_seen(self):
-        """Returns the Python datetime that this Reporter was last seen,
+        """Returns the Python datetime that this Contact was last seen,
            on any Connection. Before displaying in the WebUI, the output
            should be run through the XXX  filter, to make it prettier."""
         
@@ -292,12 +271,12 @@ class PersistantConnection(models.Model):
        class, to keep track of the various channels of communication
        that Reporters use to interact with RapidSMS (as a backend +
        identity pair, like rapidsms.connection.Connection). When a
-       Reporter is seen communicating via a new backend, or is expected
+       Contact is seen communicating via a new backend, or is expected
        to do so in future, a PersistantConnection should be created,
        so they can be recognized by their backend + identity pair."""
     backend   = models.ForeignKey(PersistantBackend, related_name="connections")
     identity  = models.CharField(max_length=30)
-    reporter  = models.ForeignKey(Reporter, related_name="connections", blank=True, null=True)
+    reporter  = models.ForeignKey(Contact, related_name="connections", blank=True, null=True)
     last_seen = models.DateTimeField(blank=True, null=True)
     
     
@@ -336,16 +315,16 @@ class PersistantConnection(models.Model):
     
     def seen(self):
         """"Updates the last_seen field of this object to _now_, and saves.
-            Unless the linked Reporter has an explict preferred connection
+            Unless the linked Contact has an explict preferred connection
             (see PersistantConnection.prefer), calling this method will set
-            it as the implicit default connection for the Reporter. """
+            it as the implicit default connection for the Contact. """
         self.last_seen = datetime.now()
         return self.save()
     
     
     def prefer(self):
         """Removes the _preferred_ flag from all other PersistantConnection objects
-           linked to the same Reporter, and sets the _preferred_ flag on this object."""
+           linked to the same Contact, and sets the _preferred_ flag on this object."""
         for pc in PersistantConnection.objects.filter(reporter=self.reporter):
             pc.preferred = True if pc == self else False
             pc.save()

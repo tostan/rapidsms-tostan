@@ -190,7 +190,7 @@ class ChannelConnection(models.Model):
         pass
         
     class Meta:
-        unique_together = ('user_id', 'communication_channel')
+        unique_together = ('user_identifier', 'communication_channel')
 
 
 

@@ -17,7 +17,11 @@ class TestApp (TestScript):
     def setUp(self):
         TestScript.setUp(self)
         #should setup default village in here
-        
+
+    testJunk = """
+           8005551210 > #djoin blargh        
+    """
+    
     testJoinAndBlast = """
            8005551210 > ###dcreate village
            8005551210 < village village created
@@ -45,7 +49,7 @@ class TestApp (TestScript):
            8005551213 < msg_to_blast - sent to [village2] from Joey
            8005551212 < success! village2 recvd msg: msg_to_blast
            8005551212 > #dleave
-           8005551212 < leave-success
+           8005551212 < leave-success village2
         """
 
     testMegaGroupBlast = """ 
@@ -68,7 +72,7 @@ class TestApp (TestScript):
            8005551219 < msg_to_blast - sent to [village3] from 8005551215
            8005551215 < success! village3 recvd msg: msg_to_blast
            8005551215 > #dleave
-           8005551215 < leave-success
+           8005551215 < leave-success village3 
         """
     
     # test lang after you have localization set up properly
@@ -90,4 +94,5 @@ class TestApp (TestScript):
            8005551212 > msg_to_blast
         """
         
+
 

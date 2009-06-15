@@ -15,6 +15,7 @@ from apps.contacts.models import *
 
 DEFAULT_VILLAGE="unassociated"
 DEFAULT_LANGUAGE="fre"
+MAX_BLAST_CHARS=130
 
 class App(rapidsms.app.App):
     SUPPORTED_LANGUAGES = ['eng','fre','pul','dyu','deb']
@@ -26,6 +27,7 @@ class App(rapidsms.app.App):
             ("register_name",  ["\s*[#\*\.]name (whatever)\s*"]), # optionally: join village name m/f age
             ("leave",  ["\s*[#\*\.]leave.*"]),
             ("lang",  ["\s*[#\*\.]lang (slug)", "[#\*\.]?language (slug)\s*"]),
+            ("help",  ["[ ]*[#\*\.]help.*"]),
             ("createvillage",  ["\s*###create (whatever)\s*"]),
         ]),
         (SUPPORTED_LANGUAGES[1], [ #french
@@ -52,7 +54,9 @@ class App(rapidsms.app.App):
         ])
      ]
     
-    
+    def help(self, msg):
+        msg.respond("Available Commands: #join VILLAGE - #name YOURNAME - #leave - #lang ENG")
+
     def __init__(self, router):
         rapidsms.app.App.__init__(self, router)
     
@@ -71,7 +75,7 @@ class App(rapidsms.app.App):
         # don't have objects, and fill in the gaps
         for be in self.router.backends:
             if not be.slug in known_backends:
-                self.info("Creating PersistantBackend object for %s (%s)" % (be.slug, be.title))
+                self.info("Creating PersistantBackenD object for %s (%s)" % (be.slug, be.title))
                 CommunicationChannel(slug=be.slug, title=be.title).save()    
     
     def parse(self, msg):
@@ -164,9 +168,15 @@ class App(rapidsms.app.App):
             print "REPORTER:JOIN"
             villes = Village.objects.filter(name=village)
             if len(villes)==0:
-                msg.respond( _("%s does not exist") % village )
-                rep = self.join(msg,DEFAULT_VILLAGE)
-                return rep            
+                # TODO: when this scales up, show 3 most similar village names
+                all_villes = Village.objects.all()[:2]
+                resp =  _( ("I do not recognize %s. Please txt: #join VILLAGE_NAME") % village ) 
+                if all_villes is not None:
+                    resp = ("%s %s") % (resp, _("where VILLAGE_NAME is") )
+                    for i in all_villes:
+                        resp = ("%s %s") % (resp, i.name) 
+                msg.respond(resp)
+                return msg.sender
             ville = villes[0]
             #create new membership
             msg.sender.add_to_group(ville)
@@ -176,14 +186,22 @@ class App(rapidsms.app.App):
         except:
             print( _("register-fail") )
             msg.respond( _("register-fail") )
+            
  
     def blast(self, msg, txt):
         txt = txt.strip()
         try:
             sender = msg.sender
-            if sender is None:
-                #join default village and send to default village
-                sender = self.join(msg)
+
+            # check for message length, and bounce messages that are too long
+            if len(txt) > MAX_BLAST_CHARS:
+                msg.respond( _("Message was not delivered. Please send less than %(max_chars)d characters." % {'max_chars': MAX_BLAST_CHARS} ))
+                return
+
+            #if sender is None:
+            #    #join default village and send to default village
+            #    sender = self.join(msg)
+
             print "REPORTER:BLAST"
             #find all reporters from the same location
             villages = VillagesForContact(sender)
@@ -195,15 +213,21 @@ class App(rapidsms.app.App):
             for ville in villages:
                 village_names = ("%s %s") % (village_names, ville.name) 
                 recipients = ville.flatten()
+
+                # because the group can be _long_ and messages are delivered
+                # serially on a single modem install, it can take a long time
+                # (minutes, 10s of minutes) to send all.
+                # SO to keep people from thinking it didn't work and resending, 
+                # send there response first
+                msg.respond( _("success! %(villes)s recvd msg: %(txt)s") % {'villes':village_names,'txt':txt} ) 
                 
-                # it makes sense to complete all of the sending
-                # before sending the confirmation sms
-                # iterate every member of the group we are broadcasting
+                # now iterate every member of the group we are broadcasting
                 # to, and queue up the same message to each of them
                 for recipient in recipients:
                     if int(recipient.id) != int(sender.id):
                         #add signature
-                        anouncement = _("%s - sent to [%s] from %s") % ( txt, ville.name, sender.signature() )
+                        anouncement = _("%(txt)s - sent to [%(ville)s] from %(sender)s") % \
+                                 { 'txt':txt, 'ville':ville.name, 'sender':sender.signature() }
                         #todo: limit chars to 1 txt message?
                         conns = ChannelConnection.objects.all().filter(contact=recipient)
                         for conn in conns:
@@ -213,8 +237,7 @@ class App(rapidsms.app.App):
                             be.message(conn.user_identifier, anouncement).send()
                         
             village_names = village_names.strip()
-            print( _("success! %s recvd msg: %s") % (village_names,txt) ) 
-            msg.respond( _("success! %s recvd msg: %s") % (village_names,txt) ) 
+            print( _("success! %(villes)s recvd msg: %(txt)s") % { 'villes':village_names,'txt':txt} ) 
             return sender
         except:
             traceback.print_exc()
@@ -234,7 +257,7 @@ class App(rapidsms.app.App):
                     for ville in villages:
                         msg.sender.delete()
                         msg.respond(
-                            _("leave-success") % { "village": ville })
+                            _("leave-success") % { "village": ville.name })
                     return
             msg.respond( _("nothing to leave") )
             return

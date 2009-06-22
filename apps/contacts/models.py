@@ -487,7 +487,7 @@ class Contact(Node):
     def signature(self):
         sig=self.common_name
         if len(sig.strip())==0:
-            sig=u' '.join([self.given_name,self.family_name])
+            sig=u' '.join([self.given_name,self.family_name]).strip()
         if len(sig.strip())==0:
             rs = ChannelConnection.objects.filter(contact=self)
             if len(rs)==0:
@@ -496,7 +496,6 @@ class Contact(Node):
                 sig=rs[0].user_identifier
         return sig
     
-
 #basically a PersistentBackend
 class CommunicationChannel(models.Model):
     """

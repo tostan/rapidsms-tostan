@@ -98,7 +98,7 @@ class App(rapidsms.app.App):
             ('rname', {'lang':'deb','func':self.register_name}),
             ('dleave', {'lang':'deb','func':self.leave}),
             ('dlang', {'lang':'deb','func':self.lang}),
-            ('dcreate', {'lang':'eng','func':self.createvillage})
+            ('dcreate', {'lang':'eng','func':self.createvillage}),
             # French
             ('entrer', {'lang':'fre','func':self.join}),
             ('nom', {'lang':'fre','func':self.register_name}),

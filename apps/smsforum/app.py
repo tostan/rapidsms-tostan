@@ -208,12 +208,11 @@ class App(rapidsms.app.App):
 
         try:
             # TODO: add administrator authentication
-
             ville = Village.objects.get_or_create(name=village)
             self.village_matcher.add_target((village,ville))
-            msg.sender.send_to(_st(msg.sender, "village %s created") % village)
-            # TODO: remove this for production
+            msg.sender.send_to(_st(msg.sender, "village %(village)s created") % {'village':village} )
         except:
+            self.debug( traceback.format_exc() )
             traceback.print_exc()
             msg.sender.send_to(_st(msg.sender, "register-fail"))
 
@@ -232,6 +231,7 @@ class App(rapidsms.app.App):
                                        % {"village_names":village_names})
         except:
             traceback.print_exc()
+            self.debug( traceback.format_exc() )
             rsp= _st(msg.sender,"register-fail")
             self.debug(rsp)
             msg.sender.send_to(rsp)
@@ -252,6 +252,7 @@ class App(rapidsms.app.App):
             msg.sender.send_to(rsp)
         except:
             traceback.print_exc()
+            self.debug( traceback.format_exc() )
             rsp= _st(msg.sender, "register-fail")
             self.debug(rsp)
             msg.sender.send_to(rsp)
@@ -303,6 +304,7 @@ class App(rapidsms.app.App):
             msg.sender.send_to(rsp)
         except:
             traceback.print_exc()
+            self.debug( traceback.format_exc() )
             rsp=_st(msg.sender, "register-fail")
             self.debug(rsp)
             msg.sender.send_to(rsp)
@@ -357,6 +359,7 @@ class App(rapidsms.app.App):
             return True
         except:
             traceback.print_exc()
+            self.debug( traceback.format_exc() )
             msg.sender.send_to(_st(msg.sender, "blast-fail"))
         return True
 
@@ -387,6 +390,7 @@ class App(rapidsms.app.App):
             # something went wrong - at the
             # moment, we don't care what
             traceback.print_exc()
+            self.debug( traceback.format_exc() )
             msg.sender.send_to(_st(msg.sender, "leave-fail"))
 
         return True

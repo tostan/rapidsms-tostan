@@ -63,7 +63,6 @@ class Component(object):
         
         try:
             self.configure(**kwargs)
-        
         except TypeError, e:
             # "__init__() got an unexpected keyword argument '...'"
             if "unexpected keyword" in e.message:

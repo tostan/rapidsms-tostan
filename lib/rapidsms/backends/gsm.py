@@ -49,7 +49,7 @@ class Backend(Backend):
             self.modem_logger = log.Logger(level=level, file=mlog, channel='pygsm')
 
         self.modem_kwargs['logger'] = self._log
-    
+
     def send(self, message):
         self.modem.send_sms(
             str(message.connection.identity),

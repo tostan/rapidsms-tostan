@@ -1,12 +1,12 @@
 #!/usr/bin/env python
-# vim: ai ts=4 sts=4 et sw=4
+# vim: ai ts=4 sts=4 et sw=4 encoding=utf-8
 
 import copy
 
 from rapidsms.connection import Connection
 from rapidsms.person import Person
 from datetime import datetime
-
+import pytz
 
 class StatusCodes:
     '''Enum for representing status types of a message or response.'''
@@ -17,12 +17,17 @@ class StatusCodes:
     
     
 class Message(object):
-    def __init__(self, connection=None, text=None, person=None, date=datetime.now()):
+    def __init__(self, connection=None, text=None, person=None, date=None):
         if connection == None and person == None:
             raise Exception("Message __init__() must take one of: connection, person")
         self._connection = connection
         self.text = text
-        self.date = date
+
+        if date is not None:
+            self.date = date
+        else:
+            self.date = datetime.utcnow()
+            self.date = self.date.replace(tzinfo=pytz)
         self.person = person
         self.responses = []
         self.status = StatusCodes.NONE

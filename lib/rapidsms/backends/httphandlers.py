@@ -87,15 +87,7 @@ class HttpHandler(RapidBaseHttpHandler):
                 return
             
             # Make the received timestamp
-            ts_tup = rfc822.parsedate_tz(
-                self.headers.getparam('Date')
-                )
-            if ts_tup is not None:
-                rec_dt = datetime.utcfromtimestamp(
-                    rfc822.mktime_tz(ts_tup)
-                    )
-            else:
-                rec_dt = datetime.utcnow()
+            rec_dt = datetime.utcnow()
             # force pytz timezone info
             rec_dt = rec_dt.replace(tzinfo=pytz.utc)
             

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# vim: ai ts=4 sts=4 et sw=4
+# vim: ai ts=4 sts=4 et sw=4 encoding=utf-8
 
 import BaseHTTPServer, SocketServer
 import select
@@ -43,3 +43,4 @@ class Backend(rapidsms.backends.Backend):
                 self.handler.outgoing(msg)
                 
             self.server.handle_request()
+

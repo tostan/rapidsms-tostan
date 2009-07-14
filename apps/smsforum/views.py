@@ -105,7 +105,7 @@ def format_messages_in_context(req, context, messages):
         if m is None: blast_messages.append(msg)
         else: cmd_messages.append(msg)
     if len(cmd_messages)>0:
-        context['cmd_messages'] = paginated(req, cmd_messages, per_page=10, prefix="cmd")
+        context['cmd_messages'] = paginated(req, cmd_messages, per_page=5, prefix="cmd")
     if len(blast_messages)>0:
         context['blast_messages'] = paginated(req, blast_messages, per_page=10, prefix="blast")
     context['codes'] = Code.objects.filter(set=CodeSet.objects.get(name="TOSTAN_CODE"))
@@ -140,6 +140,7 @@ def members(req, pk, template="smsforum/members.html"):
     context = {}
     village = Village.objects.get(id=pk)
     members = village.flatten(klass=Contact)
+    total_incoming_messages = 0
     for member in members:
         connections = ChannelConnection.objects.filter(contact=member)
         if len(connections) > 0:
@@ -147,9 +148,13 @@ def members(req, pk, template="smsforum/members.html"):
             member.phone_number = connections[0].user_identifier
             last_week = ( datetime.now()-timedelta(weeks=1) )
             member.message_count = IncomingMessage.objects.filter(identity=member.phone_number,received__gte=last_week).count()
+            total_incoming_messages = total_incoming_messages + member.message_count
             member.received_message_count = OutgoingMessage.objects.filter(identity=member.phone_number,sent__gte=last_week).count()
+            member.date_joined = NodeSetLog.objects.filter(node=member,nodeset=village).order_by('-id')[0].date
     context['village'] = village
     context['members'] = paginated(req, members)
+    context['member_count'] = len(members)
+    context['incoming_message_count'] = total_incoming_messages
     messages = IncomingMessage.objects.filter(domain=village).order_by('-received')
     format_messages_in_context(req, context, messages)
     return render_to_response(req, template, context)
@@ -181,6 +186,8 @@ def member(req, pk, template="smsforum/member.html"):
     except ChannelConnection.DoesNotExist:
         #this is a contact without a phone number
         pass
+    # if you decide to add 'date_joined', remember you need to do it for all villages
+    # this person is member of
     context['member'] = contact
     return render_to_response(req, template, context)
 

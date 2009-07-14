@@ -5,9 +5,7 @@ import BaseHTTPServer
 import random
 import re
 import urllib
-import pytz
 from datetime import datetime
-import rfc822
 
 def _uni(str):
     """
@@ -86,16 +84,12 @@ class HttpHandler(RapidBaseHttpHandler):
                     self.wfile.write(resp)
                 return
             
-            # Make the received timestamp
-            rec_dt = datetime.utcnow()
-            # force pytz timezone info
-            rec_dt = rec_dt.replace(tzinfo=pytz.utc)
+            # get time
+            received = datetime.utcnow()
+            # leave Naive!
+            # received.replace(tzinfo=pytz.utc)
             
-            msg = self.server.backend.message(
-                session_id, 
-                urllib.unquote(text),
-                date = rec_dt
-                )
+            msg = self.server.backend.message(session_id, urllib.unquote(text))
             self.server.backend.route(msg)
             # respond with the number and text 
             self.send_response(200)

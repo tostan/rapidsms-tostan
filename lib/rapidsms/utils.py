@@ -14,12 +14,36 @@ def empty_str(in_str):
         len(in_str.strip())==0
 
 def to_naive_utc_dt(dt):
+    """
+    Converts a datetime to a naive datetime (no tzinfo) 
+    as follows:
+
+    if inbound dt is already naive, it just returns it
+    
+    if inbound is timezone aware, converts it to UTC,
+    then strips the tzinfo
+
+    """
     if dt.tzinfo is None:
         return dt
 
     return dt.astimezone(pytz.utc).replace(tzinfo=None)
 
 def to_aware_utc_dt(dt):
+    """
+    Convert an inbound datetime into a timezone
+    aware datetime in UTC as follows:
+
+    if inbound is naive, uses 'tzinfo.localize' to
+    add utc tzinfo. NOTE: Timevalues are not changed,
+    only difference in tzinfo is added to identify this
+    as a UTC tz aware object.
+
+    if inbound is aware, uses 'datetime.astimezone'
+    to convert timevalues to UTC and set tzinfo to
+    utc.
+
+    """
     if dt.tzinfo is None:
         return pytz.utc.localize(dt)
 

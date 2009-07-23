@@ -2,7 +2,7 @@
 # vim: ai ts=4 sts=4 et sw=4 encoding=utf-8
 
 import unittest
-from rapidsms.utils import *
+from rapidsms.tzutil import *
 
 import pytz
 from datetime import datetime, timedelta
@@ -12,29 +12,12 @@ class TestUtils(unittest.TestCase):
     def setUp(self):
         pass
 
-    def testEmptyStr(self):
-        empty_ascii = [
-            '',' ','\n','\r','\t',
-            ' \n\r\t '
-            ]
-        
-        empty_unicode = [unicode(s) for s in empty_ascii]
-    
-        self.assertTrue(empty_str(None))
-        for s in empty_ascii+empty_unicode:
-            self.assertTrue(empty_str(s))
-
-        not_empty = [ '%sa%s' % (s,s) for s in empty_ascii ]
-        not_empty_unicode = [ unicode(s) for s in not_empty]
-        for s in not_empty+not_empty_unicode:
-            self.assertFalse(empty_str(s))
-
     def testToNaiveUTC(self):
         pacific_10am = \
             pytz.timezone('US/Pacific').\
             localize(datetime(2009, 7, 16, 10, 0, 0, 0))
 
-        naive_utc = to_naive_utc_dt(pacific_10am)
+        naive_utc = to_naive_utc(pacific_10am)
         self.assertTrue(naive_utc.tzinfo is None)
         
         if pacific_10am.dst() == timedelta(0):
@@ -46,7 +29,7 @@ class TestUtils(unittest.TestCase):
         
         # now test that a naive time passed in stays naive
         utc_now = datetime.utcnow()
-        out_now = to_naive_utc_dt(utc_now)
+        out_now = to_naive_utc(utc_now)
         self.assertTrue(out_now.tzinfo is None)
         self.assertTrue(utc_now==out_now)
 
@@ -55,7 +38,7 @@ class TestUtils(unittest.TestCase):
         pacific_10am = pytz.timezone('US/Pacific').\
             localize(datetime(2009, 7, 16, 10, 0, 0, 0))
         
-        utc_aware = to_aware_utc_dt(pacific_10am)
+        utc_aware = to_aware_utc(pacific_10am)
         self.assertTrue(utc_aware.tzinfo==pytz.utc)
         self.assertTrue(utc_aware == pacific_10am)
         if pacific_10am.dst() == timedelta(0):
@@ -67,7 +50,7 @@ class TestUtils(unittest.TestCase):
                               
         # test a naive inbound
         utc_naive=datetime.utcnow()
-        utc_aware=to_aware_utc_dt(utc_naive)
+        utc_aware=to_aware_utc(utc_naive)
         self.assertTrue(utc_aware.tzinfo==pytz.utc)
         for attr in [
             'year',
@@ -100,6 +83,37 @@ class TestUtils(unittest.TestCase):
         # microseconds
         self.assertTrue(timedelta_as_minutes(two_ten_ten_five)==\
                             2*60+10+10/60)
+
+
+    def testBadValues(self):
+        try:
+            to_naive_utc('foo')
+        except ValueError:
+            pass
+        else:
+            self.assertTrue(False)
+
+        try:
+            to_aware_utc('foo')
+        except ValueError:
+            pass
+        else:
+            self.assertTrue(False)
+
+        try:
+            to_naive_utc(None)
+        except ValueError:
+            pass
+        else:
+            self.assertTrue(False)
+
+        try:
+            to_aware_utc(None)
+        except ValueError:
+            pass
+        else:
+            self.assertTrue(False)
+
 
 if __name__ == '__main__':
     unittest.main()

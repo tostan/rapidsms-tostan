@@ -9,7 +9,9 @@ from rapidsms.connection import Connection
 from apps.nodegraph.models import Node
 from apps.locations.models import Location
 import math
-from rapidsms import utils
+from rapidsms.stringutil import is_empty
+from rapidsms.tzutil import timedelta_as_minutes
+
 import traceback
 
 # 
@@ -509,7 +511,7 @@ class Contact(Node):
         period_begin=getattr(self,'_quota_%s_period_begin' % type)
         period=timedelta(minutes=\
                          getattr(self,'_quota_%s_period' % type))
-        return utils.timedelta_as_minutes(period-(datetime.utcnow()-period_begin))
+        return timedelta_as_minutes(period-(datetime.utcnow()-period_begin))
         
     def _get_quota_period_remain(self,type=quota_type.SEND):
         """
@@ -579,13 +581,13 @@ class Contact(Node):
         # If that doesn't fit, return ''
 
         
-        name_part= (None if utils.empty_str(self.common_name)
+        name_part= (None if is_empty(self.common_name)
                     else self.common_name.strip())
         
-        if utils.empty_str(name_part):
-            gn = (None if utils.empty_str(self.given_name) 
+        if is_empty(name_part):
+            gn = (None if is_empty(self.given_name) 
                   else self.given_name.strip())
-            fn = (None if utils.empty_str(self.family_name) 
+            fn = (None if is_empty(self.family_name) 
                   else self.family_name.strip())
             if gn is not None and fn is not None:
                 name_part=u'%s %s' % (gn,fn)
@@ -612,7 +614,7 @@ class Contact(Node):
             id_part=cc.user_identifier
         
         # make sig
-        if not utils.empty_str(name_part):
+        if not is_empty(name_part):
             sig=': '.join([name_part, id_part])
         else:
             sig=id_part

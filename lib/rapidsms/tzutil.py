@@ -4,16 +4,15 @@
 import pytz
 from datetime import datetime
 
-def empty_str(in_str):
-    """
-    Simple helper to return True if the passed
-    string reference is None or '' or all whitespace
+"""
+Some simple utility calls for dealing datetime and timedelta
+objects.
 
-    """
-    return in_str is None or \
-        len(in_str.strip())==0
+In particular for converting TZ naive and TZ aware datetimes 
 
-def to_naive_utc_dt(dt):
+"""
+
+def to_naive_utc(dt):
     """
     Converts a datetime to a naive datetime (no tzinfo) 
     as follows:
@@ -24,12 +23,15 @@ def to_naive_utc_dt(dt):
     then strips the tzinfo
 
     """
+    if not isinstance(dt, datetime):
+        raise ValueError("Must supply datetime object")
+
     if dt.tzinfo is None:
         return dt
 
     return dt.astimezone(pytz.utc).replace(tzinfo=None)
 
-def to_aware_utc_dt(dt):
+def to_aware_utc(dt):
     """
     Convert an inbound datetime into a timezone
     aware datetime in UTC as follows:
@@ -44,6 +46,9 @@ def to_aware_utc_dt(dt):
     utc.
 
     """
+    if not isinstance(dt, datetime):
+        raise ValueError("Must supply datetime object")
+
     if dt.tzinfo is None:
         return pytz.utc.localize(dt)
 

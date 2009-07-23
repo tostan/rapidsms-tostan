@@ -6,7 +6,7 @@ import copy
 from rapidsms.connection import Connection
 from rapidsms.person import Person
 from datetime import datetime
-from rapidsms import utils
+from rapidsms.tzutil import to_naive_utc
 
 
 class StatusCodes:
@@ -24,7 +24,7 @@ class Message(object):
         self._connection = connection
         self.text = text
         self.date = ( datetime.utcnow() if date is None
-                      else utils.to_naive_utc_dt(date) )
+                      else to_naive_utc(date) )
         self.person = person
         self.responses = []
         self.status = StatusCodes.NONE

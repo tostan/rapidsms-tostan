@@ -6,12 +6,13 @@ from os import path
 
 # figure out where all the extra libs (rapidsms and contribs) are
 libs=[os.path.abspath('lib')] # main 'rapidsms/lib'
-for f in os.listdir('contrib'):
-    pkg = path.join('contrib',f)
-    if path.isdir(pkg) and \
-            'lib' in os.listdir(pkg):
-        libs.append(path.abspath(path.join(pkg,'lib')))
-
+if path.exists('contrib'):
+    for f in os.listdir('contrib'):
+        pkg = path.join('contrib',f)
+        if path.isdir(pkg) and \
+                'lib' in os.listdir(pkg):
+            libs.append(path.abspath(path.join(pkg,'lib')))
+            
 # add extra libs to the python sys path
 sys.path.extend(libs)
 

@@ -14,5 +14,6 @@ class VillageAdmin(admin.ModelAdmin):
     list_display = ('name', 'number_of_members', 'members')
    
     fields = ('name', '_children', 'location')
-   
+
 admin.site.register(Village, VillageAdmin)
+admin.site.register(VillageAlias)

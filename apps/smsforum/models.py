@@ -115,15 +115,9 @@ class Village(NodeSet):
     sec_pwd_protect_blast = property(__get_sec_admin_cmds_pwd_protected, \
                                __set_sec_admin_cmds_pwd_protected)
 
-'''
-class VillageName(models.Model):
-    name = models.CharField(max_length=255, blank=False)
-    primary = models.BooleanField(default=False)
-    village = models.ForeignKey(Village, related_name='names')
-
-    class Meta:
-        unique_together = ('village', 'name')
-'''
+class VillageAlias(models.Model):
+    alias = models.CharField(max_length=255, blank=False)
+    village = models.ForeignKey(Village, related_name='aliases')
 
 class Community(Village):
     pass

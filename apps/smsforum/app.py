@@ -163,7 +163,10 @@ class App(rapidsms.app.App):
         HACK to force reload of names before each match
         
         """
-        villes=[(v.name, v) for v in Village.objects.all()]
+        villes = []
+        for v in Village.objects.all():
+            names = [v.name] + [a.alias for a in v.aliases.all()]
+            villes.append( (names,v) )
         return BestMatch(villes, ignore_prefixes=['keur'])
         
     def configure(self, **kwargs):

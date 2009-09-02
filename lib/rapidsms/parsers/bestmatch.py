@@ -34,6 +34,7 @@ class BestMatch(object):
     def __init__(self, targets=None, ignore_prefixes=None):
         self.__targets = dict()
         self.__data = dict()
+        # a dict of sets
         self.__aliases = dict()
         self.__ignore_prefixes = list()
         self.__lock = threading.Lock()
@@ -127,6 +128,11 @@ class BestMatch(object):
         return self.__targets[target]
 
     def add_alias_for_target(self, target, alias):
+        """
+        
+        target: string
+        alias: string
+        """
         self.__targets[target].add(alias)
         self.__aliases[alias] = target
 

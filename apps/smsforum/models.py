@@ -118,6 +118,9 @@ class Village(NodeSet):
 class VillageAlias(models.Model):
     alias = models.CharField(max_length=255, blank=False)
     village = models.ForeignKey(Village, related_name='aliases')
+    
+    # TODO - add a check to make sure we don't create villages that
+    # are the same as existing village names. 
 
 class Community(Village):
     pass

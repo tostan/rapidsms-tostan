@@ -117,37 +117,38 @@ class App(rapidsms.app.App):
         # needs to be here so that 'self' has meaning.
         # could also do the hasattr thing when calling instead
         self.cmd_targets = [ 
+            # NOTE: make sure all commands are unicode strings!
             # Pulaar
-            (['naalde', 'naatde', 'tawtude'], {'lang':'pul','func':self.join}),
-            ('yettoode', {'lang':'pul','func':self.register_name}),
-            (['yaltude','iwde'], {'lang':'pul','func':self.leave}),
-            (['dallal','ballal'], {'lang':'pul','func':self.help}),
+            ([u'naalde', u'naatde', u'tawtude'], {'lang':'pul','func':self.join}),
+            (u'yettoode', {'lang':'pul','func':self.register_name}),
+            ([u'yaltude',u'iwde'], {'lang':'pul','func':self.leave}),
+            ([u'dallal',u'ballal'], {'lang':'pul','func':self.help}),
             # Wolof
-            (['boole', 'yokk', 'duggu'], {'lang':'wol','func':self.join}),
-            (['genn', 'génn'], {'lang':'wol','func':self.leave}),
-            (['sant', 'tur'], {'lang':'wol','func':self.register_name}),
-            ('ndimbal', {'lang':'wol','func':self.help}),
+            ([u'boole', u'yokk', u'duggu'], {'lang':'wol','func':self.join}),
+            ([u'genn', u'génn'], {'lang':'wol','func':self.leave}),
+            ([u'sant', u'tur'], {'lang':'wol','func':self.register_name}),
+            (u'ndimbal', {'lang':'wol','func':self.help}),
             # Dyuola    
-            (['unoken', 'ounoken'], {'lang':'dyu','func':self.join}),
-            (['karees', 'karees'], {'lang':'dyu','func':self.register_name}),
-            (['upur', 'oupour'], {'lang':'dyu','func':self.leave}),
-            ('rambenom', {'lang':'dyu','func':self.help}),
+            ([u'unoken', u'ounoken'], {'lang':'dyu','func':self.join}),
+            ([u'karees', u'karees'], {'lang':'dyu','func':self.register_name}),
+            ([u'upur', u'oupour'], {'lang':'dyu','func':self.leave}),
+            (u'rambenom', {'lang':'dyu','func':self.help}),
             # French
-            ('entrer', {'lang':'fr','func':self.join}),
-            ('nom', {'lang':'fr','func':self.register_name}),
-            ('quitter', {'lang':'fr','func':self.leave}),
-            ('aide', {'lang':'fr','func':self.help}),
-            (['créer', 'creer'], {'lang':'fr','func':self.create_village}),
+            (u'entrer', {'lang':'fr','func':self.join}),
+            (u'nom', {'lang':'fr','func':self.register_name}),
+            (u'quitter', {'lang':'fr','func':self.leave}),
+            (u'aide', {'lang':'fr','func':self.help}),
+            ([u'créer', u'creer'], {'lang':'fr','func':self.create_village}),
             # English
-            ('join', {'lang':'en','func':self.join}),
-            ('name', {'lang':'en','func':self.register_name}),
-            ('leave', {'lang':'en','func':self.leave}),
-            ('language', {'lang':'en','func':self.lang}),
-            ('help', {'lang':'en','func':self.help}),
-            ('create', {'lang':'en','func':self.create_village}),
-            ('member', {'lang':'en','func':self.member}),
-            ('citizens', {'lang':'en','func':self.community_members}),
-            ('remove', {'lang':'en','func':self.destroy_community}),
+            (u'join', {'lang':'en','func':self.join}),
+            (u'name', {'lang':'en','func':self.register_name}),
+            (u'leave', {'lang':'en','func':self.leave}),
+            (u'language', {'lang':'en','func':self.lang}),
+            (u'help', {'lang':'en','func':self.help}),
+            (u'create', {'lang':'en','func':self.create_village}),
+            (u'member', {'lang':'en','func':self.member}),
+            (u'citizens', {'lang':'en','func':self.community_members}),
+            (u'remove', {'lang':'en','func':self.destroy_community}),
             ]
         
         self.cmd_matcher=BestMatch(self.cmd_targets)

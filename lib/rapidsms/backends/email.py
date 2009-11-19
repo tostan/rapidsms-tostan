@@ -53,6 +53,7 @@ class Backend(backend.Backend):
         msg['From'] = self.username 
         msg['To'] = email_message.peer
         s = smtplib.SMTP(host=self.smtp_host, port=self.smtp_port)
+        s.ehlo()
         if self.use_tls:
             s.starttls()
         s.login(self.username, self.password)

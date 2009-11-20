@@ -36,7 +36,7 @@ class TrackingHandler(Handler):
             record_dict = record.__dict__
             
             #dmyung - get the traceback for this log message and set it as a value in the dump
-            newlog.data_dump = "traceback:" + str(traceback.extract_stack())            
+            newlog.data_dump = "traceback:" + unicode(traceback.extract_stack())            
             if record_dict:
                 for key in record_dict:
                     if key in logrecord_keys:
@@ -44,7 +44,7 @@ class TrackingHandler(Handler):
                     else:
                         if newlog.data_dump == None:
                             newlog.data_dump = ''
-                        newlog.data_dump += key + ":=" + str(record_dict[key]) + "\n"
+                        newlog.data_dump += key + ":=" + unicode(record_dict[key]) + "\n"
                     
             
             newlog.save()

@@ -6,7 +6,7 @@ This exists to provide a utility for email alerts to be sent from runserver
 """
 
 from django.core.mail import SMTPConnection, EmailMessage
-from rapidsms.webui.settings import RAPIDSMS_CONF as conf
+from rapidsms.webui.settings import RAPIDSMS_APPS as conf_app
 
 class EmailAgent(object):
     """ A simple class for handling email sending """
@@ -15,10 +15,10 @@ class EmailAgent(object):
         """ Configure the default connection
         Here we take email settings from the email backend
         """
-        self.conn = SMTPConnection(username=conf['email']['username'],
-                                   port=conf['email']['port'],
-                                   host=conf['email']['host'],
-                                   password=conf['email']['password'],
+        self.conn = SMTPConnection(username=conf_app['logtracker']['username'],
+                                   port=conf_app['logtracker']['smtp_port'],
+                                   host=conf_app['logtracker']['smtp_host'],
+                                   password=conf_app['logtracker']['password'],
                                    use_tls=True,
                                    fail_silently=False)
 
@@ -26,7 +26,7 @@ class EmailAgent(object):
         """ send a basic email message to the group """
         msg = EmailMessage(subject=subject, 
                            body=msg_payload,
-                           from_email=conf['email']['username'],
+                           from_email=conf_app['logtracker']['username'],
                            to=[recipient_addr],
                            connection=self.conn
                            )

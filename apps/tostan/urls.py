@@ -5,5 +5,5 @@ from django.conf.urls.defaults import *
 import apps.tostan.views as views
 
 urlpatterns = patterns('',
-    url(r'^smscommands/?$',  views.smscommands),
+    url(r'^$',   views.dashboard),
 )

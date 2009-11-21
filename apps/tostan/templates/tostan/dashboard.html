@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+{% load i18n %}
+{% block title %}The Jokko Initiative - A RapidSMS Project by Tostan{% endblock %}
+{% block content %}
+
+<div class="module">
+
+{% trans "What would you like to do?" %}
+
+<ul>
+<li>
+	<a href="{% url tostan.views.visualize %}">
+		{% trans "Visualize the messages and the citizens of one or a group of communities" %}
+	</a>
+</li>
+<li>
+	<a href="{% url tostan.views.visualize %}">
+		{% trans "Send an SMS message to one or a group of communities" %}
+	</a>
+</li>
+<li>
+	<a href="{% url tostan.views.visualize %}">
+		{% trans "Export data to Excel" %}
+	</a>
+</li>
+<li>
+	<a href="{% url tostan.views.visualize %}">
+		{% trans "Manage communities, citizens, and messages" %}
+	</a>
+</li>
+
+</div>
+{% endblock %}

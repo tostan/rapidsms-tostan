@@ -1,0 +1,57 @@
+#!/usr/bin/env python
+# vim: ai ts=4 sts=4 et sw=4 encoding=utf-8
+
+from rapidsms.tests.scripted import TestScript
+import apps.smsforum.app as smsforum_app
+import apps.logger.app as logger_app
+import apps.contacts.app as contacts_app
+from app import App
+from apps.smsforum.views import get_outgoing_message_count_to
+from apps.contacts.models import *
+ 
+class TestLogging (TestScript):
+    apps = (smsforum_app.App, contacts_app.App, logger_app.App )
+
+    def testOutgoingMessageLog(self):
+        """ Tests
+        1. regular command and response
+        2. receiving a blast message
+        3. receiving a system message
+        todo - test receiving a 'region' message
+        """
+        test_outgoing_message_log = """
+            8005551210 > .create village
+            8005551210 < Community 'village' was created
+            8005551210 > .join village
+            8005551210 < Thank you for joining the village community - welcome!
+            8005551211 > .join village
+            8005551211 < Thank you for joining the village community - welcome!
+            8005551210 > message to blast
+            8005551210 < Your message was sent to these communities: village
+            8005551211 < msg_to_blast - 8005551210
+            8005551211 < .junk
+            8005551211 > Sorry, I do not understand that command. Type '#help' to see a list of available commands            
+            """
+        self.runScript(test_outgoing_message_log)
+        first_contact = contacts_from_identity(8005551210)
+        second_contact = contacts_from_identity(8005551210)
+        members = [first_contact]
+        count = get_outgoing_message_count_to(members)
+        self.assertEquals(count,3)
+        members = [second_contact]
+        count = get_outgoing_message_count_to(members)
+        self.assertEquals(count,3)
+        members = [first_contact,second_contact]
+        count = get_outgoing_message_count_to(members)
+        self.assertEquals(count,6)
+
+def contacts_from_identity(identity):
+    """ Gets a 'contact' given a user_identifier
+    WARNING: This function assumes the identifier is globally unique
+    """
+    conns = ChannelConnection.objets.filter(user_identifier=identity)
+    contacts = conns.values_list('contact',flat=True)
+    return contacts
+
+
+

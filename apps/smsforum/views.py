@@ -1,5 +1,29 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4
+
+"""
+
+Note: reporting outgoing messages on a per-village basis is actually quite tricky.
+
+Say you have 2 users, A and B.
+Both are members of the same 2 communities, 1 and 2, but only B is a member of
+community 3. User A sends a message, which is blasted to the 2 communities he 
+shared with B. User B should only receive the message once. (After all, why 
+would we send the same user the same message 2 times?) So while User B has only 
+received one message, in theory that message was sent 'across' 2 different 
+communities. (Which we can record as set of domain_of_message model with a 
+foreign key to the specific message instance). The tricky part is that 
+nodegraph abstracts away the calculation of who-is-in-which-community and 
+discarding-of-duplicate-messages-to-same-person-in-two-communities. 
+
+To support this feature properly in the future, we would need to extend nodegraph
+to return not only members_of_village as a list of members, but also
+members_of_villages as a list of tuples of (member, village_membership1, 
+village_membership2, etc.)
+
+"""
+
+
 from django.utils.translation import ugettext as _
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
@@ -17,78 +41,30 @@ from utilities.export import export
 
 from datetime import datetime, timedelta
 
-def index(request, template="smsforum/index.html"):
+def messages(request, template="smsforum/messages.html"):
     context = {}
-    if request.method == 'POST':    
-        # now iterate through all the messages you learned about
-        for i in request.POST.getlist('message'):
-            id = int(i)
-            m = IncomingMessage.objects.select_related().get(id=id)
-            # GATHER EXISTING TAGS
-            tags = MessageTag.objects.select_related().filter(message=m)
-            flag = None
-            code = None
-            for tag in tags:
-                if tag.code.set.name == "FLAGGED_CODE":
-                    flag = tag 
-                elif tag.code.set.name == "TOSTAN_CODE":
-                    code = tag
-            note = None
-            notes = MessageAnnotation.objects.filter(message=m)
-            if len(notes) > 0: note = notes[0]
-            
-            # CHECK FOR SUBMITTED VALUES
-            if 'flagged_'+ str(id) in request.POST: flag_bool = True
-            else: flag_bool = False
-            note_txt = request.POST['text_'+str(id)]
-            code_txt = request.POST['code_'+str(id)]
-            
-            # MAP SUBMITTED VALUES TO NEW DB STATE
-            if flag is None:
-                if flag_bool == True:
-                    flag = MessageTag(message=m)
-                    SetFlag(flag)
-                    flag.save()
-            else:
-                if flag_bool == False: flag.delete()
-                else:
-                    SetFlag(flag)
-                    flag.save()
-                    
-            if code is None:
-                if len(code_txt) > 0:
-                    code = MessageTag(message=m)
-                    code = SetCode(code,code_txt)
-                    code.save()
-            else:
-                if len(code_txt) == 0: code.delete()
-                else:
-                    SetCode(code,code_txt)
-                    code.save() 
-                                   
-            if note is None:
-                if len(note_txt) > 0:
-                    note = MessageAnnotation(message=m)
-                    note.text = note_txt
-                    note.save()
-            else:
-                if len(note_txt) == 0: note.delete()
-                else:
-                    note.text = note_txt
-                    note.save()                
     villages = Village.objects.all()
     for village in villages:
         # once this site bears more load, we can replace flatten() with village.subnodes
         # and stop reporting num_messages
         members = village.flatten()
         village.member_count = len( members )
+        village.incoming_message_count = IncomingMessage.objects.filter(domains=village).count()
         last_week = ( datetime.now()-timedelta(weeks=1) )
-        village.message_count = IncomingMessage.objects.filter(domain=village,received__gte=last_week).count()
+        village.incoming_message_this_week_count = IncomingMessage.objects.filter(domains=village,received__gte=last_week).count()
+        # reporting outgoing messages is actually quite tricky. see top of this file.
+        village.outgoing_message_count = get_outgoing_message_count_to(members)
     context['villages'] = paginated(request, villages)
-    messages = IncomingMessage.objects.select_related().order_by('-received')
-    context.update( format_messages_in_context(request, context, messages) )
-    context.update( totals(context) )
     return render_to_response(request, template, context)
+
+def get_outgoing_message_count_to(members):
+    """ Return all outgoing messages sent to any of the identities
+    associated with a group of contacts
+    """
+    conns = ChannelConnection.objects.filter(contact__in=members)
+    identities = conns.values_list('user_identifier', flat=True)
+    outgoing_message_count = OutgoingMessage.objects.filter(identity__in=identities).count()
+    return outgoing_message_count
 
 def format_messages_in_context(request, context, messages):
     cmd_messages = []
@@ -159,7 +135,7 @@ def members(request, pk, template="smsforum/members.html"):
     context['member_count'] = len(members)
     context['incoming_message_count'] = total_incoming_messages
     context['incoming_message_count_this_week'] = total_incoming_messages_this_week
-    messages = IncomingMessage.objects.filter(domain=village).order_by('-received')
+    messages = IncomingMessage.objects.filter(domains=village).order_by('-received')
     format_messages_in_context(request, context, messages)
     return render_to_response(request, template, context)
 
@@ -342,3 +318,77 @@ def edit_member(request, pk, template="contacts/edit.html"):
     context['title'] = _("Edit Member") + " " + contact.signature
     context['contact'] = contact
     return render_to_response(request, template, context)
+
+def index(request, template="smsforum/index.html"):
+    context = {}
+    if request.method == 'POST':    
+        # now iterate through all the messages you learned about
+        for i in request.POST.getlist('message'):
+            id = int(i)
+            m = IncomingMessage.objects.select_related().get(id=id)
+            # GATHER EXISTING TAGS
+            tags = MessageTag.objects.select_related().filter(message=m)
+            flag = None
+            code = None
+            for tag in tags:
+                if tag.code.set.name == "FLAGGED_CODE":
+                    flag = tag 
+                elif tag.code.set.name == "TOSTAN_CODE":
+                    code = tag
+            note = None
+            notes = MessageAnnotation.objects.filter(message=m)
+            if len(notes) > 0: note = notes[0]
+            
+            # CHECK FOR SUBMITTED VALUES
+            if 'flagged_'+ str(id) in request.POST: flag_bool = True
+            else: flag_bool = False
+            note_txt = request.POST['text_'+str(id)]
+            code_txt = request.POST['code_'+str(id)]
+            
+            # MAP SUBMITTED VALUES TO NEW DB STATE
+            if flag is None:
+                if flag_bool == True:
+                    flag = MessageTag(message=m)
+                    SetFlag(flag)
+                    flag.save()
+            else:
+                if flag_bool == False: flag.delete()
+                else:
+                    SetFlag(flag)
+                    flag.save()
+                    
+            if code is None:
+                if len(code_txt) > 0:
+                    code = MessageTag(message=m)
+                    code = SetCode(code,code_txt)
+                    code.save()
+            else:
+                if len(code_txt) == 0: code.delete()
+                else:
+                    SetCode(code,code_txt)
+                    code.save() 
+                                   
+            if note is None:
+                if len(note_txt) > 0:
+                    note = MessageAnnotation(message=m)
+                    note.text = note_txt
+                    note.save()
+            else:
+                if len(note_txt) == 0: note.delete()
+                else:
+                    note.text = note_txt
+                    note.save()                
+    villages = Village.objects.all()
+    for village in villages:
+        # once this site bears more load, we can replace flatten() with village.subnodes
+        # and stop reporting num_messages
+        members = village.flatten()
+        village.member_count = len( members )
+        last_week = ( datetime.now()-timedelta(weeks=1) )
+        village.message_count = IncomingMessage.objects.filter(domains=village,received__gte=last_week).count()
+    context['villages'] = paginated(request, villages)
+    messages = IncomingMessage.objects.select_related().order_by('-received')
+    context.update( format_messages_in_context(request, context, messages) )
+    context.update( totals(context) )
+    return render_to_response(request, template, context)
+

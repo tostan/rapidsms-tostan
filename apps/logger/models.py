@@ -16,7 +16,7 @@ class MessageBase(models.Model):
     # but it's optional and saves some ridiculous querying for smsforum frontpage
     # TODO save domain to wacky object string rather than connection title?
     # (to reduce app dependencies)
-    domain = models.ForeignKey(NodeSet,null=True)
+    domains = models.ManyToManyField(NodeSet, null=True)
     
     def __unicode__(self):
         return u'%s (%s) %s' % (self.identity, self.backend, self.text)

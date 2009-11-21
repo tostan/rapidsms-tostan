@@ -7,7 +7,7 @@ import apps.logger.app as logger_app
 import apps.contacts.app as contacts_app
 from app import App
  
-class TestApp (TestScript):
+class TestSMSCommands (TestScript):
     apps = (smsforum_app.App, contacts_app.App, logger_app.App, App )
 
     def setUp(self):

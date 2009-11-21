@@ -7,7 +7,7 @@ from apps.contacts.views import edit_contact
 import apps.smsforum.views as views
 
 urlpatterns = patterns('',
-    url(r'^$',                                        views.index),
+    url(r'^messages$',                                views.messages),
     url(r'^villages$',                                views.index),
     url(r'^village/(?P<pk>\d+)$',                     views.members),
     url(r'^village/add$',                             views.add_village),

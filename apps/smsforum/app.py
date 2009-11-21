@@ -736,15 +736,14 @@ class App(rapidsms.app.App):
         pass
 
     def __log_incoming_message(self,msg,domains):
-        #TODO: FIX THIS so that it logs for all domains
-        if domains is None or len(domains)==0:
-            return
-
         #msg.persistent_msg should never be none if app.logger is used
         #this is to ensure smsforum does not fail even if logger fails...
         if hasattr(msg,'persistent_msg'):
-            msg.persistent_msg.domain = domains[0]
-            msg.persistent_msg.save()
+            for domain in domains:
+                msg.persistent_msg.domains.add(domain)
+        else:
+            logging.error('persistent_msg not create for msg: %s from %s' % \
+                          (msg.txt, msg.sender.signature) )
 
     def _check_message_length(self, text):
         """

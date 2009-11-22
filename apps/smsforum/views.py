@@ -178,8 +178,7 @@ def member(request, pk, template="smsforum/member.html"):
     context['member'] = contact
     return render_to_response(request, template, context)
 
-@login_required
-def edit_village(request, pk, template="smsforum/edit_village.html"):
+def village(request, pk, template="smsforum/village.html"):
     context = {}
     village = get_object_or_404(Village, id=pk)
     if request.method == "POST":
@@ -193,6 +192,7 @@ def edit_village(request, pk, template="smsforum/edit_village.html"):
             village.location.latitude = f.cleaned_data['latitude']
             village.location.longitude = f.cleaned_data['longitude']
             village.location.save()
+            village.save()
     context['form'] = VillageForm(instance=village)
     context['title'] = _("EDIT VILLAGE")
     context['village'] = village

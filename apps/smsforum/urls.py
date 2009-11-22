@@ -9,7 +9,7 @@ import apps.smsforum.views as views
 urlpatterns = patterns('',
     url(r'^messages$',                                views.messages),
     url(r'^villages$',                                views.index),
-    url(r'^village/(?P<pk>\d+)$',                     views.edit_village),
+    url(r'^village/(?P<pk>\d+)$',                     views.village),
     url(r'^village/add$',                             views.add_village),
     url(r'^village/delete/(?P<pk>\d+)$',              views.delete_village),
     url(r'^village/(?P<pk>\d+)/history$',             views.village_history),

@@ -30,13 +30,13 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
 
 from rapidsms.webui.utils import *
-from apps.smsforum.models import *
-from apps.smsforum.utils import *
-from apps.smsforum.forms import *
-from apps.smsforum.app import CMD_MESSAGE_MATCHER
-from apps.logger.models import *
-# from apps.contacts.models import *
-from apps.contacts.forms import GSMContactForm
+from smsforum.models import *
+from smsforum.utils import *
+from smsforum.forms import *
+from smsforum.app import CMD_MESSAGE_MATCHER
+from logger.models import *
+# from contacts.models import *
+from contacts.forms import GSMContactForm
 from utilities.export import export
 
 from datetime import datetime, timedelta
@@ -271,8 +271,18 @@ def export_village_history(request, pk, format='csv'):
     village = Village.objects.get(id=pk)
     history = MembershipLog.objects.filter(village=village)
     if request.user.is_authenticated():
-        return export(history, ['id','date','node','action'])
+        return export(history, ['id','date','contact','action'])
     return export(history, ['id','date','action'])
+
+def export_village_membership(request, pk, format='csv'):
+    village = Village.objects.get(id=pk)
+    members = village.flatten(klass=Contact)
+    if request.user.is_authenticated():
+        return export(members, ['first_seen', 'given_name', 'family_name', 
+                                'common_name', 'unique_id', 'gender', 
+                                'age_months', '_locale'])
+    return export(members, ['first_seen', 'unique_id', 'gender', 
+                            'age_months', '_locale'])
 
 def add_member(request, village_id=0, member_id=0, template="contacts/phone_number.html"):
     """ adding a member to a village involves either

@@ -3,8 +3,8 @@
 
 
 from django.conf.urls.defaults import *
-from apps.contacts.views import edit_contact
-import apps.smsforum.views as views
+from contacts.views import edit_contact
+import smsforum.views as views
 
 urlpatterns = patterns('',
     url(r'^messages$',                                views.messages),
@@ -13,7 +13,8 @@ urlpatterns = patterns('',
     url(r'^village/add$',                             views.add_village),
     url(r'^village/delete/(?P<pk>\d+)$',              views.delete_village),
     url(r'^village/(?P<pk>\d+)/history$',             views.village_history),
-    url(r'^village/(?P<pk>\d+)/history/csv$',         views.export_village_history),
+    url(r'^village/(?P<pk>\d+)/history/csv$',         views.export_village_history, name='export_village_history'),
+    url(r'^village/(?P<pk>\d+)/membership/csv$',      views.export_village_membership, name='export_village_membership'),
     url(r'^member/(?P<pk>\d+)$',                      views.member),
     url(r'^village/(?P<village_id>\d+)/member/add$',  views.add_member),
     url(r'^village/(?P<village_id>\d+)/member/add/(?P<member_id>\d+)$',  views.add_member),

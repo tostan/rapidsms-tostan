@@ -5,5 +5,6 @@ from django.conf.urls.defaults import *
 import apps.tostan.views as views
 
 urlpatterns = patterns('',
-    url(r'^$',   views.dashboard),
+    url(r'^$',         views.dashboard),
+    url(r'^export$',   views.export),
 )

@@ -3,10 +3,10 @@
 
 import os
 from django.conf.urls.defaults import *
-import apps.logger.views as views
+import logger.views as views
 
 urlpatterns = patterns('',
-    url(r'^logger/?$',  views.index),
-    url(r'^logger/csv/in?$',     views.csv_in),
-    url(r'^logger/csv/out?$',     views.csv_out),
+    url(r'^logger/?$', views.index),
+    url(r'^logger/csv/in?$', views.csv_in, name='export_inmessages'),
+    url(r'^logger/csv/out?$', views.csv_out, name='export_outmessages'),
 )

@@ -1,0 +1,47 @@
+{% extends "tostan/template_export.html" %}
+{% load i18n %}
+{% block title %}The Jokko Initiative - A RapidSMS Project by Tostan{% endblock %}
+{% block content %}
+
+<div class="module">
+
+<h2>{% trans "Export Data to Excel" %}</h2>
+
+<ul>
+<li>
+	<a href="{% url contacts.views.csv %}">
+		{% trans "SMS Users" %}
+	</a>
+</li>
+<li>
+	<a href="{% url logger.views.csv_in %}">
+		{% trans "Messages sent to Tostan" %}
+	</a>
+</li>
+<li>
+	<a href="{% url logger.views.csv_out %}">
+		{% trans "Messages sent from Tostan" %}
+	</a>
+</li>
+</ul>
+
+{% for village in villages %}
+<h4>Village '{{ village.name }}'</h4>
+<ul>
+	<li>
+		<a href="{% url smsforum.views.export_village_membership village.pk %}">
+			{% trans "Current Membership" %}
+		</a>
+	</li>
+	<li> 
+		<a href="{% url smsforum.views.export_village_history village.pk %}">
+			{% trans "Membership Activity Log" %}
+		</a>
+	</li>
+</ul>
+{% endfor %}
+
+
+
+</div>
+{% endblock %}

@@ -5,8 +5,16 @@ from django.template.defaultfilters import slugify
 from django.http import HttpResponse
 
 def export(qs, fields=None, format='csv'):
-    model = qs.model
     response = HttpResponse(mimetype='text/csv')
+    if len(qs)==0:
+        response['Content-Disposition'] = 'attachment; filename=empty.csv'
+        return response
+    if hasattr(qs,'model'):
+        # if we received a query set...
+        model = getattr(qs,'model')
+    else:
+        # if we received a regular list [] object, just infer class from instance
+        model = qs[0].__class__
     response['Content-Disposition'] = 'attachment; filename=%s.csv' % slugify(model.__name__)
     writer = UnicodeWriter(response)
     # Write headers to CSV file

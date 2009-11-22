@@ -9,7 +9,7 @@
 {% block content %}
 
 <div class="module">
-<h2>{{ title }} '{{ village.name }}'</h2>
+<h1>{{ title }} '{{ village.name }}'</h1>
     <p/>
     <!-- I know this isn't css-correct. But my stylesheets aren't working =b -->
     {% if status %}<div>{{ status }}</div>{% endif %}
@@ -34,6 +34,12 @@
 	</div>
 
 </div>
+
+{% include 'smsforum/partials/villages.html' %}
+
+{% include 'smsforum/partials/messages.html' %}
+
+{% include 'smsforum/partials/citizens.html' %}
 
 {% endblock %}
 

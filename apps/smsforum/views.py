@@ -66,15 +66,31 @@ def get_outgoing_message_count_to(members):
     outgoing_message_count = OutgoingMessage.objects.filter(identity__in=identities).count()
     return outgoing_message_count
 
-def format_messages_in_context(request, context, messages):
+def format_messages_in_context(request, context, raw_messages):
+    messages = []
+    for msg in raw_messages:
+        msg = annotate_msg(msg)
+        messages.append(msg)
+    if len(messages)>0:
+        context['messages'] = paginated(request, messages, per_page=10, prefix="blast")
+    context['codes'] = Code.objects.filter(set=CodeSet.objects.get(name="TOSTAN_CODE"))
+    return context
+
+def annotate_msg(msg):
+    for tag in msg.messagetag_set.all():
+        if IsFlag(tag): msg.flagged = True
+        elif tag.code.set.name == "TOSTAN_CODE": 
+            msg.code = tag.code
+    notes = msg.messageannotation_set.filter(message=msg)
+    if len(notes) > 0: 
+        msg.note = notes[0].text
+    return msg
+
+def format_messages_in_context_sorted(request, context, messages):
     cmd_messages = []
     blast_messages = []
     for msg in messages:
-        for tag in msg.messagetag_set.all():
-            if IsFlag(tag): msg.flagged = True
-            elif tag.code.set.name == "TOSTAN_CODE": msg.code = tag.code
-        notes = msg.messageannotation_set.filter(message=msg)
-        if len(notes) > 0: msg.note = notes[0].text
+        msg = annotate_msg(msg)
         # are we a command?
         m=CMD_MESSAGE_MATCHER.match(msg.text)
         if m is None: blast_messages.append(msg)
@@ -85,7 +101,6 @@ def format_messages_in_context(request, context, messages):
         context['blast_messages'] = paginated(request, blast_messages, per_page=10, prefix="blast")
     context['codes'] = Code.objects.filter(set=CodeSet.objects.get(name="TOSTAN_CODE"))
     return context
-
 
 # TODO: move this somewhere Tostan-Specifig
 # would declare this as a class but we don't need the extra database table
@@ -117,19 +132,9 @@ def members(request, pk, template="smsforum/members.html"):
     total_incoming_messages = 0
     total_incoming_messages_this_week = 0
     for member in members:
-        connections = ChannelConnection.objects.filter(contact=member)
-        if len(connections) > 0:
-            # we can always click on the user to see a list of all their connections
-            member.phone_number = connections[0].user_identifier
-            last_week = ( datetime.now()-timedelta(weeks=1) )
-            member.message_count = IncomingMessage.objects.filter(identity=member.phone_number).count()
-            member.message_count_this_week = IncomingMessage.objects.filter(identity=member.phone_number,received__gte=last_week).count()
-            total_incoming_messages = total_incoming_messages + member.message_count
-            total_incoming_messages_this_week = total_incoming_messages_this_week + member.message_count_this_week
-            member.received_message_count = OutgoingMessage.objects.filter(identity=member.phone_number).count()
-        log = MembershipLog.objects.filter(contact=member,village=village).order_by('-id')
-        if (log):
-            member.date_joined = log[0].date
+        member = add_message_info(member, village)
+        total_incoming_messages = total_incoming_messages + member.message_count
+        total_incoming_messages_this_week = total_incoming_messages_this_week + member.message_count_this_week
     context['village'] = village
     context['members'] = paginated(request, members)
     context['member_count'] = len(members)
@@ -138,6 +143,19 @@ def members(request, pk, template="smsforum/members.html"):
     messages = IncomingMessage.objects.filter(domains=village).order_by('-received')
     format_messages_in_context(request, context, messages)
     return render_to_response(request, template, context)
+
+def add_message_info(member, village):
+    connections = ChannelConnection.objects.filter(contact=member)
+    if len(connections) > 0:
+        # we can always click on the user to see a list of all their connections
+        member.phone_number = connections[0].user_identifier
+        last_week = ( datetime.now()-timedelta(weeks=1) )
+        member.message_count = IncomingMessage.objects.filter(identity=member.phone_number).count()
+        member.message_count_this_week = IncomingMessage.objects.filter(identity=member.phone_number,received__gte=last_week).count()
+        member.received_message_count = OutgoingMessage.objects.filter(identity=member.phone_number).count()
+    log = MembershipLog.objects.filter(contact=member,village=village).order_by('-id')
+    if (log):
+        member.date_joined = log[0].date
 
 def member(request, pk, template="smsforum/member.html"):
     context = {}
@@ -196,6 +214,15 @@ def village(request, pk, template="smsforum/village.html"):
     context['form'] = VillageForm(instance=village)
     context['title'] = _("EDIT VILLAGE")
     context['village'] = village
+    # this is so we can reuse the 'totals' partial template 
+    # from the 'messages' page
+    context['villages'] = paginated(request, [village])
+    members = village.flatten(klass=Contact)
+    for member in members:
+        member = add_message_info(member, village)
+    context['members'] = paginated(request, members)
+    messages = IncomingMessage.objects.filter(domains=village).order_by('-received')
+    format_messages_in_context(request, context, messages)
     return render_to_response(request, template, context)
     
 @login_required

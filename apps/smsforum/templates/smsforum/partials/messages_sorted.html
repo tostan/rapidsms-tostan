@@ -1,10 +1,11 @@
 {% load i18n %}
 {% load pagination %}
-{% if messages %}
+{% if cmd_messages or blast_messages %}
 <p/>
 
+{% if blast_messages %}
 <div class="module">
-    <h2>{% trans "Messages" %}</h2>
+    <h2>{% trans "Content Messages" %}</h2>
     <form action="" method="POST">
     <table>
         <thead>
@@ -20,7 +21,7 @@
                 <th scope="col">{% trans "Code" %}</th>
             </tr>
         </thead>
-        <tbody>{% if messages.object_list %}{% for message in messages.object_list %}
+        <tbody>{% if blast_messages.object_list %}{% for message in blast_messages.object_list %}
             <tr>
                 <td>{% if message.received %}{{ message.received|date:"D M d H:i" }}{% else %}<span class="na">n/a</span>{% endif %}</td>
                 <td>{% if message.text %}{{ message.text }}{% else %}<span class="na">n/a</span>{% endif %}</td>
@@ -62,7 +63,7 @@
         <tfoot>
             <tr>
                 <td colspan="2">
-                    {% paginator messages %}
+                    {% paginator blast_messages %}
                 </td>
                 <td colspan="3"><span class="right">
                     <input type="submit" value="Save Annotations" />
@@ -73,6 +74,50 @@
     </table>
     </form>
 </div>
+{% endif %}
 
+{% if cmd_messages %}
+<div class="module">
+    <h2>{% trans "Control Messages" %}</h2>
+    <form action="" method="POST">
+    <table>
+        <thead>
+            <tr>
+                <th scope="col">{% trans "Date" %}</th>
+                <th scope="col">{% trans "Message" %}</th>
+                {% if user.is_staff %}
+	                <th scope="col">{% trans "Phone Number" %}</th>
+                {% endif %}
+                <th scope="col">{% trans "Community" %}</th>
+            </tr>
+        </thead>
+        <tbody>{% if cmd_messages.object_list %}{% for message in cmd_messages.object_list %}
+            <tr>
+                <td>{% if message.received %}{{ message.received }}{% else %}<span class="na">n/a</span>{% endif %}</td>
+                <td>{% if message.text %}{{ message.text }}{% else %}<span class="na">n/a</span>{% endif %}</td>
+                {% if user.is_staff %}
+	                <td>{% if message.identity %}{{ message.identity }}{% else %}<span class="na">n/a</span>{% endif %}</td>
+                {% endif %}
+                <td>{% if message.domain.village %}{{ message.domain.village }}{% else %}<span class="na">n/a</span>{% endif %}</td>
+            </tr>{% endfor %}{% else %}
+            <tr class="no-data">
+                <td colspan="2">
+                    {% trans "No messages yet" %}
+                </td>
+            </tr>{% endif %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="2">
+                    {% paginator cmd_messages %}
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+    </form>
+</div>
+
+
+{% endif %}
 <div class="clear-hack"></div>
 {% endif %}

@@ -502,3 +502,5 @@ def index(request, template="smsforum/index.html"):
     context.update( totals(context) )
     return render_to_response(request, template, context)
 
+def access(request, template="smsforum/manage_access.html"):
+    return render_to_response(request, template)

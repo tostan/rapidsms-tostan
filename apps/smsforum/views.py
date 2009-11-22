@@ -179,14 +179,22 @@ def member(request, pk, template="smsforum/member.html"):
     return render_to_response(request, template, context)
 
 @login_required
-def edit_village(request, pk, template="smsforum/edit.html"):
+def edit_village(request, pk, template="smsforum/edit_village.html"):
     context = {}
     village = get_object_or_404(Village, id=pk)
     if request.method == "POST":
         f = VillageForm(request.POST, instance=village)
-        f.save()
+        if not f.is_valid():
+            context['error'] = f.errors
+        else:
+            village = f.save()
+            if village.location is None:
+                village.location = Location(name=village.name, code=village.name)
+            village.location.latitude = f.cleaned_data['latitude']
+            village.location.longitude = f.cleaned_data['longitude']
+            village.location.save()
     context['form'] = VillageForm(instance=village)
-    context['title'] = _("Edit Village")
+    context['title'] = _("EDIT VILLAGE")
     context['village'] = village
     return render_to_response(request, template, context)
     

@@ -20,6 +20,7 @@ class Village(NodeSet):
     name = models.CharField(max_length=255, blank=False, unique=True, \
                                 verbose_name="Village Name")
     location = models.ForeignKey(Location, null=True, blank=True)
+    notes = models.TextField(null=True, blank=True)
     # Security flags recorded, but not yet enforced
     _security = models.PositiveSmallIntegerField(\
         default=__SEC_BLAST_MEMBER_ONLY | __SEC_ADMIN_CMDS_PWD_PROTECTED)

@@ -16,4 +16,5 @@ class VillageAdmin(admin.ModelAdmin):
     fields = ('name', '_children', 'location')
 
 admin.site.register(Village, VillageAdmin)
+admin.site.register(Region)
 admin.site.register(VillageAlias)

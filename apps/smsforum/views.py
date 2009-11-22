@@ -41,7 +41,7 @@ from utilities.export import export
 
 from datetime import datetime, timedelta
 
-def messages(request, template="smsforum/messages.html"):
+def visualize(request, template="smsforum/visualize.html"):
     context = {}
     villages = Village.objects.all()
     for village in villages:
@@ -55,6 +55,58 @@ def messages(request, template="smsforum/messages.html"):
         # reporting outgoing messages is actually quite tricky. see top of this file.
         village.outgoing_message_count = get_outgoing_message_count_to(members)
     context['villages'] = paginated(request, villages)
+    return render_to_response(request, template, context)
+
+def manage(request, template="smsforum/manage.html"):
+    return render_to_response(request, template)
+
+def regions(request, template="smsforum/manage_regions.html"):
+    context = {}
+    # context['orphan_villages'] = Village.objects.filter(_parents=None)
+    
+    # there's gotta be a better way to do this
+    villes = Village.objects.all()
+    orphans = []
+    for v in villes:
+        if v.get_parent_count()==0: 
+            orphans.append(v)
+    if len(orphans)>0:
+        context['orphan_villages'] = orphans
+    
+    regions = Region.objects.all()
+    for region in regions:
+        region.villages = region.get_children(klass=Village)
+        region.count = len(region.villages)
+    context['regions'] = regions
+    return render_to_response(request, template, context)
+
+def citizens(request, template="smsforum/manage_citizens.html"):
+    context = {'contacts': Contacts.objects.all(),
+               'villages': Village.objects.all(), 
+               'regions': Region.objects.all()}
+    if request.method == "POST":
+        if request.POST["village"]:
+            village = Village.objects.get(id=pk)
+            context['contacts'] = village.flatten(klass=Contact)
+        elif request.POST["region"]:
+            region = Region.objects.get(id=pk)
+            context['contacts'] = region.flatten(klass=Contact)
+    return render_to_response(request, template, context)
+
+def messages(request, template="smsforum/manage_messages.html"):
+    context = {'messages': IncomingMessages.objects.all(),
+               'villages': Village.objects.all(), 
+               'regions': Region.objects.all()}
+    if request.method == "POST":
+        if request.POST["village"]:
+            village = Village.objects.get(id=pk)
+            messages = IncomingMessage.objects.filter(domain=village)
+            context['messages'] = messages
+        elif request.POST["region"]:
+            region = Region.objects.get(id=pk)
+            villages = region.get_children(klass=Village)
+            messages = IncomingMessage.objects.filter(domain__in=villages)
+            context['messages'] = messages
     return render_to_response(request, template, context)
 
 def get_outgoing_message_count_to(members):
@@ -196,9 +248,9 @@ def member(request, pk, template="smsforum/member.html"):
     context['member'] = contact
     return render_to_response(request, template, context)
 
-def village(request, pk, template="smsforum/village.html"):
+def community(request, pk, template="smsforum/community.html"):
     context = {}
-    village = get_object_or_404(Village, id=pk)
+    village = get_object_or_404(Community, id=pk)
     if request.method == "POST":
         f = VillageForm(request.POST, instance=village)
         if not f.is_valid():
@@ -224,7 +276,7 @@ def village(request, pk, template="smsforum/village.html"):
     messages = IncomingMessage.objects.filter(domains=village).order_by('-received')
     format_messages_in_context(request, context, messages)
     return render_to_response(request, template, context)
-    
+
 @login_required
 def delete_village(request, pk, template="smsforum/confirm_delete.html"):
     context = {}

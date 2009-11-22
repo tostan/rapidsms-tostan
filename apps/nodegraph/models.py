@@ -89,6 +89,9 @@ class Node(models.Model):
             ret = list(seen) # make a list so indexable, but order not guaranteed
         return ret
 
+    def get_parent_count(self):
+        return self._parents.all().count()
+
     def get_parents(self,klass=None):
         """
         The parent NodeSets this node is a member of.

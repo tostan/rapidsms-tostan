@@ -1,0 +1,30 @@
+{% load i18n %}
+
+<div class="module">
+<h1>{{ title }} '{{ village.name }}'</h1>
+    <p/>
+    <!-- I know this isn't css-correct. But my stylesheets aren't working =b -->
+    {% if status %}<div>{{ status }}</div>{% endif %}
+    {% if error %}<div style="color:red">{{ error }}</div>{% endif %}
+    
+    {% if user.is_staff %}
+	<form action="" method="POST">
+	{{ form }}<p/>
+	<input type="submit" value="Submit" />
+	</form>
+	{% else %}
+	<table><tr><td>
+		Name: </td><td> {{ form.instance.name }}</td></tr><tr><td>
+		Latitude: </td><td>{{ form.instance.location.latitude }}</td></tr><tr><td>
+		Longitude: </td><td>{{ form.instance.location.longitude }}</td></tr><tr><td>
+		Notes: </td><td>{{ form.instance.notes }}</td></tr>
+	</table>
+	{% endif %}
+
+   	<div class="toolbar">
+	   	<a href="/village/delete/{{ village.pk }}" class="delete">{% trans "Delete This Village" %}</a>
+	</div>
+
+</div>
+
+

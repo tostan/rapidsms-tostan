@@ -7,9 +7,14 @@ from contacts.views import edit_contact
 import smsforum.views as views
 
 urlpatterns = patterns('',
+    url(r'^visualize$',                               views.visualize),
+    url(r'^regions$',                                 views.regions, name='region'),
+    url(r'^region/(?P<pk>\d+)$',                      views.community, {'template':"smsforum/community.html"}, name='region', ),
+    url(r'^citizens$',                                views.citizens),
     url(r'^messages$',                                views.messages),
+    url(r'^manage$',                                  views.manage),
     url(r'^villages$',                                views.index),
-    url(r'^village/(?P<pk>\d+)$',                     views.village),
+    url(r'^village/(?P<pk>\d+)$',                     views.community, {'template':"smsforum/village.html"}, name='community', ),
     url(r'^village/add$',                             views.add_village),
     url(r'^village/delete/(?P<pk>\d+)$',              views.delete_village),
     url(r'^village/(?P<pk>\d+)/history$',             views.village_history),

@@ -1,6 +1,17 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4 encoding=utf-8
 
+"""
+
+The difference between community/village/region and location
+is that these models do not necessarily have any link to geography.
+they can be associated with a location, but don't have to be.
+they can also form any arbitrary graph (not just trees)
+and they can pull out unique sets of members (nodes) from any set
+(using 'flatten')
+
+"""
+
 from datetime import datetime
 from django.db import models, transaction
 from apps.locations.models import Location
@@ -8,7 +19,7 @@ from apps.nodegraph.models import NodeSet
 from datetime import datetime
 from apps.contacts.models import Contact
 
-class Village(NodeSet):
+class Community(NodeSet):
     # security masks
     __SEC_BLAST_MEMBER_ONLY = 0x01
     __SEC_BLAST_MODERATED = 0x02
@@ -18,7 +29,7 @@ class Village(NodeSet):
     __SEC_ADMIN_CMDS_PWD_PROTECTED = 0x20
 
     name = models.CharField(max_length=255, blank=False, unique=True, \
-                                verbose_name="Village Name")
+                                verbose_name="Community Name")
     location = models.ForeignKey(Location, null=True, blank=True)
     notes = models.TextField(null=True, blank=True)
     # Security flags recorded, but not yet enforced
@@ -29,24 +40,7 @@ class Village(NodeSet):
 
     def __unicode__(self):
         return unicode(self.name)
-    
-    #################################
-    # NodeSet overrides for logging #
-    #################################
-    @transaction.commit_on_success
-    def add_children(self,*sub_nodes):
-        NodeSet.add_children(self, *sub_nodes)
-        for n in sub_nodes:
-            c=n._downcast(klass=Contact)
-            MembershipLog(village=self, contact=c, action='C').save()
-
-    @transaction.commit_on_success
-    def remove_children(self, *subnodes):
-        NodeSet.remove_children(self,*subnodes)
-        for n in subnodes:
-            c=n._downcast(klass=Contact)
-            MembershipLog(village=self, contact=c, action='D').save()
-    
+        
     ##############
     # properties #
     ##############
@@ -116,6 +110,24 @@ class Village(NodeSet):
     sec_pwd_protect_blast = property(__get_sec_admin_cmds_pwd_protected, \
                                __set_sec_admin_cmds_pwd_protected)
 
+class Village(Community):
+    #################################
+    # NodeSet overrides for logging #
+    #################################
+    @transaction.commit_on_success
+    def add_children(self,*sub_nodes):
+        NodeSet.add_children(self, *sub_nodes)
+        for n in sub_nodes:
+            c=n._downcast(klass=Contact)
+            MembershipLog(village=self, contact=c, action='C').save()
+
+    @transaction.commit_on_success
+    def remove_children(self, *subnodes):
+        NodeSet.remove_children(self,*subnodes)
+        for n in subnodes:
+            c=n._downcast(klass=Contact)
+            MembershipLog(village=self, contact=c, action='D').save()
+
 class VillageAlias(models.Model):
     alias = models.CharField(max_length=255, blank=False)
     village = models.ForeignKey(Village, related_name='aliases')
@@ -123,7 +135,13 @@ class VillageAlias(models.Model):
     # TODO - add a check to make sure we don't create villages that
     # are the same as existing village names. 
 
-class Community(Village):
+class Region(Community):
+    """ If we wanted to be truly generic, we could define 'communities'
+    and 'communitytypes' dynamically, etc. Experience has shown that that
+    level of genericity just leads to pain and poor maintainability for
+    both users of the site and programmers
+    
+    """
     pass
 
 # we don't currently log 'updates'

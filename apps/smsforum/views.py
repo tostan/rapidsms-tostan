@@ -34,6 +34,7 @@ from smsforum.models import *
 from smsforum.utils import *
 from smsforum.forms import *
 from smsforum.app import CMD_MESSAGE_MATCHER
+from contacts.models import Contact
 from logger.models import *
 # from contacts.models import *
 from contacts.forms import GSMContactForm
@@ -81,16 +82,28 @@ def regions(request, template="smsforum/manage_regions.html"):
     return render_to_response(request, template, context)
 
 def citizens(request, template="smsforum/manage_citizens.html"):
-    context = {'contacts': Contacts.objects.all(),
+    context = {'contacts': paginated(request, Contact.objects.all()),
                'villages': Village.objects.all(), 
                'regions': Region.objects.all()}
     if request.method == "POST":
         if request.POST["village"]:
-            village = Village.objects.get(id=pk)
-            context['contacts'] = village.flatten(klass=Contact)
+            print " ID IS " + request.POST["village"]
+            village = Village.objects.get(id=request.POST["village"])
+            context['village_filter'] = village
+            if request.POST["region"]:
+                # region, if specified, should match village
+                region = Region.objects.get(id=request.POST["region"])
+                village_region = village.get_parents(klass=Region)
+                if region not in village_region:
+                    context['error'] = "Village does not match selected region.\n" + \
+                                       "Filtering by village..."
+                else:
+                    context['region_filter'] = region
+            context['contacts'] = paginated(request, village.flatten(klass=Contact))
         elif request.POST["region"]:
-            region = Region.objects.get(id=pk)
-            context['contacts'] = region.flatten(klass=Contact)
+            region = Region.objects.get(id=request.POST["region"])
+            context['region_filter'] = region
+            context['contacts'] = paginated(request, region.flatten(klass=Contact))
     return render_to_response(request, template, context)
 
 def messages(request, template="smsforum/manage_messages.html"):

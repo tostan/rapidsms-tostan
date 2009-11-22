@@ -4,7 +4,15 @@
 <p/>
 
 <div class="module">
-    <h2>{% trans "Messages" %}</h2>
+    <h2>{% trans "Messages" %}
+		{% if village_filter %}
+			{% trans 'for' %} {{village_filter.name}}					
+		{% else %}
+			{% if region_filter %}
+				{% trans 'for' %} {{region_filter.name}}
+			{% endif %}
+		{% endif %}
+    </h2>
     <form action="" method="POST">
     <table>
         <thead>

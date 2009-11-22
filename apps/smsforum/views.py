@@ -85,41 +85,46 @@ def citizens(request, template="smsforum/manage_citizens.html"):
     context = {'contacts': paginated(request, Contact.objects.all()),
                'villages': Village.objects.all(), 
                'regions': Region.objects.all()}
-    if request.method == "POST":
-        if request.POST["village"]:
-            print " ID IS " + request.POST["village"]
-            village = Village.objects.get(id=request.POST["village"])
-            context['village_filter'] = village
-            if request.POST["region"]:
-                # region, if specified, should match village
-                region = Region.objects.get(id=request.POST["region"])
-                village_region = village.get_parents(klass=Region)
-                if region not in village_region:
-                    context['error'] = "Village does not match selected region.\n" + \
-                                       "Filtering by village..."
-                else:
-                    context['region_filter'] = region
-            context['contacts'] = paginated(request, village.flatten(klass=Contact))
-        elif request.POST["region"]:
-            region = Region.objects.get(id=request.POST["region"])
-            context['region_filter'] = region
-            context['contacts'] = paginated(request, region.flatten(klass=Contact))
+    village, region = get_village_and_region(request, context)
+    if village is not None:
+        context['contacts'] = paginated(request, village.flatten(klass=Contact))
+    elif region is not None:
+        context['contacts'] = paginated(request, region.flatten(klass=Contact))
     return render_to_response(request, template, context)
 
+def get_village_and_region(request, context):
+    if request.method != "POST":
+        return None, None
+    if request.POST["village"]:
+        village = Village.objects.get(id=request.POST["village"])
+        context['village_filter'] = village
+        if request.POST["region"]:
+            # region, if specified, should match village
+            region = Region.objects.get(id=request.POST["region"])
+            village_region = village.get_parents(klass=Region)
+            if region not in village_region:
+                context['error'] = "Village does not match selected region.\n" + \
+                                   "Filtering by village '%s'" % village.name
+            else:
+                context['region_filter'] = region
+        return village, None
+    elif request.POST["region"]:
+        region = Region.objects.get(id=request.POST["region"])
+        context['region_filter'] = region
+        return None, region
+    
 def messages(request, template="smsforum/manage_messages.html"):
-    context = {'messages': IncomingMessages.objects.all(),
+    context = {'messages': paginated(request, IncomingMessage.objects.all()),
                'villages': Village.objects.all(), 
                'regions': Region.objects.all()}
-    if request.method == "POST":
-        if request.POST["village"]:
-            village = Village.objects.get(id=pk)
-            messages = IncomingMessage.objects.filter(domain=village)
-            context['messages'] = messages
-        elif request.POST["region"]:
-            region = Region.objects.get(id=pk)
-            villages = region.get_children(klass=Village)
-            messages = IncomingMessage.objects.filter(domain__in=villages)
-            context['messages'] = messages
+    village, region = get_village_and_region(request, context)
+    if village is not None:
+        messages = IncomingMessage.objects.filter(domains=village)
+        context['messages'] = paginated(request, messages)
+    elif region is not None:
+        villages = region.get_children(klass=Village)
+        messages = IncomingMessage.objects.filter(domains__in=villages)
+        context['messages'] = paginated(request, messages)
     return render_to_response(request, template, context)
 
 def get_outgoing_message_count_to(members):

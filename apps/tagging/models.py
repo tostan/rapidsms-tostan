@@ -452,7 +452,6 @@ class Tag(NodeSet):
     rO - Tag inherits from NodeSet so we can support hierarchical tags
     """
     name = models.CharField(_('name'), max_length=50, unique=True, db_index=True)
-    _children = models.ManyToManyField('Tag',related_name='_parents', blank=True)
 
     objects = TagManager()
 

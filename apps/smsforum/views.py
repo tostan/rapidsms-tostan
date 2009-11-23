@@ -141,7 +141,13 @@ def messages(request, template="smsforum/manage_messages.html"):
     elif region is not None:
         villages = region.get_children(klass=Village)
         messages = messages.filter(domains__in=villages)
-    context['categories'] = Tag.objects.all()
+    try:
+        root = Tag.objects.get(name='category_root')
+        context['categories'] = root.flatten_preorder(klass=Tag)
+    except Tag.DoesNotExist:
+        # fail cleanly in case codes are not yet defined in DB
+        pass
+    
     # although we can support arbitrary UIs, the current drop-down ui
     # for tags only shows one tag 'selected' at any given time.
     for m in messages:

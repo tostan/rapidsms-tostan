@@ -208,7 +208,7 @@ class Node(models.Model):
             else:
                 break
         return casted
-
+    
 class NodeSet(Node):
     _children = models.ManyToManyField(Node,related_name='_parents', blank=True)
 
@@ -330,3 +330,19 @@ class NodeSet(Node):
         else:
             return list(leaves)
 
+    def flatten_preorder(self, klass=None):
+        """ given a top-level node, return a preorder traversal list of child 
+        nodes Note: this ONLY works for well-formed non-cyclic tree graphs
+        """
+        ret = []
+        if self is None:
+            return ret
+        for child in self.get_children():
+            if isinstance(child, Node):
+                if klass is not None:
+                    ret.append( child._downcast(klass) )
+                else:
+                    ret.append(child)
+            else:
+                ret.extend( child.flatten_preorder() )
+        return ret

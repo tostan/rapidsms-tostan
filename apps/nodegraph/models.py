@@ -88,6 +88,32 @@ class Node(models.Model):
         else:
             ret = list(seen) # make a list so indexable, but order not guaranteed
         return ret
+    
+    @property
+    def depth(self):
+        return self.get_depth()
+    
+    def get_depth(self):
+        """
+        return the depth of this node in the graph
+        """
+        seen=set()
+
+        def _recurse(node):
+            if node in seen:
+                #if we hit a cycle, return
+                return 0
+            else:
+                seen.add(node)
+            
+            max_depth = 0
+            for a in node.get_parents():
+                max_depth = max(max_depth, _recurse(a)+1 )
+            return max_depth
+
+        max_depth = _recurse(self)
+        seen.remove(self)
+        return max_depth
 
     def get_parent_count(self):
         return self._parents.all().count()

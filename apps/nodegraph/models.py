@@ -210,7 +210,7 @@ class Node(models.Model):
         return casted
 
 class NodeSet(Node):
-    _children = models.ManyToManyField(Node,related_name='_parents')
+    _children = models.ManyToManyField(Node,related_name='_parents', blank=True)
 
     def __unicode__(self):
         """

@@ -13,6 +13,8 @@ from django.db import connection, models
 from django.db.models.query import QuerySet
 from django.utils.translation import ugettext_lazy as _
 
+from nodegraph.models import NodeSet
+
 from tagging import settings
 from tagging.utils import calculate_cloud, get_tag_list, get_queryset_and_model, parse_tag_input
 from tagging.utils import LOGARITHMIC
@@ -443,11 +445,14 @@ class TaggedItemManager(models.Manager):
 # Models #
 ##########
 
-class Tag(models.Model):
+class Tag(NodeSet):
     """
     A tag.
+    
+    rO - Tag inherits from NodeSet so we can support hierarchical tags
     """
     name = models.CharField(_('name'), max_length=50, unique=True, db_index=True)
+    _children = models.ManyToManyField('Tag',related_name='_parents', blank=True)
 
     objects = TagManager()
 

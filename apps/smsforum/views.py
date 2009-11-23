@@ -30,6 +30,7 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
 
 from rapidsms.webui.utils import *
+from tagging.models import Tag
 from smsforum.models import *
 from smsforum.utils import *
 from smsforum.forms import *
@@ -59,6 +60,9 @@ def visualize(request, template="smsforum/visualize.html"):
     return render_to_response(request, template, context)
 
 def manage(request, template="smsforum/manage.html"):
+    return render_to_response(request, template)
+
+def access(request, template="smsforum/manage_access.html"):
     return render_to_response(request, template)
 
 def regions(request, template="smsforum/manage_regions.html"):
@@ -94,11 +98,11 @@ def citizens(request, template="smsforum/manage_citizens.html"):
 
 def get_village_and_region(request, context):
     if request.method != "POST":
-        return None, None
-    if request.POST["village"]:
+        return (None, None)
+    if 'village' in request.POST:
         village = Village.objects.get(id=request.POST["village"])
         context['village_filter'] = village
-        if request.POST["region"]:
+        if 'region' in request.POST:
             # region, if specified, should match village
             region = Region.objects.get(id=request.POST["region"])
             village_region = village.get_parents(klass=Region)
@@ -107,24 +111,45 @@ def get_village_and_region(request, context):
                                    "Filtering by village '%s'" % village.name
             else:
                 context['region_filter'] = region
-        return village, None
-    elif request.POST["region"]:
+        return (village, None)
+    elif 'region' in request.POST:
         region = Region.objects.get(id=request.POST["region"])
         context['region_filter'] = region
-        return None, region
+        return (None, region)
+    return (None, None)
     
 def messages(request, template="smsforum/manage_messages.html"):
-    context = {'messages': paginated(request, IncomingMessage.objects.all()),
-               'villages': Village.objects.all(), 
+    if request.method == 'POST':    
+        # now iterate through all the messages you learned about
+        for id in request.POST.getlist('message'):
+            m = IncomingMessage.objects.get(id=int(id))
+            
+            # get submitted translation + category
+            trans_txt = request.POST['trans_'+str(id)]
+            category_txt = request.POST['category_'+str(id)]
+            
+            # update categories and translation
+            m.tags = category_txt.strip()
+            m.update_translation(trans_txt)
+
+    messages = IncomingMessage.objects.select_related().order_by('-received')
+    context = {'villages': Village.objects.all(), 
                'regions': Region.objects.all()}
-    village, region = get_village_and_region(request, context)
+    (village, region) = get_village_and_region(request, context)
     if village is not None:
-        messages = IncomingMessage.objects.filter(domains=village)
-        context['messages'] = paginated(request, messages)
+        messages = messages.filter(domains=village)
     elif region is not None:
         villages = region.get_children(klass=Village)
-        messages = IncomingMessage.objects.filter(domains__in=villages)
-        context['messages'] = paginated(request, messages)
+        messages = messages.filter(domains__in=villages)
+    context['categories'] = Tag.objects.all()
+    # although we can support arbitrary UIs, the current drop-down ui
+    # for tags only shows one tag 'selected' at any given time.
+    for m in messages:
+        if len(m.tags)>0:
+            m.selected = m.tags[0].name.strip()
+        if m.annotations.count() > 0:
+            m.note = m.annotations.all()[0].text
+    context['messages'] = paginated(request, messages)
     return render_to_response(request, template, context)
 
 def get_outgoing_message_count_to(members):
@@ -171,15 +196,6 @@ def format_messages_in_context_sorted(request, context, messages):
         context['blast_messages'] = paginated(request, blast_messages, per_page=10, prefix="blast")
     context['codes'] = Code.objects.filter(set=CodeSet.objects.get(name="TOSTAN_CODE"))
     return context
-
-# TODO: move this somewhere Tostan-Specifig
-# would declare this as a class but we don't need the extra database table
-def SetFlag(flag):
-    code = Code.objects.get(slug="True")
-    flag.code = code
-
-def IsFlag(tag):
-    return tag.code.set.name == "FLAGGED_CODE"
 
 # would declare this as a class but we don't need the extra database table
 def SetCode(tag, str):
@@ -507,5 +523,12 @@ def index(request, template="smsforum/index.html"):
     context.update( totals(context) )
     return render_to_response(request, template, context)
 
-def access(request, template="smsforum/manage_access.html"):
-    return render_to_response(request, template)
+# TODO: move this somewhere Tostan-Specifig
+# would declare this as a class but we don't need the extra database table
+def SetFlag(flag):
+    code = Code.objects.get(slug="True")
+    flag.code = code
+
+def IsFlag(tag):
+    return tag.code.set.name == "FLAGGED_CODE"
+

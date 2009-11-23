@@ -1,5 +1,6 @@
 {% load i18n %}
 {% load pagination %}
+{% load smsforum %}
 {% if messages %}
 <p/>
 
@@ -23,9 +24,8 @@
 	                <th scope="col">{% trans "Phone Number" %}</th>
                 {% endif %}
                 <th scope="col">{% trans "Community" %}</th>
-                <th scope="col">{% trans "Annotation" %}</th>
-                <th scope="col">{% trans "Flag" %}</th>
-                <th scope="col">{% trans "Code" %}</th>
+                <th scope="col">{% trans "Translation" %}</th>
+                <th scope="col">{% trans "Category" %}</th>
             </tr>
         </thead>
         <tbody>{% if messages.object_list %}{% for message in messages.object_list %}
@@ -38,25 +38,24 @@
                 <td>{% if message.domain.village %}{{ message.domain.village }}{% else %}<span class="na">n/a</span>{% endif %}</td>
                 <td>
                     <input type="hidden" name="message" value="{{message.id}}"/>
-                    <input type="text" name="text_{{message.id}}" value="{% if message.note %}{{ message.note }}{% else %}{% endif %}" maxlength="255" />
+                    <input size="50" type="text" name="trans_{{message.id}}" value="{% if message.note %}{{ message.note }}{% else %}{% endif %}" maxlength="255" />
                 </td>
                 <td>
-                    <input type="checkbox" name="flagged_{{message.id}}" 
-                    {% if message.flagged %}checked{% endif %} />
-                </td>
-                <td>
-                    <select name="code_{{message.id}}" value="{{ code }}" >
-                      {% if message.code %}
-                          <option value='' select="selected">{{ code.slug }}                             
-                      {% else %}
-                          <option value=''>{{ code.name }}                             
+                    <select name="category_{{message.id}}" value="category" >
+                      <!-- Set up default code (empty) -->
+					  <option value='' 
+					  {% if not message.selected %}
+                          selected
                       {% endif %}
-                      {% for code in codes %}
-                          {% ifnotequal message.code.id code.id %}
-                              <option value={{ code.id }}>{{ code.slug }}                           
-                          {% else %}
-                              <option value={{ code.id }} selected="selected">{{ code.slug }}                             
-                          {% endifnotequal %}
+                      >None
+                      {% for category in categories %}
+                      	  <option value={{ category.name }}
+                          {% ifequal message.selected category.name %}
+                              selected
+                          {% endifequal %}>
+                          <!-- add indentation -->
+						  {% for i in category.depth|get_range %}&nbsp;{% endfor %}
+                          {{ category.name }}
                       {% endfor %}
                     </select>
                 </td>
@@ -73,8 +72,10 @@
                     {% paginator messages %}
                 </td>
                 <td colspan="3"><span class="right">
-                    <input type="submit" value="Save Annotations" />
+                    <input type="submit" value="{% trans 'Save Translations' %}" />
                     </span>
+                </td>
+                <td>
                 </td>
             </tr>
         </tfoot>

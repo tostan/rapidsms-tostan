@@ -23,8 +23,7 @@ class MessageBase(models.Model):
     
     class Meta:
         abstract = True
-    
-    
+        
 class IncomingMessage(MessageBase):
     received = models.DateTimeField(auto_now_add=True)
     
@@ -41,6 +40,27 @@ class IncomingMessage(MessageBase):
     
     def __unicode__(self):
         return u"%s %s" % (MessageBase.__unicode__(self), self.received)
+
+    def update_translation(self, text):
+        """ creates a dependency on MessageAnnotation 
+        this code is messy; clean up later
+        """
+        note = None
+        #notes = MessageAnnotation.objects.filter(message=m)
+        notes = self.annotations.all()
+        if len(notes) > 0: 
+            note = notes[0]
+        if note is None:
+            if len(text) > 0:
+                note = MessageAnnotation(message=self)
+                note.text = text
+                note.save()
+        else:
+            if len(text) == 0: 
+                note.delete()
+            else:
+                note.text = text
+                note.save()
 
 class OutgoingMessage(MessageBase):
     sent = models.DateTimeField(auto_now_add=True)
@@ -94,10 +114,9 @@ class MessageAnnotation(models.Model):
     A dynamic way of associating messages with free-form annotations
     without requiring that all messages be annotated
     """
-    message = models.ForeignKey(IncomingMessage)
+    message = models.ForeignKey(IncomingMessage, related_name="annotations")
     text = models.CharField(max_length=255,blank=True)
 
     def __unicode__(self):
-        return u"%(message)s: %(annotation)s" % { 'message':self.message, 'annotation':self.annotation }
-
+        return u"%(message)s: %(annotation)s" % { 'message':self.message, 'annotation':self.text }
 

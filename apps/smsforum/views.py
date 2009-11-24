@@ -350,6 +350,22 @@ def add_village(request, template="smsforum/add.html"):
     context['title'] = _("Add Village")
     return render_to_response(request, template, context)    
 
+def add_region(request, template="smsforum/add.html"):
+    context = {}
+    if request.method == 'POST':
+        form = RegionForm(request.POST)
+        if form.is_valid():
+            v,created =Region.objects.get_or_create( name=form.cleaned_data['name'] )
+            if created:
+                context['status'] = _("Region '%(village_name)s' successfully created" % {'village_name':v.name} )
+            else:
+                context['status'] = _("Region already exists!")
+        else:
+                context['status'] = _("Form invalid")
+    context['form'] = RegionForm()
+    context['title'] = _("Add Region")
+    return render_to_response(request, template, context) 
+
 def totals(context):
     context['village_count'] = Village.objects.all().count()
     context['member_count'] = Contact.objects.all().count()

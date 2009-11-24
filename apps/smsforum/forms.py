@@ -20,6 +20,14 @@ class VillageForm(ModelForm):
             self.fields['latitude'].initial = instance.location.latitude
             self.fields['longitude'].initial = instance.location.longitude
 
+class RegionForm(ModelForm):
+    # we override the default 'name' field so that we can provide a custom label
+    name  = forms.CharField(max_length=255, label='Region Name')
+
+    class Meta:
+        model = Village
+        fields = ('name', 'notes')
+
 """    
 class AddCommunityForm(forms.Form):
     name = forms.CharField(label=u'Name of Community')

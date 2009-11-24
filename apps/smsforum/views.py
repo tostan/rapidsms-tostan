@@ -57,6 +57,7 @@ def visualize(request, template="smsforum/visualize.html"):
         # reporting outgoing messages is actually quite tricky. see top of this file.
         village.outgoing_message_count = get_outgoing_message_count_to(members)
     context['villages'] = paginated(request, villages)
+    context.update( totals(context) )
     return render_to_response(request, template, context)
 
 def manage(request, template="smsforum/manage.html"):

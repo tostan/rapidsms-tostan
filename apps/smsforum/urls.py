@@ -9,7 +9,7 @@ import smsforum.views as views
 urlpatterns = patterns('',
     url(r'^visualize$',                               views.visualize),
     url(r'^regions$',                                 views.regions, name='region'),
-    url(r'^region/(?P<pk>\d+)$',                      views.community, {'template':"smsforum/community.html"}, name='region', ),
+    url(r'^region/(?P<pk>\d+)$',                      views.region, {'template':"smsforum/community.html"}, name='region', ),
     url(r'^citizens$',                                views.citizens),
     url(r'^messages$',                                views.messages),
     url(r'^manage$',                                  views.manage, {'template':"smsforum/manage.html"}),

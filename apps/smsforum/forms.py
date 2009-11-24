@@ -23,7 +23,10 @@ class VillageForm(ModelForm):
 class RegionForm(ModelForm):
     # we override the default 'name' field so that we can provide a custom label
     name  = forms.CharField(max_length=255, label='Region Name')
-
+    communities = forms.ModelMultipleChoiceField(queryset=Village.objects.all(), 
+                                                 label='Communities',
+                                                 required=False)
+    
     class Meta:
         model = Village
         fields = ('name', 'notes')

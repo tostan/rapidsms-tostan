@@ -318,6 +318,26 @@ def community(request, pk, template="smsforum/community.html"):
     add_categories(context)
     return render_to_response(request, template, context)
 
+def region(request, pk, template="smsforum/community.html"):
+    context = {}
+    region = get_object_or_404(Region, id=pk)
+    if request.method == "POST":
+        f = RegionForm(request.POST, instance=region)
+        if not f.is_valid():
+            context['error'] = f.errors
+        else:
+            # TODO - move this logic to forms.py
+            region = f.save()
+            if 'communities' in f.cleaned_data and len(f.cleaned_data['communities'])>0:
+                region.add_children(*f.cleaned_data['communities'])
+            else:
+                region.remove_all_children()
+            region.save()
+    context['form'] = RegionForm(instance=region)
+    context['title'] = _("EDIT REGION")
+    context['village'] = region
+    return render_to_response(request, template, context)
+
 @login_required
 def delete_village(request, pk, template="smsforum/confirm_delete.html"):
     context = {}

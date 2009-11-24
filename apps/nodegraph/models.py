@@ -269,6 +269,9 @@ class NodeSet(Node):
         for n in subnodes:
             self._children.remove(n)
         
+    def remove_all_children(self):
+        self._children.clear()
+        
     def get_children(self, klass=None):
         childs = self._children.all()
         if klass is not None:

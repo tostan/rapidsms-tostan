@@ -1,5 +1,9 @@
 {% extends "layout.html" %}
+{% load i18n %}
 
 {% block subheader %} 
-	manage
+	<a href="{% url smsforum.views.manage %}">
+	<img src="/static/tostan/images/manage.png" height=30 width=30/>
+	</a>
+	{% trans "MANAGE" %}
 {% endblock subheader %}

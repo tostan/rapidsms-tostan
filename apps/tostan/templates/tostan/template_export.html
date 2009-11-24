@@ -1,5 +1,9 @@
 {% extends "layout.html" %}
+{% load i18n %}
 
 {% block subheader %} 
-	export
+	<a href="{% url export %}">
+	<img src="/static/tostan/images/export.png" height=30 width=30/>
+	</a>
+	{% trans "EXPORT" %}
 {% endblock subheader %}

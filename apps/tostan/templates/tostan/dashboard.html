@@ -8,32 +8,41 @@
 
 <h4><i>{% trans "What would you like to do?" %}</i></h4>
 
-<ul>
-<li>
+<table padding='10'><tr>
+<td>
 	<a href="{% url smsforum.views.visualize %}">
+	<img src="/static/tostan/images/visualize.png"/><br/>
 		{% trans "Visualize the messages and the citizens of one or a group of communities" %}
 	</a>
-</li>
-<li>
+</td>
+<td>
 	<a href="{% url 404 %}">
+	<img src="/static/tostan/images/message.png"/><br/>
 		{% trans "Send an SMS message to one or a group of communities" %}
 	</a>
-</li>
-<li>
+</td></tr><tr>
+<td>
 	<a href="{% url export %}">
+	<img src="/static/tostan/images/export.png"/><br/>
 		{% trans "Export data to Excel" %}
 	</a>
-</li>
-<li>
+</td>
+<td>
 	<a href="{% url smsforum.views.manage %}">
+	<img src="/static/tostan/images/manage.png"/><br/>
 		{% trans "Manage communities, citizens, and messages" %}
 	</a>
-</li>
-<li>
-	<a href="{% url help %}">
-		{% trans "SMS Command Reference" %}
-	</a>
-</li>
+</td></tr>
+</table>
 
+<h4>
+<a href="{% url help %}">
+	{% trans "SMS Command Reference" %}
+</a>
+<p>
+<a href="{% url 404 %}">
+	{% trans "Credits and Contacts" %}
+</a>
+</h4>
 </div>
 {% endblock %}

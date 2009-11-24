@@ -1,6 +1,10 @@
 {% extends "layout.html" %}
+{% load i18n %}
 
 {% block subheader %} 
-	visualize
+	<a href="{% url 404 %}">
+	<img src="/static/tostan/images/message.png" height=30 width=30/>
+	</a>
+	{% trans "Visualize" %}
 {% endblock subheader %}
 

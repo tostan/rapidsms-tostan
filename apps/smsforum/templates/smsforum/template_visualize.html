@@ -1,0 +1,9 @@
+{% extends "layout.html" %}
+{% load i18n %}
+
+{% block subheader %}
+	<a href="{% url smsforum.views.visualize %}">
+	<img src="/static/tostan/images/visualize.png" height=30 width=30/>
+	</a>
+	{% trans "VISUALIZE" %}
+{% endblock subheader %}

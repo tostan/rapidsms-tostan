@@ -9,6 +9,7 @@ class TagAdmin(admin.ModelAdmin):
 admin.site.register(TaggedItem)
 admin.site.register(Tag, TagAdmin)
 
-
+# ideally, the admin menu would only show options 
+# for 'children' which are themselves tags. (not sure how to do this yet)
 
 

@@ -338,11 +338,11 @@ class NodeSet(Node):
         if self is None:
             return ret
         for child in self.get_children():
-            if isinstance(child, Node):
-                if klass is not None:
-                    ret.append( child._downcast(klass) )
-                else:
-                    ret.append(child)
+            if klass is not None:
+                ret.append( child._downcast(klass) )
             else:
-                ret.extend( child.flatten_preorder() )
+                ret.append( child )
+            set_ = child.as_set
+            if set_ is not None:
+                ret.extend( set_.flatten_preorder(klass) )
         return ret

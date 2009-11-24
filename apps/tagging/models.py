@@ -462,7 +462,15 @@ class Tag(NodeSet):
 
     def __unicode__(self):
         return self.name
-
+    
+    # the below is just to keep node's 'debug_id' consistent
+    # with tag.name. This is so that on the nodegraph-derived admin
+    # menu, we have some intelligent way of identifying tags.
+    # stackoverflow.com/questions/313054/django-admin-interface-does-not-use-subclasss-unicode
+    def save(self, *args, **kwargs):
+        self.debug_id = self.name
+        super(Tag,self).save(*args, **kwargs)
+        
 class TaggedItem(models.Model):
     """
     Holds the relationship between a tag and the item being tagged.

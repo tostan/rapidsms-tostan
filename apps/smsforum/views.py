@@ -141,13 +141,7 @@ def messages(request, template="smsforum/manage_messages.html"):
     elif region is not None:
         villages = region.get_children(klass=Village)
         messages = messages.filter(domains__in=villages)
-    try:
-        root = Tag.objects.get(name='category_root')
-        context['categories'] = root.flatten_preorder(klass=Tag)
-    except Tag.DoesNotExist:
-        # fail cleanly in case codes are not yet defined in DB
-        pass
-    
+    context = add_categories(context)
     # although we can support arbitrary UIs, the current drop-down ui
     # for tags only shows one tag 'selected' at any given time.
     for m in messages:
@@ -158,6 +152,15 @@ def messages(request, template="smsforum/manage_messages.html"):
     context['messages'] = paginated(request, messages)
     return render_to_response(request, template, context)
 
+def add_categories(context):
+    try:
+        root = Tag.objects.get(name='category_root')
+        context['categories'] = root.flatten_preorder(klass=Tag)
+    except Tag.DoesNotExist:
+        # fail cleanly in case codes are not yet defined in DB
+        pass
+    return context
+    
 def get_outgoing_message_count_to(members):
     """ Return all outgoing messages sent to any of the identities
     associated with a group of contacts
@@ -178,13 +181,10 @@ def format_messages_in_context(request, context, raw_messages):
     return context
 
 def annotate_msg(msg):
-    for tag in msg.messagetag_set.all():
-        if IsFlag(tag): msg.flagged = True
-        elif tag.code.set.name == "TOSTAN_CODE": 
-            msg.code = tag.code
-    notes = msg.messageannotation_set.filter(message=msg)
-    if len(notes) > 0: 
-        msg.note = notes[0].text
+    if hasattr(msg,'messageannotation_set'):
+        notes = msg.messageannotation_set.filter(message=msg)
+        if len(notes) > 0: 
+            msg.note = notes[0].text
     return msg
 
 def format_messages_in_context_sorted(request, context, messages):
@@ -315,6 +315,7 @@ def community(request, pk, template="smsforum/community.html"):
     context['members'] = paginated(request, members)
     messages = IncomingMessage.objects.filter(domains=village).order_by('-received')
     format_messages_in_context(request, context, messages)
+    add_categories(context)
     return render_to_response(request, template, context)
 
 @login_required

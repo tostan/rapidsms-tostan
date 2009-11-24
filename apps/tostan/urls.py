@@ -4,7 +4,9 @@
 from django.conf.urls.defaults import *
 import apps.tostan.views as views
 
-urlpatterns = patterns('',
-    url(r'^$',         views.dashboard),
-    url(r'^export$',   views.export),
+urlpatterns = patterns('django.views.generic.simple',
+    url(r'^$',    'direct_to_template', {'template':"tostan/dashboard.html"}),
+    url(r'^help$',    'direct_to_template', {'template':"tostan/smscommands.html"}, name="help"),
+    url(r'^export$',   views.export, name="export"),
+    url(r'^404$',       'direct_to_template', {'template':"tostan/404.html"}, name="404"),
 )

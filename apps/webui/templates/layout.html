@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 {% load region %}
-
+{% load i18n %}
 {% load webui %}
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
@@ -68,7 +68,7 @@
 
 			<div id="inner">
 				{% block superfooter %}
-					<b><a href="/">Return Home</a></b>
+					<b><a href="/">{% trans 'Back to Home Page' %}</a></b>
 				{% endblock superfooter %}
 			</div>
 			{% block footer %}

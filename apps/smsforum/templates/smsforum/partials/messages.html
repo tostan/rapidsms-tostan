@@ -54,7 +54,12 @@
                               selected
                           {% endifequal %}>
                           <!-- add indentation -->
-						  {% for i in category.depth|get_range %}&nbsp;&nbsp;{% endfor %}
+						  {% for i in category.depth|get_range %}
+						    <!-- we don't indent first-level nodes -->
+  						    {% ifnotequal forloop.counter0 0%}
+						  		&nbsp;&nbsp;
+						  	{% endifnotequal %}
+						  {% endfor %}
                           {{ category.name }}
                       {% endfor %}
                     </select>

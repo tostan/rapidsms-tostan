@@ -76,9 +76,6 @@
 	</table>
 	   	<div class="toolbar">
 		   	<a href="/village/{{ village.id }}/history" class="history">{% trans "View History" %}</a>
-    		{% if user.is_staff %}
-		   		<a href="/village/edit/{{ village.id }}" class="add">{% trans "Edit Village" %}</a>
-			{% endif %}
 		</div>
 </div>
 

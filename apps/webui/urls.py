@@ -5,8 +5,10 @@ from django.conf.urls.defaults import *
 import apps.webui.views as views
 
 urlpatterns = patterns('',
-    url(r'^$',     views.dashboard),
+    # temporary measure until we import magic self-assembling dashboard
+    #url(r'^$',     views.dashboard),
     url(r'^ping$', views.check_availability),
+    url(r'^uptime$', views.success),
     (r'^accounts/login/$', 'django.contrib.auth.views.login', {'template_name': 'webui/login.html'}),
     (r'^accounts/logout/$', 'django.contrib.auth.views.logout', {'template_name': 'webui/loggedout.html'}),
 )

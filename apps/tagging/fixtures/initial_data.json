@@ -1,0 +1,231 @@
+[
+    {
+        "pk": 376, 
+        "model": "tagging.tag", 
+        "fields": {
+            "name": "\"Activit\u00e9s Culturelles\"", 
+            "_children": []
+        }
+    }, 
+    {
+        "pk": 377, 
+        "model": "tagging.tag", 
+        "fields": {
+            "name": "\"Activit\u00e9s des divertissements\"", 
+            "_children": []
+        }
+    }, 
+    {
+        "pk": 373, 
+        "model": "tagging.tag", 
+        "fields": {
+            "name": "\"Activit\u00e9s Scolaires\"", 
+            "_children": []
+        }
+    }, 
+    {
+        "pk": 375, 
+        "model": "tagging.tag", 
+        "fields": {
+            "name": "\"Activit\u00e9s Sportives\"", 
+            "_children": []
+        }
+    }, 
+    {
+        "pk": 394, 
+        "model": "tagging.tag", 
+        "fields": {
+            "name": "\"Alerte  sanitaire\"", 
+            "_children": [
+                389, 
+                390, 
+                391, 
+                392, 
+                393
+            ]
+        }
+    }, 
+    {
+        "pk": 387, 
+        "model": "tagging.tag", 
+        "fields": {
+            "name": "\"Autres\"", 
+            "_children": []
+        }
+    }, 
+    {
+        "pk": 395, 
+        "model": "tagging.tag", 
+        "fields": {
+            "name": "\"Distribution de mat\u00e9riaux\"", 
+            "_children": []
+        }
+    }, 
+    {
+        "pk": 386, 
+        "model": "tagging.tag", 
+        "fields": {
+            "name": "\"Genre- Les Femmes\"", 
+            "_children": []
+        }
+    }, 
+    {
+        "pk": 391, 
+        "model": "tagging.tag", 
+        "fields": {
+            "name": "\"Gravement malade\"", 
+            "_children": []
+        }
+    }, 
+    {
+        "pk": 397, 
+        "model": "tagging.tag", 
+        "fields": {
+            "name": "\"La  Sante\"", 
+            "_children": [
+                388, 
+                394, 
+                395, 
+                396
+            ]
+        }
+    }, 
+    {
+        "pk": 381, 
+        "model": "tagging.tag", 
+        "fields": {
+            "name": "\"Le mariage pr\u00e9coce\"", 
+            "_children": []
+        }
+    }, 
+    {
+        "pk": 379, 
+        "model": "tagging.tag", 
+        "fields": {
+            "name": "\"Les Activit\u00e9s de Jeunesse\"", 
+            "_children": [
+                373, 
+                375, 
+                376, 
+                377, 
+                378
+            ]
+        }
+    }, 
+    {
+        "pk": 380, 
+        "model": "tagging.tag", 
+        "fields": {
+            "name": "\"Malaria, HIV\"", 
+            "_children": []
+        }
+    }, 
+    {
+        "pk": 383, 
+        "model": "tagging.tag", 
+        "fields": {
+            "name": "\"Protection d\u2019enfants\"", 
+            "_children": []
+        }
+    }, 
+    {
+        "pk": 385, 
+        "model": "tagging.tag", 
+        "fields": {
+            "name": "\"Sante de la reproduction\"", 
+            "_children": []
+        }
+    }, 
+    {
+        "pk": 384, 
+        "model": "tagging.tag", 
+        "fields": {
+            "name": "\"Violence Conjugale\"", 
+            "_children": []
+        }
+    }, 
+    {
+        "pk": 392, 
+        "model": "tagging.tag", 
+        "fields": {
+            "name": "Accident", 
+            "_children": []
+        }
+    }, 
+    {
+        "pk": 378, 
+        "model": "tagging.tag", 
+        "fields": {
+            "name": "Autres", 
+            "_children": []
+        }
+    }, 
+    {
+        "pk": 374, 
+        "model": "tagging.tag", 
+        "fields": {
+            "name": "category_root", 
+            "_children": [
+                373, 
+                397
+            ]
+        }
+    }, 
+    {
+        "pk": 389, 
+        "model": "tagging.tag", 
+        "fields": {
+            "name": "Cholera", 
+            "_children": []
+        }
+    }, 
+    {
+        "pk": 393, 
+        "model": "tagging.tag", 
+        "fields": {
+            "name": "D\u00e9c\u00e8s", 
+            "_children": []
+        }
+    }, 
+    {
+        "pk": 382, 
+        "model": "tagging.tag", 
+        "fields": {
+            "name": "Excision", 
+            "_children": []
+        }
+    }, 
+    {
+        "pk": 390, 
+        "model": "tagging.tag", 
+        "fields": {
+            "name": "Paludisme", 
+            "_children": []
+        }
+    }, 
+    {
+        "pk": 388, 
+        "model": "tagging.tag", 
+        "fields": {
+            "name": "Sensibilisation/Pr\u00e9vention", 
+            "_children": [
+                380, 
+                381, 
+                382, 
+                383, 
+                384, 
+                385, 
+                386, 
+                387
+            ]
+        }
+    }, 
+    {
+        "pk": 396, 
+        "model": "tagging.tag", 
+        "fields": {
+            "name": "Vaccination", 
+            "_children": []
+        }
+    }
+]

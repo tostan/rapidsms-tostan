@@ -40,7 +40,7 @@ class Node(models.Model):
     make Node and NodeSet subclasses
 
     """
-    debug_id = models.CharField(max_length=16,blank=True,null=True)
+    debug_id = models.CharField(max_length=50,blank=True,null=True)
     
     def __unicode__(self):
         return u'%s' % self.debug_id

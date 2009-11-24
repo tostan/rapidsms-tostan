@@ -100,10 +100,10 @@ def citizens(request, template="smsforum/manage_citizens.html"):
 def get_village_and_region(request, context):
     if request.method != "POST":
         return (None, None)
-    if 'village' in request.POST:
+    if 'village' in request.POST and len(request.POST["village"])>0:
         village = Village.objects.get(id=request.POST["village"])
         context['village_filter'] = village
-        if 'region' in request.POST:
+        if 'region' in request.POST and len(request.POST["region"])>0:
             # region, if specified, should match village
             region = Region.objects.get(id=request.POST["region"])
             village_region = village.get_parents(klass=Region)
@@ -113,7 +113,7 @@ def get_village_and_region(request, context):
             else:
                 context['region_filter'] = region
         return (village, None)
-    elif 'region' in request.POST:
+    elif 'region' in request.POST and len(request.POST["region"])>0:
         region = Region.objects.get(id=request.POST["region"])
         context['region_filter'] = region
         return (None, region)
@@ -157,6 +157,8 @@ def add_categories(context):
     try:
         root = Tag.objects.get(name='category_root')
         context['categories'] = root.flatten_preorder(klass=Tag)
+        for cat in context['categories']:
+            cat.name = cat.name.strip().strip('"')
     except Tag.DoesNotExist:
         # fail cleanly in case codes are not yet defined in DB
         pass
@@ -299,7 +301,7 @@ def community(request, pk, template="smsforum/community.html"):
         else:
             village = f.save()
             if village.location is None:
-                village.location = Location(name=village.name, code=village.name)
+                village.location = Location.objects.get_or_create(name=village.name, code=village.name)[0]
             village.location.latitude = f.cleaned_data['latitude']
             village.location.longitude = f.cleaned_data['longitude']
             village.location.save()

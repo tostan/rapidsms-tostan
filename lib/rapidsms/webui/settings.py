@@ -32,6 +32,10 @@ USE_I18N = True
 
 LOGIN_REDIRECT_URL = '/'
 
+# hm, Schuyler's local settings.py doesn't seem to work on this rapidsms
+# hack to get login url changed temporarily
+LOGIN_URL='/login/'
+
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
 MEDIA_ROOT = ''

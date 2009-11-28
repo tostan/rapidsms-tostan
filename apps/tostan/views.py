@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from rapidsms.webui.utils import render_to_response
 from rapidsms.webui.utils import paginated
 from smsforum.models import Village

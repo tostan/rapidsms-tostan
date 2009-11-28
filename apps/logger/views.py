@@ -1,8 +1,9 @@
-from rapidsms.webui.utils import render_to_response
-from models import *
 from datetime import datetime, timedelta
-from utilities.export import export
+from django.contrib.auth.decorators import login_required
+from rapidsms.webui.utils import render_to_response
 from rapidsms.webui.utils import paginated
+from utilities.export import export
+from models import *
 
 @login_required
 def index(req, template_name="logger/index.html"):

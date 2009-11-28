@@ -36,7 +36,10 @@
 			</tr>
 		</tfoot>
 	</table>
+	
+	{% if perms.village.can_add %}
 	<div class="toolbar">
 		<a href="/village/add" class="add">{% trans "Add a Village" %}</a>
 	</div>
+	{% endif %}
 </div>

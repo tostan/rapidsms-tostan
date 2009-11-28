@@ -21,8 +21,9 @@ def index(request, template="contacts/index.html"):
     context['contacts'] = paginated(request, contacts)
     return render_to_response(request, template, context)
 
+@login_required
 def csv(request, format='csv'):
-    if request.user.is_authenticated():
+    if request.user.has_perm('contacts.can_view'):
         return export(Contact.objects.all(), \
             ['id','node_ptr','first_seen','given_name','family_name',\
              'common_name','unique_id','location','gender','age_months','_locale'])

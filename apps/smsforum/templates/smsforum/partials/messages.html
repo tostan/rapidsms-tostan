@@ -20,7 +20,7 @@
             <tr>
                 <th scope="col">{% trans "Date" %}</th>
                 <th scope="col">{% trans "Message" %}</th>
-                {% if user.is_staff %}
+                {% if perms.contacts.can_view %}
 	                <th scope="col">{% trans "Phone Number" %}</th>
                 {% endif %}
                 <th scope="col">{% trans "Community" %}</th>
@@ -32,37 +32,53 @@
             <tr>
                 <td>{% if message.received %}{{ message.received|date:"D M d H:i" }}{% else %}<span class="na">n/a</span>{% endif %}</td>
                 <td>{% if message.text %}{{ message.text }}{% else %}<span class="na">n/a</span>{% endif %}</td>
-                {% if user.is_staff %}
+                {% if perms.contacts.can_view %}
 	                <td>{% if message.identity %}{{ message.identity }}{% else %}<span class="na">n/a</span>{% endif %}</td>
                 {% endif %}
-                <td>{% if message.domain.village %}{{ message.domain.village }}{% else %}<span class="na">n/a</span>{% endif %}</td>
                 <td>
-                    <input type="hidden" name="message" value="{{message.id}}"/>
-                    <input size="50" type="text" name="trans_{{message.id}}" value="{% if message.note %}{{ message.note }}{% else %}{% endif %}" maxlength="255" />
+                {% if message.domains %}
+	                {% for domain in message.domains.all %}
+	                	{{ domain.community.village }}
+	                {% endfor %}
+	            {% else %}
+	            	<span class="na">n/a</span>
+                {% endif %}
                 </td>
                 <td>
-                    <select name="category_{{message.id}}" value="category" >
-                      <!-- Set up default code (empty) -->
-					  <option value='' 
-					  {% if not message.selected %}
-                          selected
-                      {% endif %}
-                      >None
-                      {% for category in categories %}
-                      	  <option value={{ category.name }}
-                          {% ifequal message.selected category.name %}
-                              selected
-                          {% endifequal %}>
-                          <!-- add indentation -->
-						  {% for i in category.depth|get_range %}
-						    <!-- we don't indent first-level nodes -->
-  						    {% ifnotequal forloop.counter0 0%}
-						  		&nbsp;&nbsp;
-						  	{% endifnotequal %}
-						  {% endfor %}
-                          {{ category.name }}
-                      {% endfor %}
-                    </select>
+                    {% if perms.messaging.can_edit %}
+	                    <input type="hidden" name="message" value="{{message.id}}"/>
+	                    <input size="50" type="text" name="trans_{{message.id}}" value="{% if message.note %}{{ message.note }}{% else %}{% endif %}" maxlength="255" />
+                    {% else %}
+                    	{{message.note}}
+	                {% endif %}
+                </td>
+                <td>
+                    {% if perms.messaging.can_edit %}
+	                    <select name="category_{{message.id}}" value="category" >
+	                      <!-- Set up default code (empty) -->
+						  <option value='' 
+						  {% if not message.selected %}
+	                          selected
+	                      {% endif %}
+	                      >None
+	                      {% for category in categories %}
+	                      	  <option value={{ category.name }}
+	                          {% ifequal message.selected category.name %}
+	                              selected
+	                          {% endifequal %}>
+	                          <!-- add indentation -->
+							  {% for i in category.depth|get_range %}
+							    <!-- we don't indent first-level nodes -->
+	  						    {% ifnotequal forloop.counter0 0%}
+							  		&nbsp;&nbsp;
+							  	{% endifnotequal %}
+							  {% endfor %}
+	                          {{ category.name }}
+	                      {% endfor %}
+	                    </select>
+	                {% else %}
+	                	{{ message.selected }}
+	                {% endif %}
                 </td>
             </tr>{% endfor %}{% else %}
             <tr class="no-data">
@@ -76,9 +92,13 @@
                 <td colspan="2">
                     {% paginator messages %}
                 </td>
-                <td colspan="3"><span class="right">
-                    <input type="submit" value="{% trans 'Save Translations' %}" />
-                    </span>
+                <td colspan="3">
+                
+                    {% if perms.messaging.can_edit %}
+	                	<span class="right">
+	                    <input type="submit" value="{% trans 'Save Translations' %}" />
+	                    </span>
+	                {% endif %}
                 </td>
                 <td>
                 </td>

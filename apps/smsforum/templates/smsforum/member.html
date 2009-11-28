@@ -6,14 +6,14 @@
 {% block content %}
 
 <div class="module">
-	<h2>{% if user.is_staff %}{{ member.signature }}
+	<h2>{% if perms.contacts.can_view %}{{ member.signature }}
 	{% else %}Member ID is {{ member.pk }}
 	{% endif %}
 	</h2>
 	<table>
 		<thead>
 			<tr>
-                {% if user.is_staff %}
+                {% if perms.contacts.can_view %}
 					<th scope="col">{% trans "Common Name" %}</th>
 					<th scope="col">{% trans "Given Name" %}</th>
 					<th scope="col">{% trans "Family Name" %}</th>
@@ -33,7 +33,7 @@
 		<tbody>
 			<tr>
                 <!--  TODO: COME BACK AND FIX THIS -->
-                {% if user.is_staff %}
+                {% if perms.contacts.can_view %}
 	                <td><a href="/member/edit/{{ member.pk }}"{% if member.common_name %}>{{ member.common_name }}{% else %} class="unknown">Unknown{% endif %}</a></td>
 					<td>{% if member.given_name %}{{ member.given_name }}{% else %}<span class="na">n/a</span>{% endif %}</td>
 					<td>{% if member.family_name %}{{ member.family_name }}{% else %}<span class="na">n/a</span>{% endif %}</td>

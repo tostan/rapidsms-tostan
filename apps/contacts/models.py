@@ -102,8 +102,13 @@ class Contact(Node):
     It is not required but useful for storing things that a national id (e.g. SocSec number)
 
     """
-
-    # permission masks
+    # define permissions for web users
+    class Meta:
+        permissions = (
+            ("can_view", "Can view"),
+        )
+        
+    # permission masks for sms users
     __PERM_RECEIVE=0x01
     __PERM_SEND=0x02
     __PERM_ADMIN=0x04

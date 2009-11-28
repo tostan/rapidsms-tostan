@@ -33,8 +33,13 @@
 {% endfor %}
 {% endif %}
 
-<a href="/village/add">Add a community</a><br/>
-<a href="/region/add">Add a region</a><br/>
+{% if perms.village.can_add %}
+	<a href="/village/add">Add a community</a><br/>
+{% endif %}
+
+{% if perms.region.can_add %}
+	<a href="/region/add">Add a region</a><br/>
+{% endif %}
 
 </div>
 

@@ -15,7 +15,7 @@
 		<thead>
 			<tr>
 				<th scope="col">{% trans "ID" %}</th>
-                {% if user.is_staff %}
+                {% if perms.contacts.can_view %}
 					<th scope="col">{% trans "Common Name" %}</th>
 					<th scope="col">{% trans "Given Name" %}</th>
 					<th scope="col">{% trans "Family Name" %}</th>
@@ -28,7 +28,7 @@
 		<tbody>{% if contacts.object_list %}{% for contact in contacts.object_list %}
 			<tr>
 				<td>{{ contact.pk }}</td>
-                {% if user.is_staff %}
+                {% if perms.contacts.can_view %}
 	                <td><a href="/contact/edit/{{ contact.pk }}"{% if contact.common_name %}>{{ contact.common_name }}{% else %} class="unknown">Unknown{% endif %}</a></td>
 					<td>{% if contact.given_name %}{{ contact.given_name }}{% else %}<span class="na">n/a</span>{% endif %}</td>
 					<td>{% if contact.family_name %}{{ contact.family_name }}{% else %}<span class="na">n/a</span>{% endif %}</td>
@@ -38,7 +38,7 @@
                 <td>{% if contact.age %}{{ contact.age }}{% else %}<span class="na">n/a</span>{% endif %}</td>
 			</tr>{% endfor %}
             <tr>
-                {% if user.is_staff %}
+                {% if perms.contacts.can_view %}
 	                <td colspan="8">
 	            {% else %}
     	            <td colspan="5">
@@ -50,7 +50,7 @@
             </tr>
 			{% else %}
 			<tr class="no-data">
-                {% if user.is_staff %}
+                {% if perms.contacts.can_view %}
 	                <td colspan="8">
 	            {% else %}
     	            <td colspan="5">
@@ -64,7 +64,7 @@
 		</tbody>
 		<tfoot>
 			<tr>
-                {% if user.is_staff %}
+                {% if perms.contacts.can_view %}
 	                <td colspan="8">
 	            {% else %}
     	            <td colspan="5">

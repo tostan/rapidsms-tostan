@@ -19,15 +19,21 @@ def index(req, template_name="logger/index.html"):
     return render_to_response(req, template_name, context )
 
 @login_required
-def csv_in(req, format='csv'):
+def csv_in(request, format='csv'):
     context = {}
-    if req.user.is_authenticated():
+    # HACK: creates a dependency on contacts
+    # TODO - add a check for contacts app activated and fix
+    if request.user.has_perm('contacts.can_view'):
+    #if request.user.is_authenticated():
         return export(IncomingMessage.objects.all())
-    return export(IncomingMessage.objects.all(), ['id','text','backend','domain','received'])
+    return export(IncomingMessage.objects.all(), ['id','text','backend','domains','received'])
     
 @login_required
-def csv_out(req, format='csv'):
+def csv_out(request, format='csv'):
     context = {}
-    if req.user.is_authenticated():
+    # HACK: creates a dependency on contacts
+    # TODO - add a check for contacts app activated and fix
+    if request.user.has_perm('contacts.can_view'):
+    #if request.user.is_authenticated():
         return export(OutgoingMessage.objects.all())    
-    return export(OutgoingMessage.objects.all(), ['id','text','backend','domain','sent'])
+    return export(OutgoingMessage.objects.all(), ['id','text','backend','domains','sent'])

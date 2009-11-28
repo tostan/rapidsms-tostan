@@ -6,7 +6,7 @@
 	<table>
 		<thead>
 			<tr>
-                {% if user.is_staff %}
+                {% if perms.contacts.can_view %}
 					<th scope="col">{% trans "Common Name" %}</th>
 					<th scope="col">{% trans "Given Name" %}</th>
 					<th scope="col">{% trans "Family Name" %}</th>
@@ -23,7 +23,7 @@
 		</thead>
 		<tbody>{% if members.object_list %}{% for member in members.object_list %}
 			<tr>
-                {% if user.is_staff %}
+                {% if perms.contacts.can_view %}
 	                <td><a href="/member/{{ member.pk }}"{% if member.common_name %}>{{ member.common_name }}{% else %} class="unknown">Unknown{% endif %}</a></td>
 					<td>{% if member.given_name %}{{ member.given_name }}{% else %}<span class="na">n/a</span>{% endif %}</td>
 					<td>{% if member.family_name %}{{ member.family_name }}{% else %}<span class="na">n/a</span>{% endif %}</td>
@@ -38,33 +38,37 @@
                 <td>{% if member.date_joined %}{{ member.date_joined|date:"D M d H:i" }}{% else %}<span class="na">n/a</span>{% endif %}</td>
 			</tr>{% endfor %}
             <tr>
-                {% if user.is_staff %}
+                {% if perms.contacts.can_view %}
 	                <td colspan="9">
 	            {% else %}
     	            <td colspan="6">
 				{% endif %}
+                {% if perms.contacts.can_add %}
 	                    <a href="/village/{{village.id}}/member/add" class="add">
 	                        {% trans "Add a Member" %}
 	                    </a>
+				{% endif %}
                 </td>
             </tr>
 			{% else %}
 			<tr class="no-data">
-                {% if user.is_staff %}
+                {% if perms.contacts.can_view %}
 	                <td colspan="9">
 	            {% else %}
     	            <td colspan="6">
 				{% endif %}
 					{% trans "No members yet" %}
+	                {% if perms.village.can_add %}
 					<a href="/village/{{village.id}}/member/add" class="add">
 						{% trans "Add a Member" %}
 					</a>
+	                {% endif %}
 				</td>
 			</tr>{% endif %}
 		</tbody>
 		<tfoot>
 			<tr>
-                {% if user.is_staff %}
+                {% if perms.contacts.can_view %}
 	                <td colspan="9">
 	            {% else %}
     	            <td colspan="6">

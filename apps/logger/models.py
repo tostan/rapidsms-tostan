@@ -23,7 +23,11 @@ class MessageBase(models.Model):
     
     class Meta:
         abstract = True
-        
+        # define permissions for web users
+        permissions = (
+            ("can_view", "Can view"),
+        )
+
 class IncomingMessage(MessageBase):
     received = models.DateTimeField(auto_now_add=True)
     

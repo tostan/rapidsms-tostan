@@ -3,6 +3,7 @@ import cStringIO
 import codecs
 from django.template.defaultfilters import slugify
 from django.http import HttpResponse
+from django.db.models import Manager
 
 def export(qs, fields=None, format='csv'):
     response = HttpResponse(mimetype='text/csv')
@@ -31,12 +32,17 @@ def export(qs, fields=None, format='csv'):
         for field in headers:
             if field in headers:
                 val = getattr(obj, field)
-                if callable(val):
-                    val = val()
-                if hasattr(obj, "get_" + field + "_display"):
-                    val2 = getattr(obj, "get_" + field + "_display")
-                    if callable(val2):
-                        val = val2()
+                if isinstance(val,Manager):
+                    # support ManyToMany relations here
+                    vals = val.all()
+                    val = ','.join([str(v) for v in vals])
+                else:
+                    if callable(val):
+                        val = val()
+                    if hasattr(obj, "get_" + field + "_display"):
+                        val2 = getattr(obj, "get_" + field + "_display")
+                        if callable(val2):
+                            val = val2()
                 row.append(val)
         writer.writerow(row)
     # Return CSV file to browser as download

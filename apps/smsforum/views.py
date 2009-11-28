@@ -166,7 +166,7 @@ def add_categories(context):
         for cat in context['categories']:
             cat.name = cat.name.strip().strip('"')
     except Tag.DoesNotExist:
-        # fail cleanly in case codes are not yet defined in DB
+        # fail cleanly in case categories are not yet defined in DB
         pass
     return context
     
@@ -186,7 +186,6 @@ def format_messages_in_context(request, context, raw_messages):
         messages.append(msg)
     if len(messages)>0:
         context['messages'] = paginated(request, messages, per_page=10, prefix="blast")
-    context['codes'] = Code.objects.filter(set=CodeSet.objects.get(name="TOSTAN_CODE"))
     return context
 
 def annotate_msg(msg):
@@ -209,7 +208,6 @@ def format_messages_in_context_sorted(request, context, messages):
         context['cmd_messages'] = paginated(request, cmd_messages, per_page=5, prefix="cmd")
     if len(blast_messages)>0:
         context['blast_messages'] = paginated(request, blast_messages, per_page=10, prefix="blast")
-    context['codes'] = Code.objects.filter(set=CodeSet.objects.get(name="TOSTAN_CODE"))
     return context
 
 # would declare this as a class but we don't need the extra database table
@@ -415,18 +413,18 @@ def totals(context):
 def export_village_history(request, pk, format='csv'):
     village = Village.objects.get(id=pk)
     history = MembershipLog.objects.filter(village=village)
-    if request.user.is_authenticated():
+    if request.user.has_perm('contacts.can_view'):
         return export(history, ['id','date','contact','action'])
     return export(history, ['id','date','action'])
 
 def export_village_membership(request, pk, format='csv'):
     village = Village.objects.get(id=pk)
     members = village.flatten(klass=Contact)
-    if request.user.is_authenticated():
+    if request.user.has_perm('contacts.can_view'):
         return export(members, ['first_seen', 'given_name', 'family_name', 
                                 'common_name', 'unique_id', 'gender', 
                                 'age_months', '_locale'])
-    return export(members, ['first_seen', 'unique_id', 'gender', 
+    return export(members, ['first_seen', 'gender', 
                             'age_months', '_locale'])
 
 @login_required

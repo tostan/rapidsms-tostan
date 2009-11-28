@@ -10,8 +10,9 @@
     <thead>
         <tr>
             <th>Date</th>
-            <!-- This is a security feature. DO NOT propagate to rapidsms core. -->
-            {% if user.is_staff %}
+            <!-- HACK: creates a depenedency on contacts. 
+            TODO - add a check for contacts app installed -->
+            {% if perms.contacts.can_view %}
 	            <th>From</th>
      		{% endif %}
             <th>Backend</th>
@@ -23,7 +24,9 @@
         {% for message in messages.object_list %}
             <tr>
                 <td>{{message.date|date:"d-M-Y H:m:s"}}</td>
-	            {% if user.is_staff %}
+	            <!-- HACK: creates a depenedency on contacts. 
+	            TODO - add a check for contacts app installed -->
+	            {% if perms.contacts.can_view %}
 	                <td>{{message.identity}}</td>
 	     		{% endif %}
                 <td>{{message.backend}}</td>

@@ -43,6 +43,7 @@ from utilities.export import export
 
 from datetime import datetime, timedelta
 
+@login_required
 def visualize(request, template="smsforum/visualize.html"):
     context = {}
     villages = Village.objects.all()
@@ -60,12 +61,15 @@ def visualize(request, template="smsforum/visualize.html"):
     context.update( totals(context) )
     return render_to_response(request, template, context)
 
+@login_required
 def manage(request, template="smsforum/manage.html"):
     return render_to_response(request, template)
 
+@login_required
 def access(request, template="smsforum/manage_access.html"):
     return render_to_response(request, template)
 
+@login_required
 def regions(request, template="smsforum/manage_regions.html"):
     context = {}
     # context['orphan_villages'] = Village.objects.filter(_parents=None)
@@ -86,6 +90,7 @@ def regions(request, template="smsforum/manage_regions.html"):
     context['regions'] = regions
     return render_to_response(request, template, context)
 
+@login_required
 def citizens(request, template="smsforum/manage_citizens.html"):
     context = {'contacts': paginated(request, Contact.objects.all()),
                'villages': Village.objects.all(), 
@@ -119,6 +124,7 @@ def get_village_and_region(request, context):
         return (None, region)
     return (None, None)
     
+@login_required
 def messages(request, template="smsforum/manage_messages.html"):
     if request.method == 'POST':    
         # now iterate through all the messages you learned about
@@ -212,6 +218,7 @@ def SetCode(tag, str):
     tag.code = code
     return tag
 
+@login_required
 def village_history(request, pk, template="smsforum/history.html"):
     context = {}
     village = Village.objects.get(id=pk)
@@ -220,6 +227,7 @@ def village_history(request, pk, template="smsforum/history.html"):
     context['history'] = paginated(request, history)
     return render_to_response(request, template, context)
 
+@login_required
 def members(request, pk, template="smsforum/members.html"):
     context = {}
     village = Village.objects.get(id=pk)
@@ -252,6 +260,7 @@ def add_message_info(member, village):
     if (log):
         member.date_joined = log[0].date
 
+@login_required
 def member(request, pk, template="smsforum/member.html"):
     context = {}
     contact = Contact.objects.get(id=pk)
@@ -291,6 +300,7 @@ def member(request, pk, template="smsforum/member.html"):
     context['member'] = contact
     return render_to_response(request, template, context)
 
+@login_required
 def community(request, pk, template="smsforum/community.html"):
     context = {}
     village = get_object_or_404(Community, id=pk)
@@ -321,6 +331,7 @@ def community(request, pk, template="smsforum/community.html"):
     add_categories(context)
     return render_to_response(request, template, context)
 
+@login_required
 def region(request, pk, template="smsforum/community.html"):
     context = {}
     region = get_object_or_404(Region, id=pk)
@@ -358,6 +369,7 @@ def delete_village(request, pk, template="smsforum/confirm_delete.html"):
     context['village'] = village
     return render_to_response(request, template, context)
 
+@login_required
 def add_village(request, template="smsforum/add.html"):
     context = {}
     if request.method == 'POST':
@@ -374,6 +386,7 @@ def add_village(request, template="smsforum/add.html"):
     context['title'] = _("Add Village")
     return render_to_response(request, template, context)    
 
+@login_required
 def add_region(request, template="smsforum/add.html"):
     context = {}
     if request.method == 'POST':
@@ -416,6 +429,7 @@ def export_village_membership(request, pk, format='csv'):
     return export(members, ['first_seen', 'unique_id', 'gender', 
                             'age_months', '_locale'])
 
+@login_required
 def add_member(request, village_id=0, member_id=0, template="contacts/phone_number.html"):
     """ adding a member to a village involves either
     1. creating a new contact and adding that new contact to the village, or
@@ -496,6 +510,7 @@ def edit_member(request, pk, template="contacts/edit.html"):
     context['contact'] = contact
     return render_to_response(request, template, context)
 
+@login_required
 def index(request, template="smsforum/index.html"):
     context = {}
     if request.method == 'POST':    

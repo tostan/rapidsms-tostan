@@ -10,6 +10,7 @@ from apps.contacts.models import Contact
 from apps.contacts.forms import *
 from utilities.export import export
 
+@login_required
 def index(request, template="contacts/index.html"):
     context = {}
     contacts = Contact.objects.all()
@@ -61,7 +62,7 @@ def edit_contact(request, pk, template="contacts/edit.html"):
     context['contact'] = contact
     return render_to_response(request, template, context)
 
-@login_required()
+@login_required
 def delete_contact(request, pk, template='contacts/confirm_delete.html'):
     context = {}
     contact = get_object_or_404(Contact, id=pk)    

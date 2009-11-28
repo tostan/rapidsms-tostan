@@ -4,8 +4,8 @@ from datetime import datetime, timedelta
 from utilities.export import export
 from rapidsms.webui.utils import paginated
 
-def index(req):
-    template_name="logger/index.html"
+@login_required
+def index(req, template_name="logger/index.html"):
     incoming = IncomingMessage.objects.order_by('received')
     outgoing = OutgoingMessage.objects.order_by('sent')
     all = []
@@ -17,12 +17,14 @@ def index(req):
     context['messages'] = paginated(req, all, per_page=50)
     return render_to_response(req, template_name, context )
 
+@login_required
 def csv_in(req, format='csv'):
     context = {}
     if req.user.is_authenticated():
         return export(IncomingMessage.objects.all())
     return export(IncomingMessage.objects.all(), ['id','text','backend','domain','received'])
     
+@login_required
 def csv_out(req, format='csv'):
     context = {}
     if req.user.is_authenticated():

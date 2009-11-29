@@ -138,7 +138,8 @@ def messages(request, template="smsforum/manage_messages.html"):
             # update categories and translation
             m.tags = category_txt.strip()
             m.update_translation(trans_txt)
-
+    if 'next' in request.GET:
+        return HttpResponseRedirect(request.GET['next'])
     messages = IncomingMessage.objects.select_related().order_by('-received')
     context = {'villages': Village.objects.all(), 
                'regions': Region.objects.all()}
@@ -193,6 +194,10 @@ def annotate_msg(msg):
         notes = msg.messageannotation_set.filter(message=msg)
         if len(notes) > 0: 
             msg.note = notes[0].text
+    if len(msg.tags)>0:
+        msg.selected = msg.tags[0].name.strip()
+    if msg.annotations.count() > 0:
+        msg.note = msg.annotations.all()[0].text
     return msg
 
 def format_messages_in_context_sorted(request, context, messages):

@@ -14,7 +14,9 @@
 			{% endif %}
 		{% endif %}
     </h2>
-    <form action="" method="POST">
+    <!-- if messages is a partial, redirect to 'messages' view to save translations
+    and then return to this (presumably 'village') view -->
+    <form action="/messages{% if village %}?next=/village/{{village.pk}}{% endif %}" method="POST">
     <table>
         <thead>
             <tr>

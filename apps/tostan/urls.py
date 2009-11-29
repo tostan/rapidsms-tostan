@@ -8,7 +8,7 @@ import apps.tostan.views as views
 
 urlpatterns = patterns('',
     url(r'^$',         login_required(direct_to_template), 
-                       {'template':"tostan/dashboard.html"}),
+                       {'template':"tostan/dashboard.html"}, name="dashboard"),
     url(r'^help$',     login_required(direct_to_template), 
                        {'template':"tostan/smscommands.html"}, name="help"),
     url(r'^export$',   views.export, name="export"),

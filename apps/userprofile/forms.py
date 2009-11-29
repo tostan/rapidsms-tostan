@@ -1,6 +1,7 @@
 from django import forms
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.exceptions import ImproperlyConfigured
+from django.core.exceptions import MultipleObjectsReturned
 from django.db import models
 from django.utils.translation import ugettext as _
 from django.conf import settings
@@ -130,6 +131,8 @@ class RegistrationForm(forms.Form):
 
         try:
             User.objects.get(email__iexact=email)
+            raise forms.ValidationError(_("That e-mail is already used."))
+        except MultipleObjectsReturned:
             raise forms.ValidationError(_("That e-mail is already used."))
         except User.DoesNotExist:
             try:

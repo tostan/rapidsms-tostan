@@ -16,10 +16,12 @@
 	</a>
 </td>
 <td>
+	{% if perms.contacts.change_contact %}
 	<a href="{% url 404 %}">
 	<img src="/static/tostan/images/message.png"/><br/>
 		{% trans "Send an SMS message to one or a group of communities" %}
 	</a>
+	{% endif %}
 </td></tr><tr>
 <td>
 	<a href="{% url export %}">
@@ -28,10 +30,12 @@
 	</a>
 </td>
 <td>
+	{% if perms.smsforum.add_community or perms.smsforum.change_community or perms.smsforum.delete_community or perms.tagging.add_tag or perms.tagging.change_tag or perms.tagging.delete_tag %}
 	<a href="{% url smsforum.views.manage %}">
 	<img src="/static/tostan/images/manage.png"/><br/>
 		{% trans "Manage communities, citizens, and messages" %}
 	</a>
+	{% endif %}
 </td></tr>
 </table>
 

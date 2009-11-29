@@ -33,11 +33,11 @@
 {% endfor %}
 {% endif %}
 
-{% if perms.village.can_add %}
+{% if perms.smsforum.add_village %}
 	<a href="/village/add">Add a community</a><br/>
 {% endif %}
 
-{% if perms.region.can_add %}
+{% if perms.smsforum.add_region %}
 	<a href="/region/add">Add a region</a><br/>
 {% endif %}
 

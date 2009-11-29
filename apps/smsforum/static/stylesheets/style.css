@@ -1,3 +1,11 @@
+span.template-header {
+	font-weight: bold;
+	display: block;
+	padding-bottom: 0;
+	margin-bottom: 0;
+	position: relative;
+}
+
 .right {
         float:right; 
         color: red;
@@ -6,3 +14,4 @@
 .error {
         color: red;
  }
+ 

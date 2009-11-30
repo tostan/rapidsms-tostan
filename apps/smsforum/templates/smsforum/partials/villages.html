@@ -12,7 +12,9 @@
                 <th scope="col">{% trans "Messages Sent This Week" %}</th>
 			</tr>
 		</thead>
-		<tbody>{% if villages.object_list %}{% for village in villages.object_list %}
+		<tbody>
+		{% if villages_paginated.object_list %}
+			{% for village in villages_paginated.object_list %}
 			<tr>
 				<td><a href="/village/{{ village.pk }}"{% if village.name %}>{{ village.name }}{% else %} class="unknown">Unknown{% endif %}</a></td>
                 <td>{% if village.member_count %}{{ village.member_count }}{% else %}<span class="na">n/a</span>{% endif %}</td>
@@ -31,7 +33,7 @@
 		<tfoot>
 			<tr>
 				<td colspan="4">
-					{% paginator villages %}
+					{% paginator villages_paginated %}
 				</td>
 			</tr>
 		</tfoot>

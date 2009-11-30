@@ -46,7 +46,12 @@ from datetime import datetime, timedelta
 @login_required
 def visualize(request, template="smsforum/visualize.html"):
     context = {}
-    villages = Village.objects.all()
+    villages = Village.objects.all().order_by('name')
+    v_filter, r_filter = get_village_and_region(request, context)
+    if v_filter is not None:
+        villages = [v_filter]
+    elif r_filter is not None:
+        villages = r_filter.get_children(klass=Village)
     for village in villages:
         # once this site bears more load, we can replace flatten() with village.subnodes
         # and stop reporting num_messages
@@ -57,7 +62,9 @@ def visualize(request, template="smsforum/visualize.html"):
         village.incoming_message_this_week_count = IncomingMessage.objects.filter(domains=village,received__gte=last_week).count()
         # reporting outgoing messages is actually quite tricky. see top of this file.
         village.outgoing_message_count = get_outgoing_message_count_to(members)
-    context['villages'] = paginated(request, villages)
+    context['villages'] = Village.objects.all().order_by('name')
+    context['regions'] = Region.objects.all().order_by('name')
+    context['villages_paginated'] = paginated(request, villages)
     context.update( totals(context) )
     return render_to_response(request, template, context)
 
@@ -75,7 +82,7 @@ def regions(request, template="smsforum/manage_regions.html"):
     # context['orphan_villages'] = Village.objects.filter(_parents=None)
     
     # there's gotta be a better way to do this
-    villes = Village.objects.all()
+    villes = Village.objects.all().order_by('name')
     orphans = []
     for v in villes:
         if v.get_parent_count()==0: 
@@ -83,7 +90,7 @@ def regions(request, template="smsforum/manage_regions.html"):
     if len(orphans)>0:
         context['orphan_villages'] = orphans
     
-    regions = Region.objects.all()
+    regions = Region.objects.all().order_by('name')
     for region in regions:
         region.villages = region.get_children(klass=Village)
         region.count = len(region.villages)
@@ -93,8 +100,8 @@ def regions(request, template="smsforum/manage_regions.html"):
 @login_required
 def citizens(request, template="smsforum/manage_citizens.html"):
     context = {'contacts': paginated(request, Contact.objects.all()),
-               'villages': Village.objects.all(), 
-               'regions': Region.objects.all()}
+               'villages': Village.objects.all().order_by('name'), 
+               'regions': Region.objects.all().order_by('name')}
     village, region = get_village_and_region(request, context)
     if village is not None:
         context['contacts'] = paginated(request, village.flatten(klass=Contact))
@@ -141,8 +148,8 @@ def messages(request, template="smsforum/manage_messages.html"):
     if 'next' in request.GET:
         return HttpResponseRedirect(request.GET['next'])
     messages = IncomingMessage.objects.select_related().order_by('-received')
-    context = {'villages': Village.objects.all(), 
-               'regions': Region.objects.all()}
+    context = {'villages': Village.objects.all().order_by('name'), 
+               'regions': Region.objects.all().order_by('name')}
     (village, region) = get_village_and_region(request, context)
     if village is not None:
         messages = messages.filter(domains=village)
@@ -175,8 +182,8 @@ def get_outgoing_message_count_to(members):
     """ Return all outgoing messages sent to any of the identities
     associated with a group of contacts
     """
-    conns = ChannelConnection.objects.filter(contact__in=members)
-    identities = conns.values_list('user_identifier', flat=True)
+    conns = PersistantConnection.objects.filter(reporter__in=[m.reporter for m in members])
+    identities = conns.values_list('identity', flat=True)
     outgoing_message_count = OutgoingMessage.objects.filter(identity__in=identities).count()
     return outgoing_message_count
 
@@ -573,7 +580,7 @@ def index(request, template="smsforum/index.html"):
                 else:
                     note.text = note_txt
                     note.save()                
-    villages = Village.objects.all()
+    villages = Village.objects.all().order_by('name')
     for village in villages:
         # once this site bears more load, we can replace flatten() with village.subnodes
         # and stop reporting num_messages

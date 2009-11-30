@@ -2,6 +2,9 @@
 
 <div class="module">
 
+<!-- not css-correct. fix later. -->
+{% if error %}<div style="color:red">{{ error }}</div>{% endif %}
+
 <form name="filter" method="POST">
 	<select name="region">
 		<option value="">{% trans 'Filter by Region' %}</option>
@@ -23,7 +26,7 @@
 			>{{village.name}}</option>
 		{% endfor %}
 	</select>
-    <input type="submit" value="Filter Contacts" />
+    <input type="submit" value="Filter" />
 </form>
 
 </div>

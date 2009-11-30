@@ -7,6 +7,7 @@ import logging
 from datetime import datetime
 from django.db import models
 from django.core.urlresolvers import reverse
+from rapidsms.connection import Connection
 from rapidsms.webui.managers import *
 from patterns.models import Pattern
 from locations.models import *
@@ -93,12 +94,12 @@ class Reporter(models.Model):
     #   chichewa = ny
     #   klingon  = tlh
     #
-    language = models.CharField(max_length=10, blank=True)
+    language = models.CharField(max_length=10, null=True, blank=True)
 	
     # although it's impossible to enforce, if a user registers
     # themself (via the app.py backend), this flag should be set
     # indicate that they probably shouldn't be trusted
-    registered_self = models.BooleanField()
+    registered_self = models.BooleanField(default=True)
 	
 	
     class Meta:
@@ -280,6 +281,20 @@ class Reporter(models.Model):
     def send_message(self, router, msg):
         be = router.get_backend(self.connection.backend.slug)
         be.message(self.connection.identity, msg).send()
+        
+    def get_profile(self):
+        """ loosely based on djagno's user.get_profile()
+        raises <profile_class>.DoesNotExist if profile not defined
+        """
+        # for now, return any profile
+        return self.profile.get()
+        # TODO: define the profile to return in a django setting
+        # in the same way django's user.get_profile depends on 
+        # settings.AUTH_PROFILE_MODULE
+            
+    @property
+    def profile(self):
+        return self.get_profile()
 
 class PersistantBackend(models.Model):
     """This class exists to provide a primary key for each
@@ -380,4 +395,81 @@ class PersistantConnection(models.Model):
            the Model and view layers, but the folks in #django don't have any
            better suggestions."""
         return "%s?connection=%s" % (reverse("add-reporter"), self.pk)
+
+    @property
+    def connection(self):
+        return Connection(self.backend.slug, \
+                          self.identity)
+
+#
+# Module level methods (more or less equiv to Java static methods)
+# Read online that this is a cleaner way to do this than @classmethod
+# or @staticmethod which can have weird calling behavior
+#
+def backend_from_message(msg, save=True):
+    """
+    Create a PersistantConnection object from a Message.
+
+    If 'save' is True, object is saved to DB before 
+    returning.
+
+    """
+    
+    slug = msg.connection.backend.slug
+
+    rs=PersistantBackend.objects.filter(slug=slug)
+    cc=None
+    if len(rs)==0:
+        cc=PersistantBackend(slug=slug, title=slug)
+        if save:
+            cc.save()
+    else:
+        cc=rs[0]
+        
+    return cc
+
+def reporter_from_message(msg,save=True):
+    return connection_from_message(msg,save).reporter
+
+def connection_from_message(msg,save=True):
+    """
+    Create, or retrieve, a ChannelConnection from
+    a message.
+
+    E.g. Phone# + Service Provider backend
+
+    """
+    # Get the comm channel
+    backend=backend_from_message(msg)
+    u_id=msg.connection.identity
+
+    # try to get an existing ChannelConnection
+    connection=None
+    rs=PersistantConnection.objects.filter(identity__exact=u_id, \
+                                           backend__exact=backend)
+    if len(rs)==0 or rs[0].reporter is None:
+        # didn't find an existing connection, which means this specific
+        # PersisentConnection (e.g. service provider) and id (e.g. phone number)
+        # combo aren't known, so we need a blank Reporter for this combo.
+        reporter=Reporter() # debug id is only 16 char
+        reporter.unique_id = u_id
+        reporter.save()
+        if len(rs)==0:
+            connection=PersistantConnection(identity=u_id,\
+                                            backend=backend,\
+                                            reporter=reporter)
+        else:
+            rs[0].reporter = reporter
+            connection = rs[0]
+        if save:
+            connection.save()
+    else:
+        connection=rs[0]
+    
+    # cache channel connection back ptr for easy responses,
+    # just in runtime object, not in db
+    connection.reporter.connection_created_from = connection
+    return connection
+
+
 

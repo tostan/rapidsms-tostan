@@ -5,10 +5,11 @@ from rapidsms.tests.scripted import TestScript
 import apps.smsforum.app as smsforum_app
 import apps.logger.app as logger_app
 import apps.contacts.app as contacts_app
-from app import App
+import apps.reporters.app as reporters_app
+import apps.smsforum.app as smsforum_app
  
 class TestSMSCommands (TestScript):
-    apps = (smsforum_app.App, contacts_app.App, logger_app.App, App )
+    apps = (smsforum_app.App, contacts_app.App, logger_app.App, reporters_app.App, smsforum_app.App )
 
     def setUp(self):
         TestScript.setUp(self)
@@ -22,7 +23,7 @@ class TestSMSCommands (TestScript):
         8005551210 > message to blast
         8005551210 < Your message was sent to these communities: village
         """
-    
+        
     testGroupBlast = """
         8005551212 > .create village2
         8005551212 < Community 'village2' was created
@@ -169,7 +170,7 @@ class TestSMSCommands (TestScript):
         8005551220 > .rambenom
         8005551220 < Uciik #unoken karees kati esukey _ #upur _ #karees _ #rambenom
         """
-
+    
     testErrorCodes = """
         8005551216 > .join
         8005551216 < Sorry, I don't know that place. Did you mean one of: community name ?

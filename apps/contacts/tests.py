@@ -5,6 +5,8 @@ from rapidsms.message import Message
 from app import App
 import apps.contacts.app as contacts_app
 from apps.contacts.models import *
+from apps.reporters.models import backend_from_message, reporter_from_message, connection_from_message
+import apps.reporters.app as reporters_app
 from apps.nodegraph.models import NodeSet
 from time import sleep
 
@@ -30,7 +32,7 @@ class StealWorker(Worker):
     pass
 
 class TestApp (TestScript):
-    apps = (App, contacts_app.App)
+    apps = (App, contacts_app.App, reporters_app.App)
  
     # some globals for all tests
     m_nodes=None
@@ -105,7 +107,7 @@ class TestApp (TestScript):
         p2.locale=wo
         p2.save()
         self.assertTrue(p1.locale==en and p2.locale==wo)
-
+        
     def testDowncast(self):
         sw=StealWorker(debug_id='bob builder')
         sw.save()
@@ -125,14 +127,14 @@ class TestApp (TestScript):
 
         con1=Connection(self.backend,self.uid0)
         msg=Message(con1, 'test message')
-        channel_con0=channel_connection_from_message(msg)
+        channel_con0=connection_from_message(msg)
 
-        "assert that the ChannelConnection's contact has the correct ID"
-        self.assertTrue(channel_con0.contact.debug_id==self.uid0)
+        # "assert that the ChannelConnection's contact has the correct ID"
+        # self.assertTrue(channel_con0.reporter.profile.get().debug_id==self.uid0)
 
         # create a _different_ message on the same connection
         msg = Message(con1, 'Another Message')
-        channel_con1=channel_connection_from_message(msg)
+        channel_con1=connection_from_message(msg)
 
         # assert channel_connections are the SAME
         self.assertTrue(channel_con0==channel_con1)
@@ -140,37 +142,37 @@ class TestApp (TestScript):
         # create a new channel connection for other contact
         con2=Connection(self.backend,self.uid1)
         msg2=Message(con2, 'test message 2')
-        channel_con2=channel_connection_from_message(msg2)
+        channel_con2=connection_from_message(msg2)
         
         self.assertTrue(channel_con2 != channel_con1)
         
     def testContactFromMsg(self):
         print
-        print "Test contact_from_message"
+        print "Test reporter_from_message"
         msg1 = Message(Connection(self.backend,self.uid1))
-        cnt1 = contact_from_message(msg1)
+        cnt1 = reporter_from_message(msg1)
         self.assertTrue(
-                        cnt1.created_from_channel_connection.user_identifier==
+                        cnt1.connection_created_from.identity==
                             self.uid1)
         
         msg2 = Message(Connection(self.backend,self.uid1))
-        cnt2 = contact_from_message(msg2)
+        cnt2 = reporter_from_message(msg2)
         self.assertTrue(cnt2 == cnt1)
         
         msg3 = Message(Connection(self.backend,self.uid2))
-        cnt3 = contact_from_message(msg3)
+        cnt3 = reporter_from_message(msg3)
         self.assertTrue(cnt3 != cnt1)
         
     def testCommunicationChannelFromMsg(self):
         print
-        print "Test communication_channel_from_message"
+        print "Test backend_from_message"
         msg1 = Message(Connection(self.backend,self.uid1))
-        comm1=communication_channel_from_message(msg1)
-        comm2=communication_channel_from_message(msg1)
+        comm1=backend_from_message(msg1)
+        comm2=backend_from_message(msg1)
         self.assertTrue(comm1 == comm2)
         
         msg2 = Message(Connection(self.backend,self.uid2))
-        comm3 = communication_channel_from_message(msg2)
+        comm3 = backend_from_message(msg2)
         self.assertTrue(comm3 == comm1)
         
     def testPerms(self):
@@ -282,20 +284,20 @@ class TestApp (TestScript):
         print 
         print 'Unique ID tests'
         user1 = self.m_nodes[0]
-        user1.unique_id = 'Fred01'
+        user1.reporter.unique_id = 'Fred01'
         user1.save()
         
         user2 = self.m_nodes[1]
-        user2.unique_id = 'Fred01'
+        user2.reporter.unique_id = 'Fred01'
         try:
             user2.save()
         except Exception, ex:
             print ex
         else:
-            # should have thown
+            # should have thrown
             self.assertTrue(False)
             
-        user2.unique_id = 'Fred02'
+        user2.reporter.unique_id = 'Fred02'
         user2.save()   
     
     def testAge(self):
@@ -322,19 +324,23 @@ class TestApp (TestScript):
         print 'Signature tests'
         user = self.w_nodes[1]
         user.common_name='Mary'
+        print user.id
         print user.signature
         self.assertTrue(user.signature=='Mary: %s' % user.id)
         user.common_name=None
-        user.given_name='Mary'
+        user.reporter.first_name='Mary'
+        print user.id
         print user.signature
         self.assertTrue(user.signature=='Mary: %s' % user.id)
-        user.family_name='Worth'
+        user.reporter.last_name='Worth'
+        print user.id
         print user.signature
         self.assertTrue(user.signature=='Mary Worth: %s' % user.id)
-        user.given_name=None
+        user.reporter.first_name=None
+        print user.id
         print user.signature
         self.assertTrue(user.signature=='Worth: %s' % user.id)
-        user.family_name=None
+        user.reporter.last_name=None
         self.assertTrue(user.signature=='%s' % user.id)
         user.common_name='01234567890'
         self.assertTrue(user.signature=='%s: %s' % \

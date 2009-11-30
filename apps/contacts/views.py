@@ -15,9 +15,9 @@ def index(request, template="contacts/index.html"):
     context = {}
     contacts = Contact.objects.all()
     for contact in contacts:
-        connections = ChannelConnection.objects.filter(contact=contact)
+        connections = PersistantConnection.objects.filter(reporter=contact.reporter)
         if connections:
-            contact.phone_number = connections[0].user_identifier
+            contact.phone_number = connections[0].identity
     context['contacts'] = paginated(request, contacts)
     return render_to_response(request, template, context)
 
@@ -25,8 +25,8 @@ def index(request, template="contacts/index.html"):
 def csv(request, format='csv'):
     if request.user.has_perm('contacts.can_view'):
         return export(Contact.objects.all(), \
-            ['id','node_ptr','first_seen','given_name','family_name',\
-             'common_name','unique_id','location','gender','age_months','_locale'])
+            ['id','node_ptr','first_seen','reporter.first_name','reporter.last_name',\
+             'common_name','reporter.unique_id','location','gender','age_months','_locale'])
     return export(Contact.objects.all(), \
         ['id','node_ptr','first_seen','location','gender','age_months','_locale'])
 
@@ -70,6 +70,9 @@ def delete_contact(request, pk, template='contacts/confirm_delete.html'):
     if request.method == "POST":
         if request.POST["confirm_delete"]: # The user has already confirmed the deletion.
             # TODO - currently this also deletes any associated logs from the db
+            # why do i need to do this manually?
+            from apps.smsforum.models import MembershipLog
+            MembershipLog.objects.filter(contact=contact).delete()
             contact.delete()
             return HttpResponseRedirect("../../contacts")
     context['contact'] = contact

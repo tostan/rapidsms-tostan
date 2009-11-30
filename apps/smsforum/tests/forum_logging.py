@@ -5,12 +5,13 @@ from rapidsms.tests.scripted import TestScript
 import apps.smsforum.app as smsforum_app
 import apps.logger.app as logger_app
 import apps.contacts.app as contacts_app
-from app import App
+import apps.reporters.app as reporters_app
 from apps.smsforum.views import get_outgoing_message_count_to
 from apps.contacts.models import *
+from apps.reporters.models import *
  
 class TestLogging (TestScript):
-    apps = (smsforum_app.App, contacts_app.App, logger_app.App )
+    apps = (logger_app.App, reporters_app.App, contacts_app.App, smsforum_app.App )
 
     def testOutgoingMessageLog(self):
         """ Tests
@@ -28,13 +29,13 @@ class TestLogging (TestScript):
             8005551211 < Thank you for joining the village community - welcome!
             8005551210 > message to blast
             8005551210 < Your message was sent to these communities: village
-            8005551211 < msg_to_blast - 8005551210
-            8005551211 < .junk
-            8005551211 > Sorry, I do not understand that command. Type '#help' to see a list of available commands            
+            8005551211 < message to blast - 8005551210
+            8005551211 > .junk
+            8005551211 < Sorry, I do not understand that command. Type '#help' to see a list of available commands            
             """
         self.runScript(test_outgoing_message_log)
-        first_contact = contacts_from_identity(8005551210)
-        second_contact = contacts_from_identity(8005551210)
+        first_contact = contacts_from_identity("8005551210")
+        second_contact = contacts_from_identity("8005551210")
         members = [first_contact]
         count = get_outgoing_message_count_to(members)
         self.assertEquals(count,3)
@@ -49,9 +50,8 @@ def contacts_from_identity(identity):
     """ Gets a 'contact' given a user_identifier
     WARNING: This function assumes the identifier is globally unique
     """
-    conns = ChannelConnection.objets.filter(user_identifier=identity)
-    contacts = conns.values_list('contact',flat=True)
-    return contacts
+    conn = PersistantConnection.objects.get(identity=identity)
+    return Contact.objects.get(reporter=conn.reporter)
 
 
 

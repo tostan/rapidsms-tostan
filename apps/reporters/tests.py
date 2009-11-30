@@ -10,14 +10,17 @@ class TestApp (TestScript):
     # to work properly in tests
     def setUp(self):
         TestScript.setUp(self)
-        
-    testJoin = """
+    
+    """
+    Tostan : disabling default reporter app
+    testJoin = ""
            8005551212 > #join unassociated
            8005551212 > #lang eng
            8005551212 > #lang fre
            8005551212 > #lang wol
            8005551212 > #lang yul
            8005551212 > #lang dyu
-         """
+         ""
+    """
     
  

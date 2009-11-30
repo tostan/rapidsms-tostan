@@ -1,13 +1,24 @@
 #!/usr/bin/env python
-# vim: ai ts=4 sts=4 et sw=4
+# vim: ai ts=4 sts=4 et sw=4 encoding=utf8
 
+"""
+
+The Contacts app demonstrates how Reporters can be generically
+extended to include application-specific data.
+
+In our case, we add information about quotas, permissions, and
+demographic information. We also link reporters to node, which 
+can be used to form arbitrary nodegraphs (more flexible than
+regular RapidSMS reporter groups)
+
+"""
 from datetime import datetime,timedelta
 
 from django.db import models
 from rapidsms.message import Message
 from rapidsms.connection import Connection
-from apps.nodegraph.models import Node
-from apps.locations.models import Location
+from nodegraph.models import Node
+from reporters.models import Reporter, PersistantBackend, PersistantConnection, reporter_from_message, connection_from_message
 import math
 from rapidsms import utils
 import traceback
@@ -102,18 +113,14 @@ class Contact(Node):
     It is not required but useful for storing things that a national id (e.g. SocSec number)
 
     """
-    # define permissions for web users
-    class Meta:
-        permissions = (
-            ("can_view", "Can view"),
-        )
-        
     # permission masks for sms users
     __PERM_RECEIVE=0x01
     __PERM_SEND=0x02
     __PERM_ADMIN=0x04
     __PERM_IGNORE=0x08 # trumps the others
-
+    
+    # This is  loosely modeled on how django user profiles work.
+    reporter = models.ForeignKey(Reporter, unique=True, related_name="profile")
 
     #
     # Table columns
@@ -122,26 +129,9 @@ class Contact(Node):
     # when Contact was first created (not modifiable, Django sets this)
     first_seen = models.DateTimeField(auto_now_add=True)
 
-    # First name, or names, e.g. 'Jeffrey Louis'
-    given_name = models.CharField(max_length=255,blank=True)
-
-    # Last name, or names, e.g. Wishnie Luk
-    family_name = models.CharField(max_length=255,blank=True)
-
     # How the Contact wants to be addressed in the context
     # of sending and receiving messages, e.g. Jeff W.
     common_name = models.CharField(max_length=255,blank=True)
-
-    # a unique (but nullable field) that can be used for any
-    # gloabbly unique info for the Contact. E.g. a National ID
-    # where availble, or a system username
-    unique_id = models.CharField(max_length=255,unique=True,null=True,blank=True)
-
-    # a nullable field to identify the actual geographic location of contacts
-    # (for ease of use, those around a village may decide to join that village
-    # even if they live somewhere else
-    location = models.ForeignKey(Location, null=True, blank=True)
-
     # 'm' or 'f'
     gender = models.CharField(max_length=1,choices=GENDER_CHOICES,blank=True) 
 
@@ -151,7 +141,7 @@ class Contact(Node):
     age_months = models.IntegerField(null=True,blank=True)
 
     # User's prefered locale, in v2 3-letter style (e.g. 'eng'=='en')
-    _locale = models.CharField(max_length=10,null=True,blank=True)
+    # _locale = models.CharField(max_length=10,null=True,blank=True)
 
     # channel_connections[] -- is available via ForeignKey in ChannelConnection
     
@@ -196,6 +186,24 @@ class Contact(Node):
     def __unicode__(self):
         return unicode(self.signature)
 
+    def delete(self, *args, **kwargs): 
+        reporter = self.reporter
+        reporter.delete()
+        super(Contact, self).delete(*args, **kwargs)
+    
+    def save(self, *args, **kwargs):
+        is_reporter_created = False
+        if not hasattr(self,'reporter'):
+            is_reporter_created = True
+            r = Reporter(unique_id="temp")
+            r.save()
+            self.reporter = r
+        self.reporter.save()
+        super(Contact, self).save(*args, **kwargs)
+        if is_reporter_created:
+            self.reporter.unique_id = self.pk
+            self.reporter.save()
+
     #
     # Use the following to make sure quotas are enforced!!
     #
@@ -215,13 +223,13 @@ class Contact(Node):
 
         """
         if in_reply_to is not None:
-            cc = channel_connection_from_message(in_reply_to)
+            cc = connection_from_message(in_reply_to)
         else:
-            cc = self.created_from_channel_connection
+            cc = self.connection_created_from
 
         self.send_to(text,cc)
 
-    def send_to(self,text,channel_conn=None):
+    def send_to(self,text,connection=None):
         """
         Send a message to the Contact.
 
@@ -251,10 +259,10 @@ class Contact(Node):
             raise QuotaException('User over Receive quota',quota_type.SEND)
 
         connections=[]
-        if channel_conn is not None:
-            connections.append(channel_conn)
+        if connection is not None:
+            connections.append(connection)
         else:
-            connections=self.channel_connections.all()
+            connections=self.reporter.connections.all()
 
         # TODO: raise exception if no connections?
         try:
@@ -262,7 +270,7 @@ class Contact(Node):
                 self._quota_receive_seen+=1
                 try:
                     Message(conn.connection, text).send()
-                except Exception:
+                except Exception, e:
                     # TODO: fix the finding a backend mess..
                     pass
         finally:
@@ -293,13 +301,13 @@ class Contact(Node):
     # Properties #
     ##############
     def __get_locale(self):
-        return self._locale
-
+        return self.reporter.language
+    
     def __set_locale(self,val):
         if val is None:
             raise("Locale can't be None!")
-        self._locale=val
-        self.save()
+        self.reporter.language=val
+        self.reporter.save()
     locale=property(__get_locale,__set_locale)
 
     def __get_age_years(self):
@@ -573,7 +581,7 @@ class Contact(Node):
         # 1. common_name
         # 2. given_name family_name
         #
-        # Then see if name_part + user_identifier fit under 
+        # Then see if name_part + identity fit under 
         # max.
         #
         # If not, see if identifier alone fits under and
@@ -588,10 +596,10 @@ class Contact(Node):
                     else self.common_name.strip())
         
         if utils.empty_str(name_part):
-            gn = (None if utils.empty_str(self.given_name) 
-                  else self.given_name.strip())
-            fn = (None if utils.empty_str(self.family_name) 
-                  else self.family_name.strip())
+            gn = (None if utils.empty_str(self.reporter.first_name) 
+                  else self.reporter.first_name.strip())
+            fn = (None if utils.empty_str(self.reporter.last_name) 
+                  else self.reporter.last_name.strip())
             if gn is not None and fn is not None:
                 name_part=u'%s %s' % (gn,fn)
             elif gn is not None:
@@ -600,13 +608,13 @@ class Contact(Node):
                 name_part=fn
 
         # default to DB id so you can at least look 'em up
-        id_part=str(self.id) 
+        identity=str(self.id) 
         # try to get phone number from a channel connection
         if for_message is not None:
-            cc=channel_connection_from_message(for_message,False)
+            cc=connection_from_message(for_message,False)
         else:
             # take first one
-            ccs=self.channel_connections.all()
+            ccs=self.reporter.connections.all()
             if len(ccs)==0:
                 # hmmm, user exists only in DB. Has
                 # never contacted system...
@@ -614,19 +622,19 @@ class Contact(Node):
             else:
                 cc=ccs[0]
         if cc is not None:
-            id_part=cc.user_identifier
+            identity=cc.identity
         
         # make sig
         if not utils.empty_str(name_part):
-            sig=': '.join([name_part, id_part])
+            sig=': '.join([name_part, identity])
         else:
-            sig=id_part
+            sig=identity
         if max_len is not None:
             # adjust for max len
             if len(sig)>max_len:
-                sig=id_part
+                sig=identity
             if len(sig)>max_len:
-                sig='...%s' % id_part[-4:]
+                sig='...%s' % identity[-4:]
             if len(sig)>max_len:
                 sig=''
         return sig
@@ -636,125 +644,23 @@ class Contact(Node):
         return self.get_signature()
     signature=property(__get_signature)
     
-#basically a PersistentBackend
-class CommunicationChannel(models.Model):
-    """
-    Info to identify backend instances.
-
-    And example of multiple comm-channels would be
-    channels to each of several Mobile carriers.
-
-    E.g. a modem communicating with Zain and another to MTN
-
-    """
-    backend_slug = models.CharField(max_length=30,primary_key=True)
-    title = models.CharField(max_length=255,blank=True)
-
-    def __repr__(self):
-        return 'CommunicationChannel(backend_slug=%s,title=%s' % \
-            (self.backend_slug, self.title)
-    
-    def __unicode__(self):
-        return unicode(self.backend_slug)
-    
-    class Meta:
-        unique_together = ('backend_slug','title')
-            
-
-# basically persistent connection
-class ChannelConnection(models.Model):
-    """
-    Maps phone# to communication channel
-
-    """
-    user_identifier = models.CharField(max_length=64)
-    communication_channel = models.ForeignKey(CommunicationChannel)
-
-    # always associated with a Contact, though contact
-    # may be _blank_
-    contact = models.ForeignKey(Contact,related_name='channel_connections') 
-
-    def __unicode__(self):
-        return u"UserID: %s, Contact DebugID: %s, Backend: %s" % \
-            (self.user_identifier, self.contact.debug_id, self.communication_channel.backend_slug)
-
-    def __repr__(self):
-        return 'ChannelConnection(%s,%s)' % \
-            (self.user_identifier, self.communication_channel.backend_slug)
-
     @property
-    def connection(self):
-        return Connection(self.communication_channel.backend_slug, \
-                              self.user_identifier)
-
-    class Meta:
-        unique_together = ('user_identifier', 'communication_channel')
-
-#
-# Module level methods (more or less equiv to Java static methods)
-# Read online that this is a cleaner way to do this than @classmethod
-# or @staticmethod which can have weird calling behavior
-#
-def communication_channel_from_message(msg, save=True):
-    """
-    Create a ChannelConnection object from a Message.
-
-    If 'save' is True, object is saved to DB before 
-    returning.
-
-    """
-
-    slug = msg.connection.backend.slug
-
-    rs=CommunicationChannel.objects.filter(backend_slug=slug)
-    cc=None
-    if len(rs)==0:
-        cc=CommunicationChannel(backend_slug=slug)
-        if save:
-            cc.save()
-    else:
-        cc=rs[0]
-        
-    return cc
-
+    def connections(self):
+        return self.reporter.connections
 
 def contact_from_message(msg,save=True):
-    return channel_connection_from_message(msg,save).contact
-
-def channel_connection_from_message(msg,save=True):
-    """
-    Create, or retrieve, a ChannelConnection from
-    a message.
-
-    E.g. Phone# + Service Provider backend
-
-    """
-    # Get the comm channel
-    comm_c=communication_channel_from_message(msg)
-    u_id=msg.connection.identity
-
-    # try to get an existing ChannelConnection
-    chan_con=None
-    rs=ChannelConnection.objects.filter(user_identifier__exact=u_id, \
-                                            communication_channel__exact=comm_c)
-    if len(rs)==0:
-        # didn't find an existing connection, which means this specific
-        # CommunicationChannel (e.g. service provider) and id (e.g. phone number)
-        # combo aren't known, so we need a blank Contact for this combo.
-        contact=Contact(debug_id=u_id[:16]) # debug id is only 16 char
-        contact.save()
-        chan_con=ChannelConnection(user_identifier=u_id,\
-                                       communication_channel=comm_c,\
-                                       contact=contact)
-        if save:
-            chan_con.save()
+    reporter = reporter_from_message(msg, save)
+    try:
+        contact = reporter.get_profile()
+    except Exception, e:
+        pass
     else:
-        chan_con=rs[0]
-    
-    # cache channel connection back ptr for easy responses,
-    # just in runtime object, not in db
-    chan_con.contact.created_from_channel_connection = chan_con
-    return chan_con
-
-
-
+        # store in memory
+        contact.connection_created_from = reporter.connection_created_from
+        return contact
+    contact = Contact(reporter=reporter)
+    # store in memory
+    contact.connection_created_from = reporter.connection_created_from
+    if save:
+        contact.save()
+    return contact

@@ -13,9 +13,9 @@ from apps.contacts.models import contact_from_message
 
 class App(rapidsms.app.App):
     def parse(self, msg):
-        msg.sender = contact_from_message(msg,self.router)
+        msg.sender = contact_from_message(msg,save=True)
         txt = 'Added Contact to msg: %r,%s with connections: %s'
         self.info(txt, 
-                  msg.sender, msg.sender.locale,
+                  msg.sender, msg.sender.reporter.language,
                   ', '.join([repr(c) for c \
-                            in msg.sender.channel_connections.all()]))
+                            in msg.sender.connections.all()]))

@@ -25,8 +25,8 @@
 			<tr>
                 {% if perms.contacts.can_view %}
 	                <td><a href="/member/{{ member.pk }}"{% if member.common_name %}>{{ member.common_name }}{% else %} class="unknown">Unknown{% endif %}</a></td>
-					<td>{% if member.given_name %}{{ member.given_name }}{% else %}<span class="na">n/a</span>{% endif %}</td>
-					<td>{% if member.family_name %}{{ member.family_name }}{% else %}<span class="na">n/a</span>{% endif %}</td>
+					<td>{% if member.reporter.first_name %}{{ member.reporter.first_name }}{% else %}<span class="na">n/a</span>{% endif %}</td>
+					<td>{% if member.reporter.last_name %}{{ member.reporter.last_name }}{% else %}<span class="na">n/a</span>{% endif %}</td>
 	                <td>{% if member.phone_number %}{{ member.phone_number }}{% else %}<span class="na">n/a</span>{% endif %}</td>
 	            {% else %}
 					<td><a href="/member/{{ member.pk }}">{{ member.pk }}</a></td>

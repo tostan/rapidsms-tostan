@@ -9,7 +9,7 @@ from rapidsms.webui.utils import *
 from apps.reporters.models import *
 
 
-def index(req):
+def index(req, template="messaging/index.html"):
     def cookie_recips(status):
         flat = urllib.unquote(req.COOKIES.get("recip-%s" % status, ""))
         return map(str, re.split(r'\s+', flat)) if flat != "" else []
@@ -51,7 +51,7 @@ def index(req):
         ("location__name", "Location")]
     
     return render_to_response(req,
-        "messaging/index.html", {
+           template, {
             "columns":   columns,
             "filtered":  filtered,
             "query":     req.GET.get("query", ""),

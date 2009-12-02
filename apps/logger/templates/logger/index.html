@@ -12,7 +12,7 @@
             <th>Date</th>
             <!-- HACK: creates a depenedency on contacts. 
             TODO - add a check for contacts app installed -->
-            {% if perms.contacts.can_view %}
+            {% if perms.reporters.can_view %}
 	            <th>From</th>
      		{% endif %}
             <th>Backend</th>
@@ -26,7 +26,7 @@
                 <td>{{message.date|date:"d-M-Y H:m:s"}}</td>
 	            <!-- HACK: creates a depenedency on contacts. 
 	            TODO - add a check for contacts app installed -->
-	            {% if perms.contacts.can_view %}
+	            {% if perms.reporters.can_view %}
 	                <td>{{message.identity}}</td>
 	     		{% endif %}
                 <td>{{message.backend}}</td>

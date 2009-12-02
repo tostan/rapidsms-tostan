@@ -11,7 +11,7 @@
 	<table>
 		<thead>
 			<tr>
-                {% if perms.contacts.can_view %}
+                {% if perms.reporters.can_view %}
 					<th scope="col">{% trans "Common Name" %}</th>
 					<th scope="col">{% trans "Given Name" %}</th>
 					<th scope="col">{% trans "Family Name" %}</th>
@@ -28,7 +28,7 @@
 		</thead>
 		<tbody>{% if members.object_list %}{% for member in members.object_list %}
 			<tr>
-                {% if perms.contacts.can_view %}
+                {% if perms.reporters.can_view %}
 	                <td><a href="/member/{{ member.pk }}"{% if member.common_name %}>{{ member.common_name }}{% else %} class="unknown">Unknown{% endif %}</a></td>
 					<td>{% if member.reporter.first_name %}{{ member.reporter.given_name }}{% else %}<span class="na">n/a</span>{% endif %}</td>
 					<td>{% if member.reporter.last_name %}{{ member.reporter.last_name }}{% else %}<span class="na">n/a</span>{% endif %}</td>
@@ -43,7 +43,7 @@
                 <td>{% if member.date_joined %}{{ member.date_joined|date:"D M d H:i" }}{% else %}<span class="na">n/a</span>{% endif %}</td>
 			</tr>{% endfor %}
             <tr>
-                {% if perms.contacts.can_view %}
+                {% if perms.reporters.can_view %}
 	                <td colspan="9">
 	            {% else %}
     	            <td colspan="6">
@@ -55,7 +55,7 @@
             </tr>
 			{% else %}
 			<tr class="no-data">
-                {% if perms.contacts.can_view %}
+                {% if perms.reporters.can_view %}
 	                <td colspan="9">
 	            {% else %}
     	            <td colspan="6">
@@ -69,7 +69,7 @@
 		</tbody>
 		<tfoot>
 			<tr>
-                {% if perms.contacts.can_view %}
+                {% if perms.reporters.can_view %}
 	                <td colspan="9">
 	            {% else %}
     	            <td colspan="6">

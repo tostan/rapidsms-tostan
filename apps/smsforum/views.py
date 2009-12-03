@@ -55,7 +55,7 @@ def visualize(request, template="smsforum/visualize.html"):
     for village in villages:
         # once this site bears more load, we can replace flatten() with village.subnodes
         # and stop reporting num_messages
-        members = village.flatten()
+        members = village.flatten(klass=Contact)
         village.member_count = len( members )
         village.incoming_message_count = IncomingMessage.objects.filter(domains=village).count()
         last_week = ( datetime.now()-timedelta(weeks=1) )

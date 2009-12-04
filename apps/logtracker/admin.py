@@ -15,10 +15,21 @@ DEBUG = 10
 NOTSET = 0
 """ 
 
+import logging
+
 from django.contrib import admin
 from rapidsms.webui.settings import RAPIDSMS_APPS as app_conf
 from apps.logtracker.models import LogTrack
-from apps.logtracker.init import *
+from apps.logtracker.handlers import TrackingHandler
+
+# Initialise and register the handler
+handler = TrackingHandler()
+
+#the log_threshold is the ini value for what level the error 
+# handler should listen for if it's less than the threshold 
+# set, the handler will never trigger. 
+logging.root.setLevel(int(app_conf['logtracker']['log_threshold']))
+logging.root.addHandler(handler)
 
 class LogTrackAdmin(admin.ModelAdmin):
     list_display = ('id', 'level', 'channel', 'message', 

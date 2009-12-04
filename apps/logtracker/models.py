@@ -58,21 +58,8 @@ def sendAlert(sender, instance, created, *args, **kwargs): #get sender, instance
     #we always want an alert.
     if instance.level >= int(app_conf['logtracker']['alert_threshold']):
         context = {}
-        context['log'] = instance
-        try:
-            rendered_text = render_to_string("logtracker/alert_display.html", context)
-        except Exception, e:
-            # quick hack: avoid using 'render_to_string' since it doesn't quite work with the current
-            # rapidsms i18n mechanism
-
-            # we generally cannot allow errors to be raised in this function
-            # because it throws logtracker into an infinite loop
-
-            rendered_text = "MESSAGE: %s<br\>PATH: %s<br\>LINE NUMBER: %s<br\>DATA: %s" % \
-                            (instance.message, instance.pathname, 
-                             instance.line_no, instance.data_dump)
-        
-        
+        context['log'] = instance    
+        rendered_text = render_to_string("logtracker/alert_display.html", context)
         # Send it to an email address baked into the settings/ini file.
         # restrict the subject to 78 characters to comply with the RFC
         title = ("[Tostan Alert] " + instance.message)[:78]

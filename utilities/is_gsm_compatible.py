@@ -53,6 +53,7 @@ def can_gsm_encode(encoding,file_name):
     except UnicodeDecodeError, e:
         """ This happen when the input file is not of type 'encoding' """
         print "  Cannot parse file as " + encoding
+        print repr(e)
         return False
 
 

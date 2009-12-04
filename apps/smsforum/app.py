@@ -40,6 +40,8 @@ _G = {
         'pul':['Pulaar'],
         'wol':['Wolof'],
         'dyu':['Joola','Dyula','Dioula','Diola'],
+        'snk':['Soninke'],
+        'mnk':['Mandingo'],
         'fr':[u'Français'],
         'en':['English'],
         },
@@ -119,7 +121,7 @@ class App(rapidsms.app.App):
         self.cmd_targets = [ 
             # NOTE: make sure all commands are unicode strings!
             # Pulaar
-            ([u'naalde', u'naatde', u'tawtude'], {'lang':'pul','func':self.join}),
+            ([u'naalde', u'naatde', u'tawtude',u'naattugol'], {'lang':'pul','func':self.join}),
             (u'yettoode', {'lang':'pul','func':self.register_name}),
             ([u'yaltude',u'iwde'], {'lang':'pul','func':self.leave}),
             ([u'dallal',u'ballal'], {'lang':'pul','func':self.help}),
@@ -133,12 +135,23 @@ class App(rapidsms.app.App):
             ([u'karees', u'karees'], {'lang':'dyu','func':self.register_name}),
             ([u'upur', u'oupour'], {'lang':'dyu','func':self.leave}),
             (u'rambenom', {'lang':'dyu','func':self.help}),
+            # Soninke
+            (u'ro', {'lang':'snk','func':self.join}),
+            (u'toxo', {'lang':'snk','func':self.register_name}),
+            (u'bagu', {'lang':'snk','func':self.leave}),
+            (u'deema', {'lang':'snk','func':self.help}),
+            # Mandingo
+            (u'koo', {'lang':'mnk','func':self.join}),
+            (u'ntoo', {'lang':'mnk','func':self.register_name}),
+            (u'nbetaamala', {'lang':'mnk','func':self.leave}),
+            (u"n'deemaa", {'lang':'mnk','func':self.help}),
             # French
             (u'entrer', {'lang':'fr','func':self.join}),
             (u'nom', {'lang':'fr','func':self.register_name}),
             (u'quitter', {'lang':'fr','func':self.leave}),
             (u'aide', {'lang':'fr','func':self.help}),
             ([u'créer', u'creer'], {'lang':'fr','func':self.create_village}),
+            (u'enlever', {'lang':'fr','func':self.destroy_community}),
             # English
             (u'join', {'lang':'en','func':self.join}),
             (u'name', {'lang':'en','func':self.register_name}),

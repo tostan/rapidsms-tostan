@@ -93,7 +93,7 @@ msgstr "Yaafo, oo kaøaaru ina juuti. %(max_chars)d. A jaaraana nde nåaøinåin
 
 #: app.py:204
 msgid "blast-fail_not-member-of-any-village"
-msgstr "Yaafo - njokkondiree e sahre nde gila on nulåaani kabaaru. Mbinnåee #naatåe e nom de communaute e [le nom]"
+msgstr "Yaafo - njokkondiree e renndo nde gila on nulåaani kabaaru. Mbinnåee #naatåe e nom de communaute e [le nom]"
 #msgstr "SVP, rejoignez une communauté avant d'envoyer un message. Escrivez # entrer puis 'nom de village'"
 
 #: app.py:214
@@ -127,11 +127,11 @@ msgid "create-village-fail_name-too-long %(village)s %(max_char)d"
 msgstr "Désolé, ce nom fait plus de %(max_char)d caractères. Merci de le reccourcir et de l'envoyer à nouveau."
 
 msgid "create-village-success %(village)s"
-msgstr "Sahre nåe sinicaa ko %(village)s"
+msgstr "Renndo ngo cincu-daa ko %(village)s"
 #msgstr "La communauté %(village)s a été créée"
 
 msgid "direct-blast-acknowledge %(text)s %(recipient)s"
-msgstr "Miu njettiima, mesaaj ma nawaama to sahre to '%(recipient)s'"
+msgstr "Miu njettiima, mesaaj ma nawaama to renndo to '%(recipient)s'"
 #msgstr "Votre message a été envoyé à: %(recipient)s"
 
 msgid "direct-blast-fail_recipient-not-found %(recipient)s"
@@ -167,7 +167,7 @@ msgid "inbound-message_rejected"
 msgstr "Vous ne pouvez pas envoyer les messages. Vous n'avez pas le permission d'envoyer."
 
 msgid "join-success %(village)s"
-msgstr "a Jaaraama nåe tawtu - åaa e Sahre nåe '%(village)s' - Bisimilla!"
+msgstr "a Jaaraama ko tawtu - åaa e renndo '%(village)s' - Bisimilla!"
 #msgstr "Merci d'avoir rejoint la communauté '%(village)s' - bienvenue!"
 
 #: app.py:279
@@ -182,20 +182,20 @@ msgstr "Åemngal ngal cuøi- daa ko %(lang)s."
 
 #: app.py:248
 msgid "leave-success %(villages)s"
-msgstr "On ngiwii to sahre to '%(villages)s' haa nalnde woånde"
+msgstr "On ngiwii to renndo to '%(villages)s' haa nalnde woånde"
 #msgstr "Vous venez de quitter la communauté '%(villages)s' Au revoir!"
 
 msgid "leave-fail_village-not-found %(village)s"
 msgstr "Je ne peux pas trouver la communauté quit s'appelle '%(village)s'"
 
 msgid "leave-fail_not-member-of-village"
-msgstr "O woodaaka hay sahre e oo dumunna So a yidii heptaademin mbinndee # naatde e [nom de village]"
+msgstr "O woodaaka hay renndo e oo dumunna So a yidii heptaademin mbinndee # naatde e [nom de village]"
 #msgstr "Vous n'appartenez à aucune communauté pour le moment. Pour nous rejoindre, vueillez écrire # puis 'nom de village"
 
 # when 'member' command sent by user who is not member of
 # any village
 msgid "member-fail_not-member-of-village"
-msgstr "On njeyaaka e hay sahre wootere oo åumunna So on njiåii hebde min møinndee #naatde e innde share nåe"
+msgstr "On njeyaaka e hay renndo wootere oo åumunna So on njiåii hebde min møinndee #naatde e innde share nåe"
 #msgstr "Vous n'etes pas parti d'aucune communauté"
 
 # successful response to 'member' command
@@ -221,6 +221,7 @@ msgstr "Merci de renvoyer avec le nom d'une communauté, e.g.: '.enlever village
 
 msgid "remove-success %(village)s"
 msgstr "La communauté '%(village)s' a eté enlevée."
+
 
 
 

@@ -391,7 +391,7 @@ class App(rapidsms.app.App):
             # self.village_matcher.remove_target(arg)
             self.__reply(msg, "remove-success %(village)s", {'village': arg})
             return True
-        except:
+        except Exception, e:
             rsp= _st(msg.sender,"village-not-known %(unknown)s") % {'unknown':arg} 
             self.debug(rsp)
             self.__reply(msg,rsp)
@@ -410,7 +410,7 @@ class App(rapidsms.app.App):
                 self.__reply(msg, "name-register-fail_name-too-long %(name)s %(max_char)d", \
                              {'name':name, 'max_char':MAX_CONTACT_NAME_LEN} )
                 return True
-            msg.sender.common_name = name
+            msg.sender.common_name = name.strip()
             msg.sender.save()
             rsp=_st(msg.sender, "name-register-success %(name)s") % {'name':msg.sender.common_name}
             self.__reply(msg,rsp)

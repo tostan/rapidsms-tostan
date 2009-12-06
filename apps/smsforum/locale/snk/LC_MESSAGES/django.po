@@ -128,7 +128,7 @@ msgstr "Kod o ngam waylude demngal ngal heptinaaka. A Jaaraama nde ngeto-daa kad
 #msgstr "Le code pour changer de langue n'est pas reconnu. Merci d'envoyer à nouveau. Vous pouvez utiliser un des langues suivants: %(langs)s"
 
 msgid "language-set-success %(lang)s"
-msgstr "Demngal ngal cubi- daa ko %(lang)s."
+msgstr "an ga da xanne be suggandi %(lang)sn ya ni."
 #msgstr "La langue que vous avez sélectionnée est '%(lang_code)s'"
 
 #: app.py:248

@@ -131,7 +131,7 @@ msgstr "Renndo ngo ciňcu-daa ko %(village)s"
 #msgstr "La communauté %(village)s a été créée"
 
 msgid "direct-blast-acknowledge %(text)s %(recipient)s"
-msgstr "Miu njettiima, mesaaj ma nawaama to renndo to '%(recipient)s'"
+msgstr "Min njettiima, mesaas maa nabaama to renndo '%(recipient)s'"
 #msgstr "Votre message a été envoyé à: %(recipient)s"
 
 msgid "direct-blast-fail_recipient-not-found %(recipient)s"
@@ -167,7 +167,7 @@ msgid "inbound-message_rejected"
 msgstr "Vous ne pouvez pas envoyer les messages. Vous n'avez pas le permission d'envoyer."
 
 msgid "join-success %(village)s"
-msgstr "a Jaaraama ko tawtu - ɗaa e renndo '%(village)s' - Bisimilla!"
+msgstr "a Jaaraama ko tawtu - daa e renndo '%(village)s' - Bisimilla!"
 #msgstr "Merci d'avoir rejoint la communauté '%(village)s' - bienvenue!"
 
 #: app.py:279

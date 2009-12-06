@@ -167,7 +167,7 @@ msgid "inbound-message_rejected"
 msgstr "Vous ne pouvez pas envoyer les messages. Vous n'avez pas le permission d'envoyer."
 
 msgid "join-success %(village)s"
-msgstr "a Jaaraama ko tawtu - åaa e renndo '%(village)s' - Bisimilla!"
+msgstr "a Jaaraama ko tawtu - ɗaa e renndo '%(village)s' - Bisimilla!"
 #msgstr "Merci d'avoir rejoint la communauté '%(village)s' - bienvenue!"
 
 #: app.py:279

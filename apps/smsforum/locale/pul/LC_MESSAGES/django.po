@@ -102,7 +102,7 @@ msgid  "blast-message_outgoing %(text)s %(recipients)s %(sender)s"
 msgstr "%(text)s - %(sender)s"
 
 msgid "blast-acknowledge %(text)s %(recipients)s"
-msgstr "nuldu feewde e '%(recipients)s'"
+msgstr "Kabaaru maa o nuldaa ma feewde e '%(recipients)s'"
 #msgstr "Votre message a été envoyé à: %(recipients)s"
 
 # when 'citizens' command is sent with no village

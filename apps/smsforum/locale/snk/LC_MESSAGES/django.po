@@ -102,7 +102,7 @@ msgid  "blast-message_outgoing %(text)s %(recipients)s %(sender)s"
 msgstr "%(text)s - %(sender)s"
 
 msgid "blast-acknowledge %(text)s %(recipients)s"
-msgstr "An xibaaren joofe i dingira '%(recipients)s'"
+msgstr "Maama, an xibaaren joofe i dingira '%(recipients)s'"
 #msgstr "Votre message a été envoyé à: %(recipients)s"
 
 # Help with commands for specific languages. Should

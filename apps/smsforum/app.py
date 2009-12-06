@@ -37,12 +37,12 @@ CMD_MESSAGE_MATCHER = re.compile(ur'^\s*'+CMD_MARKER+'\s*(\S+)?(.+)?',re.IGNOREC
 _G = { 
     'SUPPORTED_LANGS': {
         # 'deb':u'Debug',
-        'pul':['Pulaar'],
+        'pul':['Pulaar','Pular'],
         'wol':['Wolof'],
         'dyu':['Joola','Dyula','Dioula','Diola'],
-        'snk':['Soninke'],
-        'mnk':['Mandingo'],
-        'fr':[u'Français'],
+        'snk':['Soninke','Soninké','Sooninké','Sooninke'],
+        'mnk':['Mandinka'],
+        'fr':[u'Français',u'Francais'],
         'en':['English'],
         },
     'TRANSLATORS':dict(),
@@ -125,6 +125,7 @@ class App(rapidsms.app.App):
             (u'yettoode', {'lang':'pul','func':self.register_name}),
             ([u'yaltude',u'iwde'], {'lang':'pul','func':self.leave}),
             ([u'dallal',u'ballal'], {'lang':'pul','func':self.help}),
+            (u'penngugol', {'lang':'pul','func':self.create_village}),
             # Wolof
             ([u'boole', u'yokk', u'duggu'], {'lang':'wol','func':self.join}),
             ([u'genn', u'génn'], {'lang':'wol','func':self.leave}),
@@ -140,7 +141,7 @@ class App(rapidsms.app.App):
             (u'toxo', {'lang':'snk','func':self.register_name}),
             (u'bagu', {'lang':'snk','func':self.leave}),
             (u'deema', {'lang':'snk','func':self.help}),
-            # Mandingo
+            # Mandinka
             (u'koo', {'lang':'mnk','func':self.join}),
             (u'ntoo', {'lang':'mnk','func':self.register_name}),
             (u'nbetaamala', {'lang':'mnk','func':self.leave}),

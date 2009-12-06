@@ -152,11 +152,11 @@ class App(rapidsms.app.App):
             (u'aide', {'lang':'fr','func':self.help}),
             ([u'créer', u'creer'], {'lang':'fr','func':self.create_village}),
             (u'enlever', {'lang':'fr','func':self.destroy_community}),
+            (u'langue', {'lang':'fr','func':self.lang}),
             # English
             (u'join', {'lang':'en','func':self.join}),
             (u'name', {'lang':'en','func':self.register_name}),
             (u'leave', {'lang':'en','func':self.leave}),
-            (u'language', {'lang':'en','func':self.lang}),
             (u'help', {'lang':'en','func':self.help}),
             (u'create', {'lang':'en','func':self.create_village}),
             (u'member', {'lang':'en','func':self.member}),

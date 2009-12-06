@@ -127,7 +127,7 @@ msgid "create-village-fail_name-too-long %(village)s %(max_char)d"
 msgstr "Désolé, ce nom fait plus de %(max_char)d caractères. Merci de le reccourcir et de l'envoyer à nouveau."
 
 msgid "create-village-success %(village)s"
-msgstr "Renndo ngo cincu-daa ko %(village)s"
+msgstr "Renndo ngo ciňcu-daa ko %(village)s"
 #msgstr "La communauté %(village)s a été créée"
 
 msgid "direct-blast-acknowledge %(text)s %(recipient)s"
@@ -172,7 +172,7 @@ msgstr "a Jaaraama ko tawtu - åaa e renndo '%(village)s' - Bisimilla!"
 
 #: app.py:279
 msgid "language-set-fail_code-not-understood %(langs)s"
-msgstr "Koå o ngam wayluåe åemngal ngal heptinaaka. A Jaaraama nde ngeto-daa kadi. %(langs)s"
+msgstr "Kod o ngam wayluåe åemngal ngal heptinaaka. A Jaaraama nde ngeto-daa kadi. %(langs)s"
 #msgstr "Le code pour changer de langue n'est pas reconnu. Merci d'envoyer à nouveau"
 #msgstr "Vous pouvez utiliser un des langues suivants: %(langs)s"
 
@@ -220,7 +220,8 @@ msgid "remove-fail_no-village"
 msgstr "Merci de renvoyer avec le nom d'une communauté, e.g.: '.enlever village'"
 
 msgid "remove-success %(village)s"
-msgstr "La communauté '%(village)s' a eté enlevée."
+msgstr "Renndo '%(village)s' ngo ittaama" 
+#msgstr "La communauté '%(village)s' a eté enlevée."
 
 
 

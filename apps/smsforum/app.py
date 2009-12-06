@@ -141,6 +141,7 @@ class App(rapidsms.app.App):
             (u'toxo', {'lang':'snk','func':self.register_name}),
             (u'bagu', {'lang':'snk','func':self.leave}),
             (u'deema', {'lang':'snk','func':self.help}),
+            (u'taga', {'lang':'snk','func':self.create_village}),
             # Mandinka
             (u'koo', {'lang':'mnk','func':self.join}),
             (u'ntoo', {'lang':'mnk','func':self.register_name}),

@@ -209,15 +209,16 @@ class BestMatch(object):
         # see if it is an iterable, in which case the first is 
         # the target and the rest are aliases
         aliases=[]
-        if getattr(target, '__iter__', False):
+        if hasattr(target, '__iter__'):
+            for i in range(0,len(target)-1):
+                if isinstance(target[i], basestring):
+                    target[i] = target[i].strip()
             aliases = list(target)
             target = aliases[0]
         else:
+            target = ('' if target is None else target.strip())
             aliases = [target]
                   
-
-        # check for empty
-        target = ('' if target is None else target.strip())
         if len(target)==0: 
             return
 

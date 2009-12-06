@@ -135,8 +135,8 @@ ACTION = (
 
 class MembershipLog(models.Model):
     date = models.DateTimeField(null=False, default = datetime.utcnow )
-    village = models.ForeignKey(Village,null=True, related_name='parent') #can reference a deleted nodeset
-    contact = models.ForeignKey(Contact,null=True, related_name='child') #can reference a deleted node
+    village = models.ForeignKey(Village,null=True, default=None, related_name='parent') #can reference a deleted nodeset
+    contact = models.ForeignKey(Contact,null=True, default=None, related_name='child') #can reference a deleted node
     action = models.CharField(max_length=1, choices=ACTION, null=False)
     
     def __unicode__(self):

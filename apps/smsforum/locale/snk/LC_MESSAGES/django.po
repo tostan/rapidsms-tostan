@@ -89,7 +89,7 @@ msgstr "Ma a faamu. A lefi manne koono %(suggested)s?"
 #msgstr "Désolé, je ne peux pas comprendre cet ordre. Est-ce que vous voulez dire: %(sug_1)s ou %(sug_rest)s?"
 
 msgid "blast-fail_message-too-long %(msg_len)d %(max_latin)d %(max_unicode)d"
-msgstr "Yanpa, xibaare ke nta dangini sigiru %(max_chars)d. Mama, a defondi nan yille a xayini."
+msgstr "Yanpa, xibaare ke nta dangini sigiru %(max_chars)d. Maama, a defondi nan yille a xayini."
 #msgstr "Désolé, ce message fait plus de %(max_chars)d caractères. Merci de le reccourcir et de l'envoyer à nouveau."
 
 #: app.py:204
@@ -118,7 +118,7 @@ msgid "inbound-message_rejected"
 msgstr "Vous ne pouvez pas envoyer les messages. Vous n'avez pas le permission d'envoyer."
 
 msgid "join-success %(village)s"
-msgstr "Mama ti an ga ro '%(village)s' - Bisimilla!"
+msgstr "Maama ti an ga ro '%(village)s' - Bisimilla!"
 #msgstr "Merci d'avoir rejoint la communauté '%(village)s' - bienvenue!"
 
 
@@ -145,7 +145,7 @@ msgstr "An nta kafiini dingira su saasa. Kuudo an na o kita '123 ro' safa 'do di
 #msgstr "Vous n'appartenez à aucune communauté pour le moment. Pour nous rejoindre, vueillez écrire '123' puis 'nom de village"
 
 msgid "name-register-success %(name)s"
-msgstr "Bisimilla %(name)s! Mama ti an ga da an toxon safa! A wa bangene xibaare su an ga riini a xayini."
+msgstr "Bisimilla %(name)s! Maama ti an ga da an toxon safa! A wa bangene xibaare su an ga riini a xayini."
 #msgstr "Bonjour %(name)s. Merci d'avoir enregistré votre nom! Il apparaitra dorénavant sur tous les messages que vous envoyez"
 
 msgid "name-register-fail_name-too-long %(name)s %(max_char)d"

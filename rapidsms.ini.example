@@ -107,6 +107,7 @@ password=alpha321
 [django]
 AUTH_PROFILE_MODULE=tostan.tostanprofile
 USERPROFILE_MEDIA_ROOT=apps/userprofile/static
+LANGUAGE_CODE=fr
 
 login_redirect_url=/
 USE_DJANGO_STATIC_SERVER=True

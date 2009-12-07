@@ -27,9 +27,9 @@
                                 <div id="auth">
                                         {% if user.is_authenticated %}
                                         	<!-- rO: change URL to point to userprofile login/logout page for tostan -->
-                                            <p><a href="/logout/">Log out {{ user.username }}</a></p>
+                                            <p><a href="/logout/">{% trans 'Log out' %} {{ user.username }}</a></p>
                                         {% else %}
-                                            <p><a href="/login/">Log in</a></p>
+                                            <p><a href="/login/">{% trans 'Log in' %} </a></p>
                                         {% endif %}
                                 </div>
 				<div id="branding">
@@ -74,11 +74,9 @@
 			{% block footer %}
 			<div id="footer">
 				<p class="rights">
-					Copyright &copy; 2009 <a href="http://unicefinnovation.org">UNICEF</a> et al.<br />
-					<a href="http://github.com/unicefinnovation/rapidsms">RapidSMS</a> is free software,
-					available under the <a href="http://www.fsf.org/licensing/licenses/lgpl-3.0.html">LGPL</a>.
-				</p>
-				
+					{% trans 'Copyright' %} &copy; 2009 <a href="http://unicefinnovation.org">UNICEF</a> et al.<br />
+					{% trans '<a href="http://github.com/unicefinnovation/rapidsms">RapidSMS</a> is free software, available under the <a href="http://www.fsf.org/licensing/licenses/lgpl-3.0.html">LGPL</a>.' %}
+				</p>				
 				{% region "footer" %}
 			</div>
 			{% endblock %}

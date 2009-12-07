@@ -48,6 +48,7 @@
 					<tr>
 						<th></th>
 						<th>Name</th>
+						<th>Phone Number</th>
 						<th>Role</th>
 						<th>Location</th>
 					</tr>
@@ -56,6 +57,7 @@
 					<tr uid="{{ reporter.pk }}" class="{% if reporter.is_hit %}hit{% endif %}">
 						<td class="check"></td>
 						<td>{{ reporter.full_name }}</td>
+						<td>{{ reporter.connection.identity }}</td>
 						<td>{{ reporter.role }}</td>
 						<td>{{ reporter.location }}</td>
 					</tr>{% endfor %}

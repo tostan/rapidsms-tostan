@@ -162,12 +162,16 @@ def messages(request, template="smsforum/manage_messages.html"):
     context = add_categories(context)
     # although we can support arbitrary UIs, the current drop-down ui
     # for tags only shows one tag 'selected' at any given time.
+    annotated_messages = []
     for m in messages:
-        if len(m.tags)>0:
-            m.selected = m.tags[0].name.strip()
-        if m.annotations.count() > 0:
-            m.note = m.annotations.all()[0].text
-    context['messages'] = paginated(request, messages)
+        matcher=CMD_MESSAGE_MATCHER.match(m.text)
+        if matcher is None: 
+            if len(m.tags)>0:
+                m.selected = m.tags[0].name.strip()
+            if m.annotations.count() > 0:
+                m.note = m.annotations.all()[0].text
+            annotated_messages.append(m)
+    context['messages'] = paginated(request, annotated_messages)
     return render_to_response(request, template, context)
 
 def add_categories(context):

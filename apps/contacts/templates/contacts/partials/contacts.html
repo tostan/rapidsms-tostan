@@ -29,13 +29,20 @@
 			<tr>
 				<td>{{ contact.pk }}</td>
                 {% if perms.reporters.can_view %}
-	                <td><a href="/contact/edit/{{ contact.pk }}"{% if contact.common_name %}>{{ contact.common_name }}{% else %} class="unknown">Unknown{% endif %}</a></td>
+                	<td>
+	                {% if edit_link %}
+	                    <a href="{{ edit_link }}{{ contact.pk }}"{% if contact.common_name %}>{{ contact.common_name }}{% else %} class="unknown">Unknown{% endif %}</a>            
+	                {% else %}
+	                    <a href="/contact/edit/{{ contact.pk }}"{% if contact.common_name %}>{{ contact.common_name }}{% else %} class="unknown">Unknown{% endif %}</a>            
+	                {% endif %}
+	                </td>
+	
 					<td>{% if contact.reporter.first_name %}{{ contact.reporter.first_name }}{% else %}<span class="na">n/a</span>{% endif %}</td>
 					<td>{% if contact.reporter.last_name %}{{ contact.reporter.last_name }}{% else %}<span class="na">n/a</span>{% endif %}</td>
 	                <td>{% if contact.reporter.connection.identity %}{{ contact.reporter.connection.identity }}{% else %}<span class="na">n/a</span>{% endif %}</td>
 				{% endif %}
                 <td>{% if contact.gender %}{{ contact.gender }}{% else %}<span class="na">n/a</span>{% endif %}</td>
-                <td>{% if contact.age %}{{ contact.age }}{% else %}<span class="na">n/a</span>{% endif %}</td>
+                <td>{% if contact.age_years %}{{ contact.age_years|floatformat:0 }}{% else %}<span class="na">n/a</span>{% endif %}</td>
 			</tr>{% endfor %}
             <tr>
                 {% if perms.reporters.can_view %}

@@ -67,6 +67,15 @@
 			</div>
 
 			<div id="inner">
+				{% block supersuperfooter %}
+					{% if previous_link %}
+					<p/>
+					<a href="{{previous_link}}">
+						<b>{% trans 'Back to Previous Page' %}</b>
+					</a>
+					{% endif %}<p/>
+				{% endblock supersuperfooter %}
+
 				{% block superfooter %}
 					<b><a href="/">{% trans 'Back to Home Page' %}</a></b>
 				{% endblock superfooter %}

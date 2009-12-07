@@ -38,11 +38,11 @@ class BasicContactForm(ModelForm):
         m = super(BasicContactForm, self).save(commit=False)
         if not hasattr(m,'reporter'):
             r = Reporter()
-            r.first_name = self.fields['first_name'].value
-            r.last_name = self.fields['last_name'].value
-            r.unique_id = self.fields['common_name']
-            r.save()
             m.reporter = r
+        m.reporter.first_name = self.fields['first_name'].value
+        m.reporter.last_name = self.fields['last_name'].value
+        m.reporter.unique_id = self.fields['common_name']
+        m.reporter.save()
         m.perm_send = self.fields['perm_send'].value
         m.perm_receive = self.fields['perm_receive'].value
         m.perm_ignore = self.fields['perm_ignore'].value

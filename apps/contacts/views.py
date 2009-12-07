@@ -45,8 +45,7 @@ def add_contact(request, template="contacts/add.html"):
     return render_to_response(request, template, context)    
 
 @login_required
-def edit_contact(request, pk, template="contacts/edit.html"):
-    context = {}
+def edit_contact(request, pk, template="contacts/edit.html", context={}):
     contact = get_object_or_404(Contact, id=pk)
     if request.method == "POST":
         form = GSMContactForm(request.POST, contact)
@@ -59,7 +58,7 @@ def edit_contact(request, pk, template="contacts/edit.html"):
     else:
         form = GSMContactForm(instance=contact)
     context['form'] = form
-    context['title'] = _("Edit Member") + " " + contact.signature
+    context['title'] = _("Edit Contact") + " " + contact.signature
     context['contact'] = contact
     return render_to_response(request, template, context)
 

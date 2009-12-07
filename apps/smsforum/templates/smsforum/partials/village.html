@@ -23,7 +23,11 @@
 
     {% if perms.smsforum.delete_community or perms.smsforum.delete_village or perms.smsforum.delete_region %}
    	<div class="toolbar">
-	   	<a href="/village/delete/{{ village.pk }}" class="delete">{% trans "Delete This Village" %}</a>
+   		{% if delete_link %}
+		   	<a href="{{ delete_link }}" class="delete">{% trans "Delete" %}</a>
+		{% else %}
+		   	<a href="/village/delete/{{ village.pk }}" class="delete">{% trans "Delete" %}</a>
+		{% endif %}
 	</div>
 	{% endif %}
 

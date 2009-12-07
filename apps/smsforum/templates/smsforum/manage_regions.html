@@ -17,9 +17,8 @@
 {% endif %}
 
 {% if regions %}
-<h4>Regions</h4>
 {% for region in regions %}
-<a href="{% url region region.pk %}">{{region.name}}</a>
+<b>{% trans 'Region'%}</b>: <a href="{% url region region.pk %}">{{region.name}}</a>
 ({{region.count}} Villages)
 <ul>
 	{% for village in region.villages %}

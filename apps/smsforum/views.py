@@ -28,6 +28,7 @@ from django.utils.translation import ugettext as _
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.core.urlresolvers import reverse
 
 from rapidsms.webui.utils import *
 from tagging.models import Tag
@@ -39,6 +40,7 @@ from contacts.models import Contact
 from logger.models import *
 # from contacts.models import *
 from contacts.forms import GSMContactForm
+from contacts.views import edit_contact
 from utilities.export import export
 
 from datetime import datetime, timedelta
@@ -99,7 +101,7 @@ def regions(request, template="smsforum/manage_regions.html"):
 
 @login_required
 def citizens(request, template="smsforum/manage_citizens.html"):
-    context = {'contacts': paginated(request, Contact.objects.all()),
+    context = {'contacts': paginated(request, Contact.objects.all().order_by('common_name')),
                'villages': Village.objects.all().order_by('name'), 
                'regions': Region.objects.all().order_by('name')}
     village, region = get_village_and_region(request, context)
@@ -107,6 +109,7 @@ def citizens(request, template="smsforum/manage_citizens.html"):
         context['contacts'] = paginated(request, village.flatten(klass=Contact))
     elif region is not None:
         context['contacts'] = paginated(request, region.flatten(klass=Contact))
+    context['edit_link'] = "/member/edit/"
     return render_to_response(request, template, context)
 
 def get_village_and_region(request, context):
@@ -258,10 +261,10 @@ def members(request, pk, template="smsforum/members.html"):
     return render_to_response(request, template, context)
 
 def add_message_info(member, village):
-    connections = ChannelConnection.objects.filter(contact=member)
+    connections = PersistantConnection.objects.filter(reporter=member.reporter)
     if len(connections) > 0:
         # we can always click on the user to see a list of all their connections
-        member.phone_number = connections[0].user_identifier
+        member.phone_number = connections[0].identity
         last_week = ( datetime.now()-timedelta(weeks=1) )
         member.message_count = IncomingMessage.objects.filter(identity=member.phone_number).count()
         member.message_count_this_week = IncomingMessage.objects.filter(identity=member.phone_number,received__gte=last_week).count()
@@ -288,8 +291,8 @@ def member(request, pk, template="smsforum/member.html"):
             return HttpResponseRedirect("../register")
             """
     try:
-        connections = ChannelConnection.objects.get(contact=contact)
-        contact.phone_number = connections.user_identifier
+        connections = PersistantConnection.objects.get(reporter=contact.reporter)
+        contact.phone_number = connections.identity
         messages = IncomingMessage.objects.filter(identity=contact.phone_number).order_by('-received')
         contact.message_count = len(messages)
         last_week = ( datetime.now()-timedelta(weeks=1) )
@@ -302,7 +305,7 @@ def member(request, pk, template="smsforum/member.html"):
         if (log):
             contact.date_joined = log[0].date
         format_messages_in_context(request, context, messages)
-    except ChannelConnection.DoesNotExist:
+    except PersistantConnection.DoesNotExist:
         #this is a contact without a phone number
         pass
     # if you decide to add 'date_joined', remember you need to do it for all villages
@@ -342,24 +345,53 @@ def community(request, pk, template="smsforum/community.html"):
     return render_to_response(request, template, context)
 
 @login_required
-def region(request, pk, template="smsforum/community.html"):
+def region(request, pk=None, template="smsforum/community.html", add=False):
     context = {}
-    region = get_object_or_404(Region, id=pk)
+    region = (None if pk is None else get_object_or_404(Region, id=pk))
     if request.method == "POST":
-        f = RegionForm(request.POST, instance=region)
-        if not f.is_valid():
-            context['error'] = f.errors
+        form = RegionForm(request.POST, instance=region)
+        context['form'] = form
+        if not form.is_valid():
+            context['error'] = form.errors
         else:
             # TODO - move this logic to forms.py
-            region = f.save()
-            if 'communities' in f.cleaned_data and len(f.cleaned_data['communities'])>0:
-                region.add_children(*f.cleaned_data['communities'])
+            region,created =Region.objects.get_or_create( name=form.cleaned_data['name'] )
+            context['status'] = _("Region '%(region_name)s' successfully editted" % \
+                                  {'region_name':region.name} )
+            if add:
+                # this looks rather hackish
+                if created:
+                    context['status'] = _("Region '%(region_name)s' successfully created" % \
+                                          {'region_name':region.name} )
+                else:
+                    context['status'] = _("Region already exists!")
+            if 'communities' in form.cleaned_data and len(form.cleaned_data['communities'])>0:
+                region.add_children(*form.cleaned_data['communities'])
             else:
                 region.remove_all_children()
             region.save()
-    context['form'] = RegionForm(instance=region)
-    context['title'] = _("EDIT REGION")
+    else:
+        context['form'] = RegionForm(instance=region)
+    if region:
+        context['delete_link'] = reverse('delete_region', args=[region.pk])
+    context['title'] = (_("Add Region") if pk is None else _("EDIT REGION"))
     context['village'] = region
+    context['previous_link'] = reverse('regions')
+    return render_to_response(request, template, context)
+
+@login_required
+def add_region(request, template="smsforum/add.html"):
+    return region(request, template=template, add=True)
+
+@login_required
+def delete_region(request, pk, template="smsforum/confirm_delete.html"):
+    context = {}
+    community = get_object_or_404(Region, id=pk)    
+    if request.method == "POST":
+        if request.POST["confirm_delete"]:
+            community.delete()
+            return HttpResponseRedirect(reverse('regions'))
+    context['village'] = community
     return render_to_response(request, template, context)
 
 @login_required
@@ -375,7 +407,7 @@ def delete_village(request, pk, template="smsforum/confirm_delete.html"):
                 log.village = None
                 log.save()
             village.delete()
-            return HttpResponseRedirect("../../villages")
+            return HttpResponseRedirect(reverse('regions'))
     context['village'] = village
     return render_to_response(request, template, context)
 
@@ -394,24 +426,8 @@ def add_village(request, template="smsforum/add.html"):
                 context['status'] = _("Form invalid")
     context['form'] = VillageForm()
     context['title'] = _("Add Village")
+    context['previous_link'] = reverse("regions")
     return render_to_response(request, template, context)    
-
-@login_required
-def add_region(request, template="smsforum/add.html"):
-    context = {}
-    if request.method == 'POST':
-        form = RegionForm(request.POST)
-        if form.is_valid():
-            v,created =Region.objects.get_or_create( name=form.cleaned_data['name'] )
-            if created:
-                context['status'] = _("Region '%(village_name)s' successfully created" % {'village_name':v.name} )
-            else:
-                context['status'] = _("Region already exists!")
-        else:
-                context['status'] = _("Form invalid")
-    context['form'] = RegionForm()
-    context['title'] = _("Add Region")
-    return render_to_response(request, template, context) 
 
 def totals(context):
     context['village_count'] = Village.objects.all().count()
@@ -457,8 +473,8 @@ def add_member(request, village_id=0, member_id=0, template="contacts/phone_numb
             if phone_number_query:
                 # try to find a matching contact
                 try:
-                    cxn = ChannelConnection.objects.get(user_identifier=phone_number_query)
-                except ChannelConnection.DoesNotExist:
+                    cxn = PersistantConnection.objects.get(identity=phone_number_query)
+                except PersistantConnection.DoesNotExist:
                     # if nothing matches, create new contact
                     form = GSMContactForm()
                     form.initial = {'phone_number':phone_number_query}
@@ -468,7 +484,7 @@ def add_member(request, village_id=0, member_id=0, template="contacts/phone_numb
                 else:
                     # if contact matches, redirect to that contact's edit page
                     return HttpResponseRedirect("/village/%s/member/add/%s" % \
-                                                (village_id, cxn.contact.id) )
+                                                (village_id, cxn.reporter.profile.id) )
                     # when we move to django 1.1, use the following intead:
                     # redirect(add_member, village_id, cxn.contact.id)
             else:
@@ -504,21 +520,9 @@ def add_member(request, village_id=0, member_id=0, template="contacts/phone_numb
 @login_required
 def edit_member(request, pk, template="contacts/edit.html"):
     context = {}
-    contact = get_object_or_404(Contact, id=pk)
-    if request.method == "POST":
-        form = GSMContactForm(request.POST, instance=contact)
-        if form.is_valid():
-            form.save()
-            context['status'] = _("Member '%(contact_name)s' successfully updated" % \
-                                {'contact_name':contact.signature} )
-        else:
-            context['error'] = form.errors
-    else:
-        form = GSMContactForm(instance=contact)
-    context['form'] = form
-    context['title'] = _("Edit Member") + " " + contact.signature
-    context['contact'] = contact
-    return render_to_response(request, template, context)
+    context['previous_link'] = reverse('citizens')
+    return edit_contact(request, pk, template="contacts/edit.html", 
+                        context=context)
 
 @login_required
 def index(request, template="smsforum/index.html"):

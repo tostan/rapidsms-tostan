@@ -675,6 +675,10 @@ msgstr "Filtrer par région"
 msgid "Filter by Village"
 msgstr "Filtrer par communauté"
 
+#: .\apps\smsforum\templates\smsforum\partials\region_community_dropdown.html.py:20
+msgid "Filter by Community"
+msgstr "Filtrer par communauté"
+
 #: .\apps\smsforum\templates\smsforum\partials\search.html.py:4
 #: .\apps\userprofile\templates\userprofile\avatar\choose.html.py:57
 msgid "Search"

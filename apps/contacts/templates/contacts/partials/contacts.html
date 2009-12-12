@@ -31,9 +31,9 @@
                 {% if perms.reporters.can_view %}
                 	<td>
 	                {% if edit_link %}
-	                    <a href="{{ edit_link }}{{ contact.pk }}"{% if contact.common_name %}>{{ contact.common_name }}{% else %} class="unknown">Unknown{% endif %}</a>            
+	                    <a href="{{ edit_link }}{{ contact.pk }}"{% if contact.common_name %}>{{ contact.common_name }}{% else %} class="unknown">{% trans 'Unknown' %}{% endif %}</a>            
 	                {% else %}
-	                    <a href="/contact/edit/{{ contact.pk }}"{% if contact.common_name %}>{{ contact.common_name }}{% else %} class="unknown">Unknown{% endif %}</a>            
+	                    <a href="/contact/edit/{{ contact.pk }}"{% if contact.common_name %}>{{ contact.common_name }}{% else %} class="unknown">{% trans 'Unknown' %}{% endif %}</a>            
 	                {% endif %}
 	                </td>
 	

@@ -518,11 +518,6 @@ msgstr "Gestion des communautés"
 # as in "i am a member of this village"
 # show all members of a village
 # e.g. '.citizens village_name'
-#: .\apps\smsforum\templates\smsforum\manage.html.py:20
-#, fuzzy
-msgid "Manage members"
-msgstr "Gestion des membres"
-
 #: .\apps\smsforum\templates\smsforum\manage.html.py:27
 msgid "Edit, translate, and categorize messages"
 msgstr "Modifier, traduire ou categoriser les messages"
@@ -557,7 +552,7 @@ msgstr "Date d'inscription"
 #: .\apps\smsforum\templates\smsforum\member.html.py:27
 #: .\apps\smsforum\templates\smsforum\members.html.py:24
 #: .\apps\smsforum\templates\smsforum\partials\citizens.html.py:19
-msgid "Sent to Tostan"
+msgid "Sent To Tostan"
 msgstr "Envoyés à Tostan"
 
 #: .\apps\smsforum\templates\smsforum\member.html.py:28
@@ -629,6 +624,9 @@ msgstr "Messages"
 msgid "Village"
 msgstr "Communauté"
 
+msgid "Communities"
+msgstr "Les Communautés"
+
 #: .\apps\smsforum\templates\smsforum\partials\messages.html.py:29
 msgid "Translation"
 msgstr "Traduction"
@@ -686,12 +684,12 @@ msgstr "Rechercher"
 
 #: .\apps\smsforum\templates\smsforum\partials\search.html.py:12
 #: .\apps\smsforum\templates\smsforum\partials\total.html.py:12
-msgid "Sent to Tostan This Week"
+msgid "Sent To Tostan This Week"
 msgstr "Envoyés à Tostan cette semaine"
 
 #: .\apps\smsforum\templates\smsforum\partials\search.html.py:13
 #: .\apps\smsforum\templates\smsforum\partials\total.html.py:13
-msgid "Sent from Tostan"
+msgid "Sent From Tostan"
 msgstr "Envoyés de Tostan"
 
 #: .\apps\smsforum\templates\smsforum\partials\total.html.py:4
@@ -726,6 +724,9 @@ msgstr "Visualiser les messages et les membres d'une communauté ou un groupe de
 msgid "Send an SMS message to one or a group of communities"
 msgstr "Envoyer un message à une communauté ou un groupe de communautés"
 
+msgid "Send an SMS Message"
+msgstr "Envoyer un message SMS"
+
 #: .\apps\tostan\templates\tostan\dashboard.html.py:29
 msgid "Export data to Excel"
 msgstr "Exporter des données vers Excel"
@@ -733,6 +734,10 @@ msgstr "Exporter des données vers Excel"
 #: .\apps\tostan\templates\tostan\dashboard.html.py:36
 msgid "Manage communities, citizens, and messages"
 msgstr "Gestion des communautés, des membres et des messages"
+
+#: .\apps\tostan\templates\tostan\dashboard.html.py:36
+msgid "Manage Community Membership"
+msgstr "Gestion des membres des communautés"
 
 #: .\apps\tostan\templates\tostan\dashboard.html.py:44
 msgid "SMS Command Reference"
@@ -761,6 +766,9 @@ msgstr "Messages reçus de Tostan"
 #: .\apps\tostan\templates\tostan\export.html.py:33
 msgid "Current Membership"
 msgstr "Inscription actuelle"
+
+msgid "Membership"
+msgstr "Gestion des Membres Des Communautés"
 
 #: .\apps\tostan\templates\tostan\export.html.py:38
 msgid "Membership Activity Log"
@@ -2331,4 +2339,18 @@ msgstr ""
 #: .\apps\userprofile\templatetags\avatars.py:98
 msgid "You have to provide only the size as             an integer (both sides will be equal) and optionally, the             username."
 msgstr ""
+
+msgid "Cancel"
+msgstr "Annuler"
+
+msgid "None"
+msgstr "Aucun"
+
+msgid "Send SMS Messages"
+msgstr "Envoyer Les Messages SMS"
+
+msgid "Unknown"
+msgstr "inconnu"
+
+
 

@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+{% load i18n %}
+{% block title %}The Jokko Initiative - A RapidSMS Project by Tostan{% endblock %}
+{% block content %}
+
+<div class="module">
+
+<h1>{% trans "Send an SMS message to one or a group of communities" %}</h1>
+
+{% include 'smsforum/partials/region_community_dropdown.html' %}
+
+{% include 'contacts/partials/contacts.html' %}
+
+<p/><p/>
+<form>
+
+			<textarea cols="40" rows="6"></textarea>
+			<input type="button" class="send" value="{% trans 'Send SMS Messages' %}" />
+			<input type="button" class="cancel" value="{% trans 'Cancel' %}" disabled="disabled" />
+
+</form>
+
+</div>
+{% endblock %}

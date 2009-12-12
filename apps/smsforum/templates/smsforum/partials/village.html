@@ -14,10 +14,10 @@
 		</form>
 	{% else %}
 		<table><tr><td>
-			Name: </td><td> {{ form.instance.name }}</td></tr><tr><td>
-			Latitude: </td><td>{{ form.instance.location.latitude }}</td></tr><tr><td>
-			Longitude: </td><td>{{ form.instance.location.longitude }}</td></tr><tr><td>
-			Notes: </td><td>{{ form.instance.notes }}</td></tr>
+			{% trans 'Name' %}: </td><td> {{ form.instance.name }}</td></tr><tr><td>
+			{% trans 'Latitude' %}: </td><td>{{ form.instance.location.latitude }}</td></tr><tr><td>
+			{% trans 'Longitude' %}: </td><td>{{ form.instance.location.longitude }}</td></tr><tr><td>
+			{% trans 'Notes' %}: </td><td>{{ form.instance.notes }}</td></tr>
 		</table>
 	{% endif %}
 

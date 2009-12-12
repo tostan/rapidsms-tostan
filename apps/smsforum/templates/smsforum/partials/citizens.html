@@ -24,7 +24,7 @@
 		<tbody>{% if members.object_list %}{% for member in members.object_list %}
 			<tr>
                 {% if perms.reporters.can_view %}
-	                <td><a href="/member/{{ member.pk }}"{% if member.common_name %}>{{ member.common_name }}{% else %} class="unknown">Unknown{% endif %}</a></td>
+	                <td><a href="/member/{{ member.pk }}"{% if member.common_name %}>{{ member.common_name }}{% else %} class="unknown">{% trans 'Unknown' %}{% endif %}</a></td>
 					<td>{% if member.reporter.first_name %}{{ member.reporter.first_name }}{% else %}<span class="na">n/a</span>{% endif %}</td>
 					<td>{% if member.reporter.last_name %}{{ member.reporter.last_name }}{% else %}<span class="na">n/a</span>{% endif %}</td>
 	                <td>{% if member.phone_number %}{{ member.phone_number }}{% else %}<span class="na">n/a</span>{% endif %}</td>

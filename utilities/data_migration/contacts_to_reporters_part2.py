@@ -51,5 +51,7 @@ def run():
     cursor.execute("ALTER TABLE `contacts_contact` DROP COLUMN `location`;")
     cursor.execute("ALTER TABLE `contacts_contact` DROP COLUMN `_locale`;")
 
+    cursor.execute("DROP TABLE `contacts_channelconnection`;")
+    cursor.execute("DROP TABLE `contacts_communicationchannel`;")
     print "done"
 

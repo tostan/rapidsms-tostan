@@ -5,13 +5,13 @@
 DEPENDENCIES: 
 logger, contacts
 """
-
+import logging
 import re, os
 import rapidsms
 from rapidsms.parsers.bestmatch import BestMatch, MultiMatch
 import gettext
 import traceback
-from apps.smsforum.models import Village, villages_for_contact
+from apps.smsforum.models import Village, villages_for_contact, MembershipLog
 from apps.contacts.models import Contact
 
 MAX_LATIN_SMS_LEN = 160 
@@ -374,11 +374,17 @@ class App(rapidsms.app.App):
         try:
             # EXACT MATCH ONLY!
             ville=Village.objects.get(name=arg)
+            # the following really shouldn't be necessary
+            # but under MySQL InnoDB, this seems to be required
+            logs = MembershipLog.objects.filter(village=ville)
+            for log in logs:
+                log.village = None
+                log.save()
             ville.delete()
             # self.village_matcher.remove_target(arg)
             self.__reply(msg, "remove-success %(village)s", {'village': arg})
             return True
-        except:
+        except Exception, e:
             rsp= _st(msg.sender,"village-not-known %(unknown)s") % {'unknown':arg} 
             self.debug(rsp)
             self.__reply(msg,rsp)
@@ -743,7 +749,7 @@ class App(rapidsms.app.App):
                 msg.persistent_msg.domains.add(domain)
         else:
             logging.error('persistent_msg not create for msg: %s from %s' % \
-                          (msg.txt, msg.sender.signature) )
+                          (msg.text, msg.sender.signature) )
 
     def _check_message_length(self, text):
         """

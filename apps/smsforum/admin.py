@@ -17,4 +17,4 @@ class VillageAdmin(admin.ModelAdmin):
 
 admin.site.register(Village, VillageAdmin)
 admin.site.register(Region)
-admin.site.register(VillageAlias)
+admin.site.register(CommunityAlias)

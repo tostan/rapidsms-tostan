@@ -30,6 +30,5 @@ urlpatterns = patterns('',
     url(r'^member/edit/(?P<pk>\d+)$',                 views.edit_member),
     url(r'^i18n/',                                    include('django.conf.urls.i18n')),
     #url(r'^community/add$',                          views.add_community),
-    url(r'^memberships$',                               views.memberships),
 )
 

@@ -71,7 +71,7 @@ class TestSMSCommands (TestScript):
         8005551212 > .lang joo
         8005551212 < kasankenak kanu fajulumi ku 'Joola'
         8005551212 > .lang pul
-        8005551212 < Åemngal ngal cuøi- daa ko Pulaar.
+        8005551212 < Demngal ngal cuøi- daa ko Pulaar.
         """
     
     testAllCommandsEnglish = """
@@ -137,19 +137,19 @@ class TestSMSCommands (TestScript):
                 
     testAllCommandsPulaar = u"""
         8005551220 > .lang pul
-        8005551220 < Åemngal ngal cuøi- daa ko Pulaar.
+        8005551220 < Demngal ngal cuøi- daa ko Pulaar.
         8005551220 > .créer village8
-        8005551220 < Sahre nåe sinicaa ko village8
+        8005551220 < Sahre nde sinicaa ko village8
         8005551220 > .naalde village8
-        8005551220 < a Jaaraama nåe tawtu - åaa e Sahre nåe 'village8' - Bisimilla!
+        8005551220 < a Jaaraama nde tawtu - daa e Sahre nde 'village8' - Bisimilla!
         8005551220 > .tawtude village8
-        8005551220 < a Jaaraama nåe tawtu - åaa e Sahre nåe 'village8' - Bisimilla!
+        8005551220 < a Jaaraama nde tawtu - daa e Sahre nde 'village8' - Bisimilla!
         8005551220 > .yettoode foo
-        8005551220 < Jam waali foo. A jaaraama nåe møinndu - åaa innåe. Maa feeñoy e kala nåe  nulåu-åon kaøaaruuji.
+        8005551220 < Jam waali foo. A jaaraama nde møinndu - daa innde. Maa feeñoy e kala nde  nuldu-don kaøaaruuji.
         8005551220 > message to blast
-        8005551220 < nulåu feewåe e 'village8'
+        8005551220 < nuldu feewde e 'village8'
         8005551220 > .yaltude village8
-        8005551220 < On ngiwii to sahre to 'village8' haa nalnde woånde
+        8005551220 < On ngiwii to sahre to 'village8' haa nalnde wodnde
         8005551220 > .dallal
         8005551220 < Vous pouvez texter: #naalde VILLAGE - #yaltude - #yettoode NAME - #help-pul
         """

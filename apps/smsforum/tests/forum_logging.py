@@ -46,12 +46,20 @@ class TestLogging (TestScript):
         count = get_outgoing_message_count_to(members)
         self.assertEquals(count,6)
 
+    def testAliases(self):
+        v = Village(name="original")
+        v.save()
+        v2 = CommunityAlias(community=v.community, alias="alias")
+        v2.save()
+        test_outgoing_message_log = """
+            8005551210 > .join alias
+            8005551210 < Thank you for joining the original community - welcome!
+        """
+
 def contacts_from_identity(identity):
     """ Gets a 'contact' given a user_identifier
     WARNING: This function assumes the identifier is globally unique
     """
     conn = PersistantConnection.objects.get(identity=identity)
     return Contact.objects.get(reporter=conn.reporter)
-
-
 

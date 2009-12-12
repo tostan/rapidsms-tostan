@@ -115,10 +115,26 @@ class Community(NodeSet):
     sec_pwd_protect_blast = property(__get_sec_admin_cmds_pwd_protected, \
                                __set_sec_admin_cmds_pwd_protected)
 
+class CommunityAlias(models.Model):
+    alias = models.CharField(max_length=255, blank=False)
+    community = models.ForeignKey(Community, related_name='aliases')
+    
+    # TODO - add a check to make sure we don't create villages that
+    # are the same as existing village names. 
+
 class Village(Community):
+    def _get_aliases(self):
+        return self.community.aliases
+    
+    def _set_aliases(self,val):
+        self.community.aliases=val
+        self.community.save()
+    locale=property(_get_aliases,_set_aliases)
+    
     #################################
     # NodeSet overrides for logging #
     #################################
+            
     @transaction.commit_on_success
     def add_children(self,*sub_nodes):
         NodeSet.add_children(self, *sub_nodes)
@@ -132,13 +148,6 @@ class Village(Community):
         for n in subnodes:
             c=n._downcast(klass=Contact)
             MembershipLog(village=self, contact=c, action='D').save()
-
-class VillageAlias(models.Model):
-    alias = models.CharField(max_length=255, blank=False)
-    village = models.ForeignKey(Village, related_name='aliases')
-    
-    # TODO - add a check to make sure we don't create villages that
-    # are the same as existing village names. 
 
 class Region(Community):
     """ If we wanted to be truly generic, we could define 'communities'
@@ -159,8 +168,8 @@ ACTION = (
 
 class MembershipLog(models.Model):
     date = models.DateTimeField(null=False, default = datetime.utcnow )
-    village = models.ForeignKey(Village,null=True, default=None, related_name='parent') #can reference a deleted nodeset
-    contact = models.ForeignKey(Contact,null=True, default=None, related_name='child') #can reference a deleted node
+    village = models.ForeignKey(Village, null=True, default=None, related_name='parent') #can reference a deleted nodeset
+    contact = models.ForeignKey(Contact, null=True, default=None, related_name='child') #can reference a deleted node
     action = models.CharField(max_length=1, choices=ACTION, null=False)
     
     def __unicode__(self):

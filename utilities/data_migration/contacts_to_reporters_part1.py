@@ -7,12 +7,14 @@
 from the old contacts models into the new reporters model
 
 """
+from django.db import connection
 
 def run():
     print "starting contacts to reporters part 1"
     create_backends()
     create_reporters()
     remove_channels()
+    cleanup()
     print "done"                 
             
 def create_backends():
@@ -34,7 +36,11 @@ def create_reporters():
     from apps.contacts.models import Contact, CommunicationChannel, ChannelConnection
     from apps.reporters.models import Reporter, PersistantBackend, PersistantConnection
 
+    # add reporter_id, allowing null values for now
+    cursor = connection.cursor()
     cursor.execute("ALTER TABLE `contacts_contact` ADD COLUMN `reporter_id` INT(11) DEFAULT NULL AFTER `node_ptr_id`;")
+    cursor.execute("ALTER TABLE `contacts_contact` ADD CONSTRAINT `reporter_id_refs_id_32f59ca5` FOREIGN KEY (`reporter_id`) REFERENCES `reporters_reporter` (`id`);")
+    cursor.execute("ALTER TABLE `contacts_contact` ADD CONSTRAINT UNIQUE `reporter_id_unique` (`reporter_id`);")
 
     all_contacts = Contact.objects.all()
     for contact in all_contacts:
@@ -47,6 +53,9 @@ def create_reporters():
         rep.last_name = contact.family_name
         rep.language = contact._locale
         rep.save()
+        
+        contact.reporter = rep
+        contact.save()
         
         # check
         conns = contact.channel_connections.all()
@@ -64,7 +73,15 @@ def create_reporters():
             new_conn.reporter = rep
             new_conn.save()
             conn.delete()
-        
+                   
+    # check
+    unassociated_contacts = Contact.objects.filter(reporter=None)
+    if len(unassociated_contacts)>0:
+        print "PROBLEMS WITH GENERATING REPORTERS!"
+        print "UNASSOCIATED: "
+        for con in unassociated_contacts:
+            print " contact id: %s\n" % con.id 
+
     # check
     contact_count = all_contacts.count()
     reporter_count = Reporter.objects.all().count()
@@ -98,7 +115,21 @@ Fields that stay in contact:
         _quota_receive_seen = models.PositiveSmallIntegerField(default=0) # num messages seen in current period
 
 """
+            
+def cleanup():
+    cursor = connection.cursor()
+    cursor.execute("ALTER TABLE `contacts_contact` MODIFY COLUMN `reporter_id` INT(11) NOT NULL AFTER `node_ptr_id`;")
 
+    # manually trim old db tables
+    cursor.execute("ALTER TABLE `contacts_contact` DROP COLUMN `given_name`;")
+    cursor.execute("ALTER TABLE `contacts_contact` DROP COLUMN `family_name`;")
+    cursor.execute("ALTER TABLE `contacts_contact` DROP COLUMN `unique_id`;")
+    cursor.execute("ALTER TABLE `contacts_contact` DROP COLUMN `location_id`;")
+    cursor.execute("ALTER TABLE `contacts_contact` DROP COLUMN `_locale`;")
+    
+    cursor.execute("DROP TABLE `smsforum_community`;")
+    cursor.execute("RENAME TABLE `smsforum_village` TO `smsforum_community`;")
+    cursor.execute("ALTER TABLE `smsforum_community` ADD COLUMN `notes` longtext AFTER `location_id`;")
+    cursor.execute("DROP TABLE `smsforum_villagealias`;")
+    cursor.execute("DROP TABLE `smsforum_membershiplog`;")
 
-
-        

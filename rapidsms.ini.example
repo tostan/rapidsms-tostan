@@ -11,7 +11,7 @@
 # backends=[backend1,backend2,...]  * comma-separated list of backends to load
 
 [rapidsms]
-apps=webui,admin,httptester,smsforum,nodegraph,contacts,logger,tostan,locations,tagging
+apps=webui,admin,userprofile,smsforum,nodegraph,contacts,logger,locations,tagging,tostan,patterns,reporters,django_extensions,logtracker
 backends=http,gsm
 
 # Database configuration info.
@@ -25,10 +25,10 @@ backends=http,gsm
 
 [database]
 engine=mysql
-name=rapidsms_tostan
-user=root
-password=
-#host=
+name=rapidsms_tostan_july_15_migration
+user=admin
+password=tostan
+host=localhost
 #port=
 
 # -- LOG
@@ -107,19 +107,18 @@ password=alpha321
 [django]
 AUTH_PROFILE_MODULE=tostan.tostanprofile
 USERPROFILE_MEDIA_ROOT=apps/userprofile/static
-LANGUAGE_CODE=fr
 
 login_redirect_url=/
 USE_DJANGO_STATIC_SERVER=True
 
-EMAIL_HOST='smtp.gmail.com'
+EMAIL_HOST=smtp.gmail.com
 EMAIL_PORT=587
-EMAIL_HOST_USER='notifications@dimagi.com'
-EMAIL_HOST_PASSWORD='alpha321'
+EMAIL_HOST_USER=notifications@dimagi.com
+EMAIL_HOST_PASSWORD=alpha321
 EMAIL_USE_TLS=True
 
 # hm, Schuyler's local settings.py doesn't seem to work on this rapidsms
 # hack to get login url changed temporarily
-LOGIN_URL='/login/'
-LOGOUT_URL='/logout/'
+LOGIN_URL=login
+LOGOUT_URL=logout
 

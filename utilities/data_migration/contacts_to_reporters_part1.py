@@ -33,6 +33,9 @@ def create_backends():
 def create_reporters():
     from apps.contacts.models import Contact, CommunicationChannel, ChannelConnection
     from apps.reporters.models import Reporter, PersistantBackend, PersistantConnection
+
+    cursor.execute("ALTER TABLE `contacts_contact` ADD COLUMN `reporter_id` INT(11) DEFAULT NULL AFTER `node_ptr_id`;")
+
     all_contacts = Contact.objects.all()
     for contact in all_contacts:
         print "processing contact %s" % contact.get_signature()

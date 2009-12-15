@@ -40,7 +40,7 @@ _G = {
         'pul':['Pulaar','Pular'],
         'wol':['Wolof'],
         'dyu':['Joola','Dyula','Dioula','Diola'],
-        'snk':['Soninke','Soninké','Sooninké','Sooninke'],
+        'snk':['Sooninke','Soninke','Soninké','Sooninké'],
         'mnk':['Mandinka'],
         'fr':[u'Français',u'Francais'],
         'en':['English'],

@@ -8,6 +8,7 @@ from rapidsms.message import Message
 from rapidsms.connection import Connection
 from apps.nodegraph.models import Node
 from apps.locations.models import Location
+from apps.reporters.models import Reporter
 import math
 from rapidsms import utils
 import traceback
@@ -109,6 +110,8 @@ class Contact(Node):
     __PERM_ADMIN=0x04
     __PERM_IGNORE=0x08 # trumps the others
 
+    # This is  loosely modeled on how django user profiles work.
+    reporter = models.ForeignKey(Reporter, unique=True, related_name="profile")
 
     #
     # Table columns

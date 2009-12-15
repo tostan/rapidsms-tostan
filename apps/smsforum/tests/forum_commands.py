@@ -71,7 +71,7 @@ class TestSMSCommands (TestScript):
         8005551212 > .lang joo
         8005551212 < kasankenak kanu fajulumi ku 'Joola'
         8005551212 > .lang pul
-        8005551212 < Demngal ngal cuøi- daa ko Pulaar.
+        8005551212 < Demngal ngal cubi- daa ko Pulaar.
         """
     
     testAllCommandsEnglish = """
@@ -137,7 +137,7 @@ class TestSMSCommands (TestScript):
                 
     testAllCommandsPulaar = u"""
         8005551220 > .lang pul
-        8005551220 < Demngal ngal cuøi- daa ko Pulaar.
+        8005551220 < Demngal ngal cubi- daa ko Pulaar.
         8005551220 > .créer village8
         8005551220 < Sahre nde sinicaa ko village8
         8005551220 > .naalde village8

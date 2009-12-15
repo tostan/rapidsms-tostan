@@ -72,7 +72,7 @@ class Reporter(models.Model):
        using the system - but there are always exceptions to these rules..."""
     # unique_id could be an alias, phone number, ip, etc.
     # just a unique way of representing a reporter
-    unique_id   = models.CharField(max_length=64, unique=True)
+    alias   = models.CharField(max_length=64, unique=True, null=True, blank=True)
 
     first_name = models.CharField(max_length=30, blank=True)
     last_name  = models.CharField(max_length=30, blank=True)
@@ -123,7 +123,7 @@ class Reporter(models.Model):
     def signature(self):
         if len(self.first_name)==0:
             if len(self.last_name)==0:
-                return ( "%s" % self.unique_id )
+                return ( "%s" % self.alias )
             return ( "%s" % self.last_name )
         return self.full_name()        
     
@@ -133,12 +133,12 @@ class Reporter(models.Model):
     def __repr__(self):
         return "%r (%r)" % (
             self.full_name(),
-            self.unique_id)
+            self.alias)
     
     def __json__(self):
         return {
             "pk":         self.pk,
-            "unique_id":   self.unique_id,
+            "alias":   self.alias,
             "first_name": self.first_name,
             "last_name":  self.last_name,
             "str":        unicode(self) }
@@ -152,7 +152,7 @@ class Reporter(models.Model):
             # was passed in, and if they are already linked then this
             # reporter already exists
             existing_conn = PersistantConnection.objects.get\
-                (backend=connection.backend, unique_id=connection.identity)
+                (backend=connection.backend, alias=connection.identity)
             # this currently checks first and last name, location and role.
             # we may want to make this more lax
             filters = {"first_name" : reporter.first_name,
@@ -452,7 +452,7 @@ def connection_from_message(msg,save=True):
         # PersisentConnection (e.g. service provider) and id (e.g. phone number)
         # combo aren't known, so we need a blank Reporter for this combo.
         reporter=Reporter() # debug id is only 16 char
-        reporter.unique_id = u_id
+        reporter.alias = u_id
         reporter.save()
         if len(rs)==0:
             connection=PersistantConnection(identity=u_id,\

@@ -284,11 +284,11 @@ class TestApp (TestScript):
         print 
         print 'Unique ID tests'
         user1 = self.m_nodes[0]
-        user1.reporter.unique_id = 'Fred01'
+        user1.reporter.alias = 'Fred01'
         user1.save()
         
         user2 = self.m_nodes[1]
-        user2.reporter.unique_id = 'Fred01'
+        user2.reporter.alias = 'Fred01'
         try:
             user2.save()
         except Exception, ex:
@@ -297,7 +297,7 @@ class TestApp (TestScript):
             # should have thrown
             self.assertTrue(False)
             
-        user2.reporter.unique_id = 'Fred02'
+        user2.reporter.alias = 'Fred02'
         user2.save()   
     
     def testAge(self):

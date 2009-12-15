@@ -26,7 +26,7 @@ def csv(request, format='csv'):
     if request.user.has_perm('contacts.can_view'):
         return export(Contact.objects.all(), \
             ['id','node_ptr','first_seen','reporter.first_name','reporter.last_name',\
-             'common_name','reporter.unique_id','location','gender','age_months','_locale'])
+             'common_name','reporter.alias','location','gender','age_months','_locale'])
     return export(Contact.objects.all(), \
         ['id','node_ptr','first_seen','location','gender','age_months','_locale'])
 

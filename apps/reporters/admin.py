@@ -7,7 +7,7 @@ from reporters.models import *
 from django.core.urlresolvers import reverse
 
 class ReporterAdmin(admin.ModelAdmin):
-    list_display = ('id','unique_id','first_name','last_name')
+    list_display = ('id','alias','first_name','last_name')
     list_filter = []    
 
 

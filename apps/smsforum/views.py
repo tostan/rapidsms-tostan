@@ -454,7 +454,7 @@ def export_village_membership(request, pk, format='csv'):
     members = village.flatten(klass=Contact)
     if request.user.has_perm('contacts.can_view'):
         return export(members, ['first_seen', 'given_name', 'family_name', 
-                                'common_name', 'unique_id', 'gender', 
+                                'common_name', 'reporter.alias', 'gender', 
                                 'age_months', '_locale'])
     return export(members, ['first_seen', 'gender', 
                             'age_months', '_locale'])

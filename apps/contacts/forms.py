@@ -41,7 +41,7 @@ class BasicContactForm(ModelForm):
             m.reporter = r
         m.reporter.first_name = self.fields['first_name'].value
         m.reporter.last_name = self.fields['last_name'].value
-        m.reporter.unique_id = self.fields['common_name']
+        m.reporter.alias = self.fields['common_name']
         m.reporter.save()
         m.perm_send = self.fields['perm_send'].value
         m.perm_receive = self.fields['perm_receive'].value

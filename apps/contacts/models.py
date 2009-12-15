@@ -195,13 +195,13 @@ class Contact(Node):
         is_reporter_created = False
         if not hasattr(self,'reporter'):
             is_reporter_created = True
-            r = Reporter(unique_id="temp")
+            r = Reporter(alias="temp")
             r.save()
             self.reporter = r
         self.reporter.save()
         super(Contact, self).save(*args, **kwargs)
         if is_reporter_created:
-            self.reporter.unique_id = self.pk
+            self.reporter.alias = self.pk
             self.reporter.save()
 
     #

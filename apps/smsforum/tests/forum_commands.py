@@ -170,7 +170,41 @@ class TestSMSCommands (TestScript):
         8005551220 > .rambenom
         8005551220 < Uciik #unoken karees kati esukey _ #upur _ #karees _ #rambenom
         """
-    
+
+    testAllCommandsSoninke = u"""
+        8005551220 > 123 lang soninke
+        8005551220 < Demngal ngal cubi- daa ko Soninke
+        8005551220 > .créer village10
+        8005551220 < Sahre nde sinicaa ko village10
+        8005551220 > .ro village10
+        8005551220 < Mama ti an ga ro 'village10' - Bisimilla!
+        8005551220 > .toxo foo
+        8005551220 < Bisimilla foo! Mama ti an ga da an toxon safa! A wa bangene xibaare su an ga riini a xayini.
+        8005551220 > message to blast
+        8005551220 < An xibaaren joofe i dingira 'village10'"
+        8005551220 > .giri village10
+        8005551220 < An bagu dingiran wa 'village10'. Ma ta tana!
+        8005551220 > .deema
+        8005551220 < 123 ro - 123 toxo - 123 giri - 123 deema
+        """
+        
+    testAllCommandsMandingo = u"""
+        8005551220 > 123 lang mandingo
+        8005551220 < La langue que vous avez sélectionnée est 'Mandingo'
+        8005551220 > 123 créer village11
+        8005551220 < Sahre nde sinicaa ko village11
+        8005551220 > 123 koo village11
+        8005551220 < nseewota na dunaa kaabiloo kono - a la mee tentula 'village11'!
+        8005551220 > .ntoo foo
+        8005551220 < mbee teentula foo kaatu nee ila too taale. Abe a sotola kiliri wokiliri kono.
+        8005551220 > message to blast
+        8005551220 < Miu njettiima, mesaaj ma nawaama to sahre to 'village11'
+        8005551220 > .nbetaamala village11
+        8005551220 < a la mee la boonaa seewo 'village11' kono.
+        8005551220 > .n'deemaa
+        8005551220 < 123 koo - 123 nbetaamala - 123 ntoo - 123 n'deemaa
+        """
+        
     testErrorCodes = """
         8005551216 > .join
         8005551216 < Sorry, I don't know that place. Did you mean one of: community name ?

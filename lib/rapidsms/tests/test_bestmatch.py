@@ -194,6 +194,48 @@ class TestBestMatch(unittest.TestCase):
         print "Test get aliases"
         self.assertTrue(set(self.cityM.get_aliases_for_target('boston'))==
                         set(['redsox country', 'the hub']))
+        
+    def test08Spaces(self):
+        class data():
+            pass
+        
+        print "Add 'spaceyname  ' to check for correct treatment of spacey behaviour"
+        matcher = BestMatch(targets=[('spaceyname  ', data())])
+        print "Search for spaceyname"
+        res = matcher.match('spaceyname  ')
+        print res
+        print "solution is '%s'" % res[0]
+        self.assertTrue(len(res)==1 and res[0]=='spaceyname')
+        res = matcher.match('spaceyname')
+        print res
+        print "solution is '%s'" % res[0]
+        self.assertTrue(len(res)==1 and res[0]=='spaceyname')
+
+        print "Add 'spaceyname  ' with aliases 'alias1 ', ' alias2', ' alias3 '"
+        matcher = BestMatch(targets=[['spaceyname  ', 'alias1 ',' alias2', ' alias3 ']])
+        print "Search for spaceyname"
+        res = matcher.match('spaceyname  ')
+        print res
+        print "solution is '%s'" % res[0]
+        self.assertTrue(len(res)==1 and res[0]=='spaceyname')
+        print "Search for alias3"
+        res = matcher.match(' alias3 ')
+        print res
+        print "solution is '%s'" % res[0]
+        self.assertTrue(len(res)==1 and res[0]=='spaceyname')
+        res = matcher.match('alias3')
+        print res
+        print "solution is '%s'" % res[0]
+        self.assertTrue(len(res)==1 and res[0]=='spaceyname')
+
+        print "Add 'spaceyname  ' with aliases 'alias1 ', ' alias2', ' alias3 '"
+        matcher = BestMatch(targets=[(['spaceyname  ', 'alias1 ',' alias2', ' alias3 '],data())])
+        print "Search for spaceyname"
+        res = matcher.match('spaceyname')
+        print res
+        print "solution is '%s'" % res[0]
+        self.assertTrue(len(res)==1 and res[0]=='spaceyname')
+
 
 if __name__ == '__main__':
     unittest.main()

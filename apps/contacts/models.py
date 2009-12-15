@@ -118,7 +118,7 @@ class Contact(Node):
     __PERM_SEND=0x02
     __PERM_ADMIN=0x04
     __PERM_IGNORE=0x08 # trumps the others
-    
+
     # This is  loosely modeled on how django user profiles work.
     reporter = models.ForeignKey(Reporter, unique=True, related_name="profile")
 

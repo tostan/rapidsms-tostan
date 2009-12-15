@@ -200,7 +200,9 @@ msgid "remove-fail_no-village"
 msgstr "Merci de renvoyer avec le nom d'une communauté, e.g.: '123 enlever village'"
 
 msgid "remove-success %(village)s"
-msgstr "La communauté '%(village)s' a eté enlevée."
+msgstr "Renndo '%(village)s' ngo ittaama" 
+#msgstr "La communauté '%(village)s' a eté enlevée."
+
 
 msgid "direct-blast-acknowledge %(text)s %(recipient)s"
 msgstr "Miu njettiima, mesaaj ma nawaama to sahre to '%(recipient)s'"

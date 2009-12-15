@@ -37,10 +37,12 @@ CMD_MESSAGE_MATCHER = re.compile(ur'^\s*'+CMD_MARKER+'\s*(\S+)?(.+)?',re.IGNOREC
 _G = { 
     'SUPPORTED_LANGS': {
         # 'deb':u'Debug',
-        'pul':['Pulaar'],
+        'pul':['Pulaar','Pular'],
         'wol':['Wolof'],
         'dyu':['Joola','Dyula','Dioula','Diola'],
-        'fr':[u'Français'],
+        'snk':['Sooninke','Soninke','Soninké','Sooninké'],
+        'mnk':['Mandinka'],
+        'fr':[u'Français',u'Francais'],
         'en':['English'],
         },
     'TRANSLATORS':dict(),
@@ -119,10 +121,11 @@ class App(rapidsms.app.App):
         self.cmd_targets = [ 
             # NOTE: make sure all commands are unicode strings!
             # Pulaar
-            ([u'naalde', u'naatde', u'tawtude'], {'lang':'pul','func':self.join}),
+            ([u'naalde', u'naatde', u'tawtude',u'naattugol'], {'lang':'pul','func':self.join}),
             (u'yettoode', {'lang':'pul','func':self.register_name}),
             ([u'yaltude',u'iwde'], {'lang':'pul','func':self.leave}),
             ([u'dallal',u'ballal'], {'lang':'pul','func':self.help}),
+            (u'penngugol', {'lang':'pul','func':self.create_village}),
             # Wolof
             ([u'boole', u'yokk', u'duggu'], {'lang':'wol','func':self.join}),
             ([u'genn', u'génn'], {'lang':'wol','func':self.leave}),
@@ -133,17 +136,29 @@ class App(rapidsms.app.App):
             ([u'karees', u'karees'], {'lang':'dyu','func':self.register_name}),
             ([u'upur', u'oupour'], {'lang':'dyu','func':self.leave}),
             (u'rambenom', {'lang':'dyu','func':self.help}),
+            # Soninke
+            (u'ro', {'lang':'snk','func':self.join}),
+            (u'toxo', {'lang':'snk','func':self.register_name}),
+            (u'bagu', {'lang':'snk','func':self.leave}),
+            (u'deema', {'lang':'snk','func':self.help}),
+            (u'taga', {'lang':'snk','func':self.create_village}),
+            # Mandinka
+            (u'koo', {'lang':'mnk','func':self.join}),
+            (u'ntoo', {'lang':'mnk','func':self.register_name}),
+            (u'nbetaamala', {'lang':'mnk','func':self.leave}),
+            (u"n'deemaa", {'lang':'mnk','func':self.help}),
             # French
             (u'entrer', {'lang':'fr','func':self.join}),
             (u'nom', {'lang':'fr','func':self.register_name}),
             (u'quitter', {'lang':'fr','func':self.leave}),
             (u'aide', {'lang':'fr','func':self.help}),
             ([u'créer', u'creer'], {'lang':'fr','func':self.create_village}),
+            (u'enlever', {'lang':'fr','func':self.destroy_community}),
+            (u'langue', {'lang':'fr','func':self.lang}),
             # English
             (u'join', {'lang':'en','func':self.join}),
             (u'name', {'lang':'en','func':self.register_name}),
             (u'leave', {'lang':'en','func':self.leave}),
-            (u'language', {'lang':'en','func':self.lang}),
             (u'help', {'lang':'en','func':self.help}),
             (u'create', {'lang':'en','func':self.create_village}),
             (u'member', {'lang':'en','func':self.member}),
@@ -403,7 +418,7 @@ class App(rapidsms.app.App):
                 self.__reply(msg, "name-register-fail_name-too-long %(name)s %(max_char)d", \
                              {'name':name, 'max_char':MAX_CONTACT_NAME_LEN} )
                 return True
-            msg.sender.common_name = name
+            msg.sender.common_name = name.strip()
             msg.sender.save()
             rsp=_st(msg.sender, "name-register-success %(name)s") % {'name':msg.sender.common_name}
             self.__reply(msg,rsp)

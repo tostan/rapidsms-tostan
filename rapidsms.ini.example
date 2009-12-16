@@ -61,6 +61,17 @@ default_lang=fr
 #admin_cmd_pwd=0000
 
 [logtracker]
+# this duplicates the email backend
+# because we want logtracker to work in runserver
+# independent of whether the email backend is set up in route
+smtp_host=smtp.gmail.com
+smtp_port=587
+# define incoming host
+imap_host=
+# define incoming port
+imap_port=
+username=notifications@dimagi.com
+password=alpha321
 default_alert_email=rluk@dimagi.com
 log_threshold=30
 alert_threshold=40
@@ -82,8 +93,8 @@ modem_log_level=debug
 port=8080
 
 [email]
-host=smtp.gmail.com
-port=587
+smtp_host=smtp.gmail.com
+smtp_port=587
 username=notifications@dimagi.com
 password=alpha321
 

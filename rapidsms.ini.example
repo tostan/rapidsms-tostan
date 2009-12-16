@@ -11,7 +11,7 @@
 # backends=[backend1,backend2,...]  * comma-separated list of backends to load
 
 [rapidsms]
-apps=webui,admin,userprofile,smsforum,nodegraph,contacts,logger,locations,tagging,tostan,patterns,reporters,django_extensions,logtracker
+apps=webui,admin,userprofile,smsforum,nodegraph,contacts,logger,locations,tagging,tostan,patterns,reporters,django_extensions
 backends=http,gsm
 
 # Database configuration info.
@@ -60,6 +60,11 @@ anon_perms = ['bednets.can_view']
 default_lang=fr
 #admin_cmd_pwd=0000
 
+[logtracker]
+default_alert_email=rluk@dimagi.com
+log_threshold=30
+alert_threshold=40
+
 # -- BACKENDS
 #
 # In this area you can define configurations for individual backends. The backend
@@ -76,6 +81,11 @@ modem_log_level=debug
 [http]
 port=8080
 
+[email]
+host=smtp.gmail.com
+port=587
+username=notifications@dimagi.com
+password=alpha321
 
 # -- DJANGO
 #

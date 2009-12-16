@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# Test  commentaire     by alioune  
+# Test  commentaire     by rowena
 # RapidSMS setup.py -- adapted from Django's with our heartfelt thanks
 from distutils.core import setup
 from distutils.command.build_py import build_py as _build_py

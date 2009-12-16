@@ -1,5 +1,6 @@
 #!/usr/bin/env python
-# Test  commentaire     by alioune  
+
+# Test  commentaire     by alioune updated   
 # RapidSMS setup.py -- adapted from Django's with our heartfelt thanks
 from distutils.core import setup
 from distutils.command.build_py import build_py as _build_py
@@ -7,7 +8,6 @@ from distutils.command.install import INSTALL_SCHEMES
 import os
 import sys
 import commands
-# commentaire  de  alioune 
 
 def fullsplit(path, result=None):
     """

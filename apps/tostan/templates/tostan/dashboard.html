@@ -16,17 +16,23 @@
 	</a>
 </td>
 <td>
-	{% if perms.smsforum.add_community or perms.tagging.change_tag %}
+	{% if perms.smsforum.add_community %}
 		<a href="{% url smsforum.views.manage %}">
 		<img src="/static/tostan/images/manage.png"/><br/>
 			{% trans "Manage communities, citizens, and messages" %}
 		</a>
 	{% else %}
 		{% if perms.contacts.change_contact %}
-		<a href="{% url smsforum.views.memberships %}">
+		<a href="{% url 404 %}">
 			<img src="/static/tostan/images/membership.png"/><br/>
 				{% trans "Manage Memberships" %}
-			</a>		
+			</a>
+		{% endif %}
+		{% if perms.tagging.change_tag %}
+			<a href="{% url smsforum.views.messages %}">
+				<img src="/static/tostan/images/translate.jpg"/><br/>
+				{% trans "Edit, translate, and categorize messages" %}
+			</a>
 		{% endif %}
 	{% endif %}
 </td>

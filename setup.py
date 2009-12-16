@@ -7,6 +7,7 @@ from distutils.command.install import INSTALL_SCHEMES
 import os
 import sys
 import commands
+# commentaire  de  alioune 
 
 def fullsplit(path, result=None):
     """

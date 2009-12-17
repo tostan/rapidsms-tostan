@@ -5,13 +5,15 @@
 #
 # 1. Change 'NAME' variable to the name of your project. E.g. "bednets_for_nigeria"
 # 2. Place this file in the TOP-LEVEL of your project, right where 'manage.py' is
-# 3. Link it into /etc/init.d e.g. > ln -s /usr/local/my_project/rapidsms-init.sh /etc/init.d/
+# 3. Link it into /etc/init.d e.g. > ln -s /usr/local/my_project/route-init.sh /etc/init.d/
 # 4. Add it to the runlevels, on Ubuntu/Debian there is a nice tool to do this for you:
-#    > sudo update-rc.d rapidsms-init.sh defaults
+#    > sudo update-rc.d route-init.sh defaults
 #
 # NOTE: If you want to run multiple instances of RapidSMS, just put this init file in each project dir,
 #       set a different NAME for each project, link it into /etc/init.d with _different_ names,
 #       and add _each_ script to the runlevels.
+# To Remove: On Ubuntu/Debian, you can remove this from the startup scripts by running
+#    > sudo update-rc.d route-init.sh remove
 #
 
 ### BEGIN INIT INFO
@@ -30,7 +32,7 @@ ME=`readlink -f $0`
 WHERE_AM_I=`dirname $ME`
 
 ############### EDIT ME ##################
-NAME="smsforum" # change to your project name
+NAME="smsforum_route" # change to your project name
 DAEMON=$WHERE_AM_I/manage.py
 DAEMON_OPTS=""
 RUN_AS=root

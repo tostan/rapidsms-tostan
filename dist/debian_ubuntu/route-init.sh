@@ -4,7 +4,7 @@
 # IMPORTANT: To use, do the folling:
 #
 # 1. Change 'NAME' variable to the name of your project. E.g. "bednets_for_nigeria"
-# 2. Place this file in the TOP-LEVEL of your project, right where 'manage.py' is
+# 2. Place this file in the TOP-LEVEL of your project, right where 'rapidsms' is
 # 3. Link it into /etc/init.d e.g. > ln -s /usr/local/my_project/route-init.sh /etc/init.d/
 # 4. Add it to the runlevels, on Ubuntu/Debian there is a nice tool to do this for you:
 #    > sudo update-rc.d route-init.sh defaults
@@ -33,14 +33,11 @@ WHERE_AM_I=`dirname $ME`
 
 ############### EDIT ME ##################
 NAME="smsforum_route" # change to your project name
-DAEMON=$WHERE_AM_I/manage.py
+DAEMON=$WHERE_AM_I/rapidsms
 DAEMON_OPTS=""
 RUN_AS=root
 APP_PATH=$WHERE_AM_I
 ROUTER_PID_FILE=/var/run/${NAME}_router.pid
-#WEBSERVER_PID_FILE=/var/run/${NAME}_webs.pid
-WEBSERVER_PORT=8000
-WEBSERVER_IP=127.0.0.1
 ############### END EDIT ME ##################
 test -x $DAEMON || exit 0
 
@@ -48,29 +45,10 @@ do_start() {
     echo -n "Starting router for $NAME... "
     start-stop-daemon -d $APP_PATH -c $RUN_AS --start --background --pidfile $ROUTER_PID_FILE  --make-pidfile --exec $DAEMON -- route $DAEMON_OPTS
     echo "Router Started"
-    sleep 2
-    echo -n "Starting webserver for $NAME... "
-    start-stop-daemon -d $APP_PATH -c $RUN_AS --start --background --exec $DAEMON -- runserver $WEBSERVER_IP:$WEBSERVER_PORT
-    echo "Webserver Started"
-}
-
-hard_stop_runserver() {
-    for i in `ps aux | grep -i "manage.py runserver" | grep -v grep | awk '{print $2}' ` ; do
-        kill -9 $i
-    done
-    echo "Hard stopped runserver"
-}
-
-hard_stop_spomsky() {
-    for i in `ps aux | grep -i "spomskyd" | grep -v grep | awk '{print $2}' ` ; do
-        kill -9 $i
-    done
-    rm $SPOMSKY_PID_FILE 2>/dev/null
-    echo "Hard stopped Spomskyd"
 }
 
 hard_stop_router() {
-    for i in `ps aux | grep -i "manage.py route" | grep -v grep | awk '{print $2}' ` ; do
+    for i in `ps aux | grep -i "rapidsms route" | grep -v grep | awk '{print $2}' ` ; do
         kill -9 $i
     done
     rm $ROUTER_PID_FILE 2>/dev/null
@@ -83,7 +61,6 @@ do_hard_restart() {
 }
     
 do_hard_stop_all() {
-    hard_stop_runserver
     hard_stop_router
 }
 
@@ -92,10 +69,6 @@ do_stop() {
     start-stop-daemon --stop --pidfile $ROUTER_PID_FILE
     rm $ROUTER_PID_FILE 2>/dev/null
     echo "Router Stopped"
-    sleep 2
-    echo -n "Stopping webserver for $NAME... "
-    hard_stop_runserver
-    echo "Webserver Stopped"
 }
 
 do_restart() {
@@ -116,13 +89,6 @@ do_check_restart() {
 	    fi
 	fi
     done
-    
-    # now check for runserver
-    webs=`ps aux | grep -i "manage.py runserver" | grep -v grep | wc -l`
-    if [ $webs -lt 2 ] ; then
-	echo "Can't find webserver, doing hard stop, restart"
-	do_hard_restart
-    fi
 }
 
 case "$1" in

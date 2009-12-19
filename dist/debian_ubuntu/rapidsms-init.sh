@@ -37,8 +37,8 @@ RUN_AS=root
 APP_PATH=$WHERE_AM_I
 ROUTER_PID_FILE=/var/run/${NAME}_router.pid
 #WEBSERVER_PID_FILE=/var/run/${NAME}_webs.pid
-WEBSERVER_PORT=8000
-WEBSERVER_IP=127.0.0.1
+WEBSERVER_PORT=80
+WEBSERVER_IP=0.0.0.0
 ############### END EDIT ME ##################
 test -x $DAEMON || exit 0
 

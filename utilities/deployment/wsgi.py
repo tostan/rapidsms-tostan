@@ -8,16 +8,11 @@ rootpath = os.path.join(filedir, "..", "..")
 sys.path.append(os.path.join(rootpath))
 sys.path.append(os.path.join(rootpath,'apps'))
 sys.path.append(os.path.join(rootpath,'lib'))
-
-#rapidsms lib stuff
-sys.path.append(os.path.join(rootpath,'rapidsms'))
-sys.path.append(os.path.join(rootpath,'rapidsms','apps'))
-sys.path.append(os.path.join(rootpath,'rapidsms','lib'))
-sys.path.append(os.path.join(rootpath,'rapidsms','lib','rapidsms'))
-sys.path.append(os.path.join(rootpath,'rapidsms','lib','rapidsms','webui'))
+sys.path.append(os.path.join(rootpath,'lib','rapidsms'))
+sys.path.append(os.path.join(rootpath,'lib','rapidsms','webui'))
 
 
-os.environ['RAPIDSMS_INI'] = os.path.join(rootpath,'local.ini')
+os.environ['RAPIDSMS_INI'] = os.path.join(rootpath,'rapidsms.ini')
 os.environ['DJANGO_SETTINGS_MODULE'] = 'rapidsms.webui.settings'
 os.environ["RAPIDSMS_HOME"] = rootpath
 

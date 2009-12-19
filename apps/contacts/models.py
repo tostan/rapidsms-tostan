@@ -127,7 +127,7 @@ class Contact(Node):
     #
 
     # when Contact was first created (not modifiable, Django sets this)
-    first_seen = models.DateTimeField(auto_now_add=True)
+    first_seen = models.DateTimeField(default=datetime.now)
 
     # How the Contact wants to be addressed in the context
     # of sending and receiving messages, e.g. Jeff W.

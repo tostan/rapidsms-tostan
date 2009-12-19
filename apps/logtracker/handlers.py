@@ -46,8 +46,10 @@ class TrackingHandler(Handler):
                             newlog.data_dump = ''
                         newlog.data_dump += key + ":=" + unicode(record_dict[key]) + "\n"
                     
-            
-            newlog.save()
+            if app_conf['logtracker']['log_to_db'] == 'False':
+                sendAlert(LogTrack, newlog, True)   
+            else:
+                newlog.save()
         except Exception, e:
             # TODO: maybe do something more here.  Logging shouldn't blow
             # up anything else, but at the same time we'd still like to 

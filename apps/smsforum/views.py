@@ -23,12 +23,14 @@ village_membership2, etc.)
 
 """
 
+import re, urllib
 
 from django.utils.translation import ugettext as _
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
+from django.core.exceptions import FieldError
 
 from rapidsms.webui.utils import *
 from tagging.models import Tag
@@ -41,6 +43,7 @@ from logger.models import *
 # from contacts.models import *
 from contacts.forms import GSMContactForm
 from contacts.views import edit_contact
+from reporters.models import *
 from utilities.export import export
 
 from datetime import datetime, timedelta
@@ -623,3 +626,39 @@ def messaging(request, template="smsforum/messaging.html"):
         context['contacts'] = paginated(request, region.flatten(klass=Contact))
     context['edit_link'] = "/member/edit/"
     return render_to_response(request, template, context)
+
+@login_required
+def memberships(request, template="smsforum/manage_memberships.html"):
+    context = {}
+    def cookie_recips(status):
+        flat = urllib.unquote(request.COOKIES.get("recip-%s" % status, ""))
+        return map(str, re.split(r'\s+', flat)) if flat != "" else []
+    checked  = cookie_recips("checked")
+
+    def __reporter(rep):
+        rep.is_checked = rep.pk in checked
+        return rep
+    
+    reset_cookie = False
+    if request.method == 'POST':
+        if not request.POST['community'] or len(request.POST['community'])==0:
+            context['error'] = "Please select a community"
+        elif request.COOKIES["recip-checked"] == 'None':
+            context['error'] = "Please select at least one contact"            
+        else:
+            members = [Reporter.objects.get(pk=id).profile.get() for id in checked]
+            community = Community.objects.get(pk=int(request.POST['community']))
+            community.add_children(*members)
+            context['status'] = _("%(num)s contact successfully added to %(community)s") % \
+                {'num':len(members),'community':community.name}
+            reset_cookie = True
+    context["query"] = request.GET.get("query", ""),
+    reporters = Reporter.objects.filter(profile__node_ptr___parents=None)
+    context["reporters"] = paginated(request, reporters, wrapper=__reporter)
+    context["num_reporters"] = len(reporters)
+    context["communities"] = paginated(request, Village.objects.all())  
+    context["debug"] = request.COOKIES['recip-checked']
+    response = render_to_response(request, template, context)
+    if reset_cookie:
+        response.set_cookie("recip-checked", None, expires="01-01-1985")
+    return response

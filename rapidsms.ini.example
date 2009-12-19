@@ -70,9 +70,9 @@ smtp_port=587
 imap_host=
 # define incoming port
 imap_port=
-username=notifications@dimagi.com
-password=alpha321
-default_alert_email=rluk@dimagi.com
+username=
+password=
+default_alert_email=jokkoinitiative@gmail.com
 log_threshold=30
 alert_threshold=40
 
@@ -95,8 +95,8 @@ port=8080
 [email]
 smtp_host=smtp.gmail.com
 smtp_port=587
-username=notifications@dimagi.com
-password=alpha321
+username=
+password=
 
 # -- DJANGO
 #
@@ -113,8 +113,8 @@ USE_DJANGO_STATIC_SERVER=True
 
 EMAIL_HOST=smtp.gmail.com
 EMAIL_PORT=587
-EMAIL_HOST_USER=notifications@dimagi.com
-EMAIL_HOST_PASSWORD=alpha321
+EMAIL_HOST_USER=
+EMAIL_HOST_PASSWORD=
 EMAIL_USE_TLS=True
 
 # hm, Schuyler's local settings.py doesn't seem to work on this rapidsms

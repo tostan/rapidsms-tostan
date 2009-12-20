@@ -18,7 +18,7 @@
 			<tr>
 				<td><a href="/village/{{ village.pk }}"{% if village.name %}>{{ village.name }}{% else %} class="unknown">Unknown{% endif %}</a></td>
                 <td>{% if village.member_count %}{{ village.member_count }}{% else %}<span class="na">n/a</span>{% endif %}</td>
-                <td>{% if village.message_count %}{{ village.message_count }}{% else %}<span class="na">n/a</span>{% endif %}</td>
+                <td>{% if village.incoming_message_count %}{{ village.incoming_message_count }}{% else %}<span class="na">n/a</span>{% endif %}</td>
 				<td>{% if village.incoming_message_this_week_count %}{{ village.incoming_message_this_week_count }}{% else %}<span class="na">n/a</span>{% endif %}</td>
 			</tr>{% endfor %}{% else %}
 			<tr class="no-data">

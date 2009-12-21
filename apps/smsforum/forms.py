@@ -31,6 +31,19 @@ class RegionForm(ModelForm):
         model = Village
         fields = ('name', 'notes')
 
+class CommunityAliasForm(ModelForm):
+	alias = forms.CharField(max_length = 255)
+	community=forms.ModelChoiceField (
+		# attrs={"multipe":None},
+		queryset=Village.objects.all(),
+		widget  =forms.SelectMultiple(),
+		empty_label =u"-"*40
+	)
+	class Meta:
+		model =CommunityAlias 
+	
+
+
 """    
 class AddCommunityForm(forms.Form):
     name = forms.CharField(label=u'Name of Community')

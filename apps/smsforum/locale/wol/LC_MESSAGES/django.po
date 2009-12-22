@@ -95,7 +95,12 @@ msgstr "Nu ngi lay ñaan, nga dugal dekk bi jekk, door di yonnee xebaar. Bindal 
 #msgstr "SVP, rejoignez une communauté avant d'envoyer un message. Escrivez # entrer puis 'nom de village'"
 
 # message blast failed because message text was too long
-msgid "blast-fail_message-too-long %(msg_len)d %(max_latin)d %(max_unicode)d"
+msgid "blast-fail_message-too-long_ucs2 %(msg_len)d %(max_unicode)d"
+msgstr "Nu ngi jéggalu, xebaar bii, araf yi ci embu, dañoo bari te warula epp %(max_unicode)d - nu laay ñaan, nga wàññi leen te yonnewaat ko."
+#msgstr "Désolé, ce message fait plus de %(max_chars)d caractères. Merci de le reccourcir et de l'envoyer à nouveau."
+
+# message blast failed because message text was too long
+msgid "blast-fail_message-too-long %(msg_len)d %(max_latin)d"
 msgstr "Nu ngi jéggalu, xebaar bii, araf yi ci embu, dañoo bari te warula epp %(max_latin)d - nu laay ñaan, nga wàññi leen te yonnewaat ko."
 #msgstr "Désolé, ce message fait plus de %(max_chars)d caractères. Merci de le reccourcir et de l'envoyer à nouveau."
 

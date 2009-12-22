@@ -91,8 +91,12 @@ msgid "command-not-understood %(sug_1)s %(sug_rest)s"
 msgstr "Yaafo mi faamaani ngol laawol. Mbii-daa %(suggested)s?" 
 #msgstr "Désolé, je ne peux pas comprendre cet ordre. Est-ce que vous voulez dire: %(sug_1)s ou %(sug_rest)s?"
 
-msgid "blast-fail_message-too-long %(msg_len)d %(max_latin)d %(max_unicode)d"
-msgstr "Yaafo, oo kabaaru burii %(max_chars)d. Jaaraama, tiidno ndabbindinaa nuldaa kadi."
+msgid "blast-fail_message-too-long_ucs2 %(msg_len)d %(max_unicode)d"
+msgstr "Yaafo, oo kabaaru burii %(max_unicode)d. Jaaraama, tiidno ndabbindinaa nuldaa kadi."
+#msgstr "Désolé, ce message fait plus de %(max_chars)d caractères. Merci de le reccourcir et de l'envoyer à nouveau."
+
+msgid "blast-fail_message-too-long %(msg_len)d %(max_latin)d"
+msgstr "Yaafo, oo kabaaru burii %(max_latin)d. Jaaraama, tiidno ndabbindinaa nuldaa kadi."
 #msgstr "Désolé, ce message fait plus de %(max_chars)d caractères. Merci de le reccourcir et de l'envoyer à nouveau."
 
 #: app.py:204

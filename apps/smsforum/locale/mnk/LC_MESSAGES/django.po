@@ -88,8 +88,12 @@ msgid "command-not-understood %(sug_1)s %(sug_rest)s"
 msgstr " i si yanfuma nte niy kumanaa fahamula. Foo %(suggested)s?" 
 #msgstr "Désolé, je ne peux pas comprendre cet ordre. Est-ce que vous voulez dire: %(sug_1)s ou %(sug_rest)s?"
 
-msgid "blast-fail_message-too-long %(msg_len)d %(max_latin)d %(max_unicode)d"
-msgstr "nbe daani la iye i la kumajuloolu sutiyandi %(max_chars)d"
+msgid "blast-fail_message-too-long_ucs2 %(msg_len)d %(max_unicode)d"
+msgstr "nbe daani la iye i la kumajuloolu sutiyandi %(max_unicode)d"
+#msgstr "Désolé, ce message fait plus de %(max_chars)d caractères. Merci de le reccourcir et de l'envoyer à nouveau."
+
+msgid "blast-fail_message-too-long %(msg_len)d %(max_latin)d"
+msgstr "nbe daani la iye i la kumajuloolu sutiyandi %(max_latin)d"
 #msgstr "Désolé, ce message fait plus de %(max_chars)d caractères. Merci de le reccourcir et de l'envoyer à nouveau."
 
 #: app.py:204

@@ -94,8 +94,12 @@ msgid "blast-fail_not-member-of-any-village"
 msgstr "SVP, rejoignez une communauté avant d'envoyer un message. Escrivez 123 entrer puis 'nom de communcauté'"
 
 # message blast failed because message text was too long
-msgid "blast-fail_message-too-long %(msg_len)d %(max_latin)d %(max_unicode)d"
-msgstr "Désolé, ce message fait plus de %(max_latin)d caractères. Merci de le reccourcir et de l'envoyer à nouveau. (Unicode max: %(max_unicode)d caractères.)"
+msgid "blast-fail_message-too-long_ucs2 %(msg_len)d %(max_unicode)d"
+msgstr "Désolé, ce message fait plus de %(max_unicode)d caractères. Merci de le reccourcir et de l'envoyer à nouveau."
+
+# message blast failed because message text was too long
+msgid "blast-fail_message-too-long %(msg_len)d %(max_latin)d"
+msgstr "Désolé, ce message fait plus de %(max_latin)d caractères. Merci de le reccourcir et de l'envoyer à nouveau."
 
 # outgoing message sent on blasts
 msgid  "blast-message_outgoing %(text)s %(recipients)s %(sender)s"

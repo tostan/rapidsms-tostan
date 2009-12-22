@@ -603,13 +603,19 @@ class App(rapidsms.app.App):
                 ('gsm',MAX_LATIN_BLAST_LEN) if gsm_enc \
                     else ('ucs2',MAX_UCS2_BLAST_LEN))
             
-        if len(out_text)>max_len: 
-            rsp= _st(msg.sender, "blast-fail_message-too-long %(msg_len)d %(max_latin)d %(max_unicode)d") % \
-                {
-                'msg_len': len(out_text),
-                'max_latin': MAX_LATIN_BLAST_LEN,
-                'max_unicode': MAX_UCS2_BLAST_LEN
-                } 
+        if len(out_text)>max_len:
+            if encoding == 'ucs2':
+                rsp= _st(msg.sender, "blast-fail_message-too-long_ucs2 %(msg_len)d %(max_unicode)d") % \
+                    {
+                    'msg_len': len(out_text),
+                    'max_unicode': MAX_UCS2_BLAST_LEN
+                    }
+            else:
+                rsp= _st(msg.sender, "blast-fail_message-too-long %(msg_len)d %(max_latin)d") % \
+                    {
+                    'msg_len': len(out_text),
+                    'max_latin': MAX_LATIN_BLAST_LEN,
+                    } 
             self.__reply(msg,rsp)
             return (False, None, encoding)
 

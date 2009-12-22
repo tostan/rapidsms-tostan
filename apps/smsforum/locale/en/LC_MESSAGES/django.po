@@ -89,8 +89,12 @@ msgid "blast-fail_not-member-of-any-village"
 msgstr "Please join a community before sending a message: send me '.join <village>'"
 
 # message blast failed because message text was too long
-msgid "blast-fail_message-too-long %(msg_len)d %(max_latin)d %(max_unicode)d"
-msgstr "Message length (%(msg_len)d) is too long. Latin script max: %(max_latin)d. Unicode max: %(max_unicode)d"
+msgid "blast-fail_message-too-long_ucs2 %(msg_len)d %(max_unicode)d"
+msgstr "Message length (%(msg_len)d) is too long. Please limit to %(max_unicode)d"
+
+# message blast failed because message text was too long
+msgid "blast-fail_message-too-long %(msg_len)d %(max_latin)d"
+msgstr "Message length (%(msg_len)d) is too long. Please limit to: %(max_latin)d."
 
 # outgoing message sent on blasts
 msgid  "blast-message_outgoing %(text)s %(recipients)s %(sender)s"

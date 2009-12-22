@@ -7,6 +7,7 @@ import traceback
 
 import component
 import log
+import sys
 
 #
 # RapidSMS only has one instance of a Router, so use
@@ -294,7 +295,8 @@ class Router (component.Receiver):
                 try:
                     handled = getattr(app, phase)(message)
                 except Exception, e:
-                    self.error("%s failed on %s: %r\n%s", app, phase, e, traceback.print_exc())
+                    type, value, tb = sys.exc_info()
+                    self.error("%s failed on %s: %r\n%s", app, phase, e, '\n'.join(traceback.format_tb(tb)))
                 if phase == 'handle':
                     if handled is True:
                         self.debug("%s short-circuited handle phase", app.slug)

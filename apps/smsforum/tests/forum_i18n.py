@@ -28,48 +28,58 @@ class TestSMSCommands (TestScript):
         8005551210 > .creer village20
         8005551210 < La communauté village20 a été créée
         8005551210 > .entrer village20
-        8005551210 < Merci d'avoir adhere le village20 - soyez le bienvenu!
+        8005551210 < Merci d'avoir rejoint la communauté 'village20' - bienvenue!
         8005551210 > tres tres long messages ,tres tres long messages ,tres tres long messages ,tres tres long messages ,tres tres long messages ,tres tres long messages ,tres tres long messages ,tres tres long messages ,tres tres long messages ,
-        8005551210 < Votre message doit contenir moins de 140 caracteres
+        8005551210 < Désolé, ce message fait plus de 60 caractères. Merci de le reccourcir et de l'envoyer à nouveau.
         """
     testMsgToLongWolof = u"""
-        8005551220 > .lang wol
-        8005551220 < Làkk wi nga tànn moo kàllaama Wolof
-        8005551220 > .duggu village7
-        8005551220 < Jerejef ci dugg bi nga dugg ci 'village7 ' dalal ak jamm
+        8005551210 > .create village20
+        8005551210 < Community 'village20' was created
+        8005551210 > .lang wol
+        8005551210 < Làkk wi nga tànn moo kàllaama Wolof
+        8005551220 > .duggu village20
+        8005551220 < Jerejef ci dugg bi nga dugg ci 'village20 ' dalal ak jamm
         8005551220 > Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, 
-        8005551220 < Messasse  bi  goudouna  lolo ,  wgni ko ba mou  tolou  ci  140 araf
+        8005551220 < Nu ngi jéggalu, xebaar bii, araf yi ci embu, dañoo bari te warula epp 60 - nu laay ñaan, nga wàññi leen te yonnewaat ko.
         """
     testMsgToLongPulaar = u"""
-        8005551220 > .lang wol
-        8005551220 < Làkk wi nga tànn moo kàllaama Wolof
-        8005551220 > .duggu village7
-        8005551220 < Jerejef ci dugg bi nga dugg ci 'village7 ' dalal ak jamm
+        8005551210 > .create village20
+        8005551210 < Community 'village20' was created
+        8005551210 > .lang pul
+        8005551210 < Demngal ngal cubi- daa ko Pulaar.
+        8005551220 > .naattugol village20
+        8005551220 < A jaaraama nde tawtu - daa e renndo ngo 'village20' - Bisimilla maa!
         8005551220 > Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, 
-        8005551220 < Messasse  bi  goudouna  lolo ,  wgni ko ba mou  tolou  ci  140 ara 
+        8005551220 < Yaafo, oo kabaaru burii 60. Jaaraama, tiidno ndabbindinaa nuldaa kadi.
         """
     testMsgToLongDjoola = u"""
-        8005551220 > .lang wol
-        8005551220 < Làkk wi nga tànn moo kàllaama Wolof
-        8005551220 > .duggu village7
-        8005551220 < Jerejef ci dugg bi nga dugg ci 'village7 ' dalal ak jamm
+        8005551210 > .create village20
+        8005551210 < Community 'village20' was created
+        8005551210 > .lang dyu
+        8005551210 < kasankenak kanu fajulumi ku 'Joola'
+        8005551220 > .unoken village20
+        8005551220 < abaraka manunoken na di fujojaf fati 'village20'
         8005551220 > Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, 
-        8005551220 < Messasse  bi  goudouna  lolo ,  wgni ko ba mou  tolou  ci  140 araf 
+        8005551220 < ubonket, furimaf fubabaak 60. uciik fo tami man fujaw benen. abaraka.
         """
     testMsgToLongSoninke = u"""
-        8005551220 > .lang wol
-        8005551220 < Làkk wi nga tànn moo kàllaama Wolof
-        8005551220 > .duggu village7
-        8005551220 < Jerejef ci dugg bi nga dugg ci 'village7 ' dalal ak jamm
+        8005551210 > .create village20
+        8005551210 < Community 'village20' was created
+        8005551210 > .lang son
+        8005551210 < an ga da xanne be suggandi Sooninken ya ni.
+        8005551220 > .ro village20
+        8005551220 < Maama ti an ga ro 'village20' - Bisimilla!
         8005551220 > Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, 
-        8005551220 < Messasse  bi  goudouna  lolo ,  wgni ko ba mou  tolou  ci  140 araf 
+        8005551220 < Yanpa, xibaare ke nta dangini sigiru 60. Maama, a defondi nan yille a xayini.
         """
     testMsgToLongMandingo = u"""
-        8005551220 > .lang wol
-        8005551220 < Làkk wi nga tànn moo kàllaama Wolof
-        8005551220 > .duggu village7
-        8005551220 < Jerejef org.eclipse.uici dugg bi nga dugg ci 'village7 ' dalal ak jamm
+        8005551210 > .create village20
+        8005551210 < Community 'village20' was created
+        8005551210 > .lang man
+        8005551210 < La langue que vous avez sélectionnée est 'Mandinka'
+        8005551220 > .koo village20
+        8005551220 < nseewota na dunaa kaabiloo kono - a la mee tentula 'village20'!
         8005551220 > Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, 
-        8005551220 < Messasse  bi  goudouna  lolo ,  wgni ko ba mou  tolou  ci  140 araf 
+        8005551220 < nbe daani la iye i la kumajuloolu sutiyandi 60 
         """
 

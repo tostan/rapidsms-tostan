@@ -662,3 +662,19 @@ def memberships(request, template="smsforum/manage_memberships.html"):
     if reset_cookie:
         response.set_cookie("recip-checked", None, expires="01-01-1985")
     return response
+def add_alias_to_community(request,pk):
+      village =Village.objects.get (id=pk)
+      template ="smsforum/community_alias.html"
+      context={"village":village}
+      if  request.method=="POST":
+              # create an new community alias
+              c=CommunityAlias(
+              alias =request.POST["alias"], 
+              community =village
+              ) 
+              # save the community
+              c.save ()
+              context["status"]="\
+              L'alias pour cette caumunaute a ete  bien cree"
+              return  render_to_response (request,template,context)
+      return  render_to_response (request,template,context)

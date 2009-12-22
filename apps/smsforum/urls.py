@@ -24,12 +24,12 @@ urlpatterns = patterns('',
     url(r'^village/(?P<pk>\d+)/history$',             views.village_history),
     url(r'^village/(?P<pk>\d+)/history/csv$',         views.export_village_history, name='export_village_history'),
     url(r'^village/(?P<pk>\d+)/membership/csv$',      views.export_village_membership, name='export_village_membership'),
+    url(r"^add_alias/(?P<pk>\d+)$",                   views.add_alias_to_community ,name  ="add_alias_to_community"),
     url(r'^member/(?P<pk>\d+)$',                      views.member),
     url(r'^village/(?P<village_id>\d+)/member/add$',  views.add_member),
     url(r'^village/(?P<village_id>\d+)/member/add/(?P<member_id>\d+)$',  views.add_member),
     url(r'^member/edit/(?P<pk>\d+)$',                 views.edit_member),
     url(r'^i18n/',                                    include('django.conf.urls.i18n')),
     #url(r'^community/add$',                          views.add_community),
-    #url(r'^memberships/',                             views.memberships),
 )
 

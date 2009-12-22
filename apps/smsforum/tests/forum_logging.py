@@ -9,6 +9,7 @@ import apps.reporters.app as reporters_app
 from apps.smsforum.views import get_outgoing_message_count_to
 from apps.contacts.models import *
 from apps.reporters.models import *
+from apps.smsforum.models import Village, CommunityAlias
  
 class TestLogging (TestScript):
     apps = (logger_app.App, reporters_app.App, contacts_app.App, smsforum_app.App )
@@ -35,7 +36,7 @@ class TestLogging (TestScript):
             """
         self.runScript(test_outgoing_message_log)
         first_contact = contacts_from_identity("8005551210")
-        second_contact = contacts_from_identity("8005551210")
+        second_contact = contacts_from_identity("8005551211")
         members = [first_contact]
         count = get_outgoing_message_count_to(members)
         self.assertEquals(count,3)

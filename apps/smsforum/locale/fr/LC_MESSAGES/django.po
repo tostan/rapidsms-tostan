@@ -254,6 +254,11 @@ msgstr "nom du contact"
 msgid "Edit Member"
 msgstr "Modifier le membre"
 
+#: .\apps\smsforum\templates\smsforum\community_alias.html
+msgid "Alias of '%(community_name)'"
+msgstr "Alias de la communaute de '%(community_name)'"
+
+
 #: .\apps\contacts\templates\contacts\confirm_delete.html.py:11
 #: .\apps\smsforum\templates\smsforum\confirm_delete.html.py:11
 msgid "Are you sure? "

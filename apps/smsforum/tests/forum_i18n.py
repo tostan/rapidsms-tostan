@@ -21,5 +21,55 @@ class TestSMSCommands (TestScript):
         8005551210 > .join village20
         8005551210 < Thank you for joining the village20 community - welcome!
         8005551210 > very long message to blast - very long message to blast - very long message to blast - very long message to blast - very long message to blast - very long message to blast - very long message to blast - very long message to blast - very long message to blast
-        8005551210 < Your message must be less than 140 characterss
+        8005551210 < Message length (258) is too long. Please limit to 60
         """
+           
+    testMsgTooLongFrench = """
+        8005551210 > .creer village20
+        8005551210 < La communauté village20 a été créée
+        8005551210 > .entrer village20
+        8005551210 < Merci d'avoir adhere le village20 - soyez le bienvenu!
+        8005551210 > tres tres long messages ,tres tres long messages ,tres tres long messages ,tres tres long messages ,tres tres long messages ,tres tres long messages ,tres tres long messages ,tres tres long messages ,tres tres long messages ,
+        8005551210 < Votre message doit contenir moins de 140 caracteres
+        """
+    testMsgToLongWolof = u"""
+        8005551220 > .lang wol
+        8005551220 < Làkk wi nga tànn moo kàllaama Wolof
+        8005551220 > .duggu village7
+        8005551220 < Jerejef ci dugg bi nga dugg ci 'village7 ' dalal ak jamm
+        8005551220 > Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, 
+        8005551220 < Messasse  bi  goudouna  lolo ,  wgni ko ba mou  tolou  ci  140 araf
+        """
+    testMsgToLongPulaar = u"""
+        8005551220 > .lang wol
+        8005551220 < Làkk wi nga tànn moo kàllaama Wolof
+        8005551220 > .duggu village7
+        8005551220 < Jerejef ci dugg bi nga dugg ci 'village7 ' dalal ak jamm
+        8005551220 > Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, 
+        8005551220 < Messasse  bi  goudouna  lolo ,  wgni ko ba mou  tolou  ci  140 ara 
+        """
+    testMsgToLongDjoola = u"""
+        8005551220 > .lang wol
+        8005551220 < Làkk wi nga tànn moo kàllaama Wolof
+        8005551220 > .duggu village7
+        8005551220 < Jerejef ci dugg bi nga dugg ci 'village7 ' dalal ak jamm
+        8005551220 > Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, 
+        8005551220 < Messasse  bi  goudouna  lolo ,  wgni ko ba mou  tolou  ci  140 araf 
+        """
+    testMsgToLongSoninke = u"""
+        8005551220 > .lang wol
+        8005551220 < Làkk wi nga tànn moo kàllaama Wolof
+        8005551220 > .duggu village7
+        8005551220 < Jerejef ci dugg bi nga dugg ci 'village7 ' dalal ak jamm
+        8005551220 > Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, 
+        8005551220 < Messasse  bi  goudouna  lolo ,  wgni ko ba mou  tolou  ci  140 araf 
+        """
+    testMsgToLongMandingo = u"""
+        8005551220 > .lang wol
+        8005551220 < Làkk wi nga tànn moo kàllaama Wolof
+        8005551220 > .duggu village7
+        8005551220 < Jerejef org.eclipse.uici dugg bi nga dugg ci 'village7 ' dalal ak jamm
+        8005551220 > Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, 
+        8005551220 < Messasse  bi  goudouna  lolo ,  wgni ko ba mou  tolou  ci  140 araf 
+        """
+

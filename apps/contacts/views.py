@@ -24,11 +24,11 @@ def index(request, template="contacts/index.html"):
 @login_required
 def csv(request, format='csv'):
     if request.user.has_perm('contacts.can_view'):
-        return export(Contact.objects.all(), \
-            ['id','node_ptr','first_seen','reporter.first_name','reporter.last_name',\
-             'common_name','reporter.alias','location','gender','age_months','_locale'])
-    return export(Contact.objects.all(), \
-        ['id','node_ptr','first_seen','location','gender','age_months','_locale'])
+        return export(Contact.objects.all().order_by('node_pr'), 
+            ['node_ptr','reporter.connection.identity', 'common_name',
+             'messages.sent', 'messages.received', 'first_seen', '_locale'])
+    return export(Contact.objects.all().order_by('node_pr'), 
+        ['node_ptr', 'messages.sent', 'messages.received', 'first_seen', '_locale'])
 
 @login_required
 def add_contact(request, template="contacts/add.html"):

@@ -85,7 +85,7 @@ msgstr "Ma a faamu, fo tana xayi '123 deema' ma an raawa fo tana kitta."
 # sent when command not found, but the system found some
 # useful suggestions
 msgid "command-not-understood %(sug_1)s %(sug_rest)s"
-msgstr "Ma a faamu. A lefi manne koono %(suggested)s?" 
+msgstr "Ma a faamu. A lefi manne koono %(sug_1)s ma %(sug_rest)s?" 
 #msgstr "Désolé, je ne peux pas comprendre cet ordre. Est-ce que vous voulez dire: %(sug_1)s ou %(sug_rest)s?"
 
 msgid "blast-fail_message-too-long_ucs2 %(msg_len)d %(max_unicode)d"

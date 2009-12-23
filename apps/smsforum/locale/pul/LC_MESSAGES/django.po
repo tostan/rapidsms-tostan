@@ -88,7 +88,7 @@ msgstr "Yaafo, mi faamaani. Nuldu kabaaru '123 ballal' haa mbaawaa yiide gede ke
 # sent when command not found, but the system found some
 # useful suggestions
 msgid "command-not-understood %(sug_1)s %(sug_rest)s"
-msgstr "Yaafo mi faamaani ngol laawol. Mbii-daa %(suggested)s?" 
+msgstr "Yaafo mi faamaani ngol laawol. Mbii-daa %(sug_1)s walla %(sug_rest)s?" 
 #msgstr "Désolé, je ne peux pas comprendre cet ordre. Est-ce que vous voulez dire: %(sug_1)s ou %(sug_rest)s?"
 
 msgid "blast-fail_message-too-long_ucs2 %(msg_len)d %(max_unicode)d"

@@ -443,7 +443,7 @@ class GsmModem(object):
             try:
                 pdu = gsmpdu.ReceivedGsmPdu(pdu_line)
             except:
-                self._log('Error parsing PDU: %s', pdu_line)
+                self._log('Error parsing PDU: %s' % pdu_line)
             self._process_incoming_pdu(pdu)
         
             # jump over the CMT line, and the

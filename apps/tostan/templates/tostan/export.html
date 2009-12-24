@@ -7,20 +7,25 @@
 
 <h2>{% trans "Export Data to Excel" %}</h2>
 
-<h4>{% trans "All Villages" %}</h4>
+<h4>{% trans "ALL VILLAGES" %}</h4>
 <ul>
 <li>
-	<a href="{% url contacts.views.csv %}">
+	<a href="{% url export_contacts %}">
 		{% trans "All Registered Phones" %}
 	</a>
 </li>
 <li>
-	<a href="{% url logger.views.csv_in %}">
+	<a href="{% url export_registration %}">
+		{% trans "History of Community Registration" %}
+	</a>
+</li>
+<li>
+	<a href="{% url export_incoming_messages %}">
 		{% trans "All Messages sent to Tostan" %}
 	</a>
 </li>
 <li>
-	<a href="{% url logger.views.csv_out %}">
+	<a href="{% url export_outgoing_messages %}">
 		{% trans "All Messages sent from Tostan" %}
 	</a>
 </li>
@@ -30,13 +35,23 @@
 <h4>Village '{{ village.name }}'</h4>
 <ul>
 	<li>
-		<a href="{% url smsforum.views.export_village_membership village.pk %}">
-			{% trans "Current Membership" %}
+		<a href="{% url export_contacts village.pk %}">
+			{% trans "Current Members" %}
 		</a>
 	</li>
 	<li> 
-		<a href="{% url smsforum.views.export_village_history village.pk %}">
-			{% trans "Membership Activity Log" %}
+		<a href="{% url export_registration village.pk %}">
+			{% trans "History of Registration" %}
+		</a>
+	</li>
+	<li> 
+		<a href="{% url export_incoming_messages village.pk %}">
+			{% trans "Messages received by Tostan" %}
+		</a>
+	</li>
+	<li> 
+		<a href="{% url export_outgoing_messages village.pk %}">
+			{% trans "Messages sent from Tostan" %}
 		</a>
 	</li>
 </ul>

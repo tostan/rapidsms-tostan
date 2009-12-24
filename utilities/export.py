@@ -153,7 +153,7 @@ class Report(object):
     
     def get_csv_response(self, req):
         # Create the HttpResponse object with the appropriate CSV header.
-        response = HttpResponse(mimetype='application/ms-excel')
+        response = HttpResponse(mimetype='application/vnd.ms-excel')
         response['Content-Disposition'] = 'attachment; filename=rapidsms.csv'
         self.get_csv(response)
         return response

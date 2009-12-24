@@ -5,6 +5,7 @@
 DEPENDENCIES: 
 logger, contacts
 """
+from pygsm import gsmcodecs
 import logging
 import re, os
 import rapidsms
@@ -595,7 +596,7 @@ class App(rapidsms.app.App):
         try:
             out_text.encode('gsm')
             sender_sig.encode('gsm')
-        except:
+        except Exception, e:
             # Either message or sig needs UCS2 encoding
             gsm_enc=False
         finally:

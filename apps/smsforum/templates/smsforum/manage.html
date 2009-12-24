@@ -16,7 +16,7 @@
 	</a>
 </li>
 <li>
-	<a href="{% url 404 %}">
+	<a href="{% url contacts %}">
 		{% trans "Manage memberships" %}
 	</a>
 </li>
@@ -30,7 +30,7 @@
 {% endif %}
 {% if perms.smsforum.add_community or perms.smsforum.change_community or perms.smsforum.delete_community %}
 <li>
-	<a href="{% url smsforum.views.access %}">
+	<a href="/admin/auth/user">
 		{% trans "Manage accessibility of the SMS and websites" %}
 	</a>
 </li>

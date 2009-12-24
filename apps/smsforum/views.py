@@ -620,10 +620,6 @@ def messaging(request, template="smsforum/messaging.html"):
                'villages': Village.objects.all().order_by('name'), 
                'regions': Region.objects.all().order_by('name')}
     village, region = get_village_and_region(request, context)
-    if village is not None:
-        context['contacts'] = paginated(request, village.flatten(klass=Contact))
-    elif region is not None:
-        context['contacts'] = paginated(request, region.flatten(klass=Contact))
     context['edit_link'] = "/member/edit/"
     return render_to_response(request, template, context)
 

@@ -5,7 +5,7 @@ from django.conf.urls.defaults import *
 import contacts.views as views
 
 urlpatterns = patterns('',
-    url(r'^contacts/$', views.index),
+    url(r'^contacts/$', views.index, name='contacts'),
     url(r'^contacts/csv/$', views.csv, name='export_contacts'),
     url(r'^contact/add/$', views.add_contact),
     url(r'^contact/edit/(?P<pk>\d+)$', views.edit_contact),

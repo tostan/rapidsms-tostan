@@ -107,60 +107,57 @@ class UnicodeWriter:
         for row in rows:
             self.writerow(row)
 
-# TODO DRY
-def ass_dicts_for_export():
-    dicts_for_export = []
-    #asses = Assessment.objects.all().select_related()
-    patients = Patient.objects.all()
-    asses = []
-    for patient in patients:
-        if patient.latest_assessment() is not None:
-            asses.append(patient.latest_assessment())
+class Report(object):
+    """
+    Suggested Usage:
+    r = MyReport()
+    # r.all_fields = [ 'foo', 'baz', 'bar' ]
+    r.fields = ['foo','baz']
+    r.renamed_fields = {'foo':'first', 'baz':'second'}
+    r.get_csv() #returns the raw excel, csv string
+    r.get_csv_response() #returns an http response excel, csv file 
+    # Output looks like: 
+    # first, second
+    # first_val1, first_val2
+    # second_val1, second_val2
+    # etc.
+    """
+    
+    def __init__(self):
+        # select fields you want to be in your report, in the order you want
+        # fields should be a subset of all_fields, or they will be ignored
+        self.fields = self.all_fields
+        # map fields to labels if you don't want to use the default
+        self.renamed_fields = {}
+    
+    @property
+    def all_fields(self):
+        return []
 
-    for ass in asses:
-        ass_dict = {}
-        # add desired fields from related models (we want to display the
-        # IDs, ect from foreign fields rather than just the unicode() names
-        # or all of the fields from related models)
-        # TODO is there a better way to do this? adding fields to the queryset???
-        ass_dict.update({'interviewer_id'   : ass.healthworker.interviewer_id})
-        ass_dict.update({'child_id'         : ass.patient.code})
-        ass_dict.update({'household_id'     : ass.patient.household_id})
-        ass_dict.update({'cluster_id'       : ass.patient.cluster_id})
-        ass_dict.update({'sex'              : ass.patient.gender})
-        ass_dict.update({'date_of_birth'    : ass.patient.date_of_birth})
-        ass_dict.update({'age_in_months'    : ass.patient.age_in_months})
-        ass_dict.update({'human_status'     : ass.get_status_display()})
-        ass_dict.update(**instance_to_dict(ass))
-        dicts_for_export.append(ass_dict)
-    return dicts_for_export
-
-def export_custom(req):
-    # Create the HttpResponse object with the appropriate CSV header.
-    response = HttpResponse(mimetype='text/csv')
-    response['Content-Disposition'] = 'attachment; filename=assessments.csv'
-
-    assessments = ass_dicts_for_export()
-    # sort by date, descending
-    assessments.sort(lambda x, y: cmp(y['date'], x['date']))
-
-    writer = csv.writer(response)
-    # column labels
-    writer.writerow(['date', 'interviewer ID', 'cluster ID', 'child ID',\
-        'household ID', 'sex', 'date of birth', 'age in months', 'height',\
-        'weight', 'oedema', 'muac', 'height for age', 'weight for age',\
-        'weight for height', 'survey status'])
-    for ass in assessments:
-        row = []
-        keys = ['date', 'interviewer_id', 'cluster_id', 'child_id',\
-            'household_id', 'sex', 'date_of_birth', 'age_in_months',\
-            'height', 'weight', 'oedema', 'muac', 'height4age', 'weight4age',\
-            'weight4height', 'human_status']
-        for key in keys:
-            if ass.has_key(key):
-                row.append(ass[key])
+    def get_csv(self, stream):
+        writer = UnicodeWriter(stream)
+        # generate the first row of the csv
+        field_labels=[]
+        for f in self.fields:
+            if f in self.renamed_fields:
+                field_labels.append(self.renamed_fields[f])
             else:
-                row.append("None")
-        writer.writerow(row)
+                field_labels.append(f)
+        writer.writerow(field_labels)
+        # generate the data
+        data = self._get_rows()
+        for d in data:
+            writer.writerow(d)
+        #stream.seek(0)
+        return stream
+    
+    def get_csv_response(self, req):
+        # Create the HttpResponse object with the appropriate CSV header.
+        response = HttpResponse(mimetype='application/ms-excel')
+        response['Content-Disposition'] = 'attachment; filename=rapidsms.csv'
+        self.get_csv(response)
+        return response
+    
+    def _get_rows(self):
+        raise NotImplementedError
 
-    return response

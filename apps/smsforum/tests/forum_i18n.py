@@ -21,7 +21,9 @@ class TestSMSCommands (TestScript):
         8005551210 > .join village20
         8005551210 < Thank you for joining the village20 community - welcome!
         8005551210 > very long message to blast - very long message to blast - very long message to blast - very long message to blast - very long message to blast - very long message to blast - very long message to blast - very long message to blast - very long message to blast
-        8005551210 < Message length (258) is too long. Please limit to 60
+        8005551210 < Message length (258) is too long. Please limit to: 140.
+        8005551210 > À Ä  very long message to blast - very long message to blast - very long message to blast - very long message to blast - very long message to blast - very long message to blast - very long message to blast - very long message to blast - very long message to blast
+        8005551210 < Message length (265) is too long. Please limit to 60
         """
            
     testMsgTooLongFrench = """
@@ -30,6 +32,8 @@ class TestSMSCommands (TestScript):
         8005551210 > .entrer village20
         8005551210 < Merci d'avoir rejoint la communauté 'village20' - bienvenue!
         8005551210 > tres tres long messages ,tres tres long messages ,tres tres long messages ,tres tres long messages ,tres tres long messages ,tres tres long messages ,tres tres long messages ,tres tres long messages ,tres tres long messages ,
+        8005551210 < Désolé, ce message fait plus de 140 caractères. Merci de le reccourcir et de l'envoyer à nouveau.
+        8005551210 > À Ä Trop long caracteres  unicode ,À Ä Trop long caracteres  unicodeÀ Ä Trop long caracteres  unicodeÀ Ä Trop long caracteres  unicodeÀ Ä Trop long caracteres  unicode
         8005551210 < Désolé, ce message fait plus de 60 caractères. Merci de le reccourcir et de l'envoyer à nouveau.
         """
     testMsgToLongWolof = u"""
@@ -40,6 +44,8 @@ class TestSMSCommands (TestScript):
         8005551220 > .duggu village20
         8005551220 < Jerejef ci dugg bi nga dugg ci 'village20 ' dalal ak jamm
         8005551220 > Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, 
+        8005551220 < Nu ngi jéggalu, xebaar bii, araf yi ci embu, dañoo bari te warula epp 140 - nu laay ñaan, nga wàññi leen te yonnewaat ko.
+        8005551220 > À Ä Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, 
         8005551220 < Nu ngi jéggalu, xebaar bii, araf yi ci embu, dañoo bari te warula epp 60 - nu laay ñaan, nga wàññi leen te yonnewaat ko.
         """
     testMsgToLongPulaar = u"""
@@ -50,6 +56,8 @@ class TestSMSCommands (TestScript):
         8005551220 > .naattugol village20
         8005551220 < A jaaraama nde tawtu - daa e renndo ngo 'village20' - Bisimilla maa!
         8005551220 > Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, 
+        8005551220 < Yaafo, oo kabaaru burii 140. Jaaraama, tiidno ndabbindinaa nuldaa kadi.
+        8005551220 > À Ä Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, 
         8005551220 < Yaafo, oo kabaaru burii 60. Jaaraama, tiidno ndabbindinaa nuldaa kadi.
         """
     testMsgToLongDjoola = u"""
@@ -60,6 +68,8 @@ class TestSMSCommands (TestScript):
         8005551220 > .unoken village20
         8005551220 < abaraka manunoken na di fujojaf fati 'village20'
         8005551220 > Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, 
+        8005551220 < ubonket, furimaf fubabaak 140. uciik fo tami man fujaw benen. abaraka.
+        8005551220 > À Ä Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, 
         8005551220 < ubonket, furimaf fubabaak 60. uciik fo tami man fujaw benen. abaraka.
         """
     testMsgToLongSoninke = u"""
@@ -70,6 +80,8 @@ class TestSMSCommands (TestScript):
         8005551220 > .ro village20
         8005551220 < Maama ti an ga ro 'village20' - Bisimilla!
         8005551220 > Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, 
+        8005551220 < Yanpa, xibaare ke nta dangini sigiru 140. Maama, a defondi nan yille a xayini.
+        8005551220 >  À Ä Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, 
         8005551220 < Yanpa, xibaare ke nta dangini sigiru 60. Maama, a defondi nan yille a xayini.
         """
     testMsgToLongMandingo = u"""
@@ -80,6 +92,8 @@ class TestSMSCommands (TestScript):
         8005551220 > .koo village20
         8005551220 < nseewota na dunaa kaabiloo kono - a la mee tentula 'village20'!
         8005551220 > Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, 
-        8005551220 < nbe daani la iye i la kumajuloolu sutiyandi 60 
+        8005551220 < nbe daani la iye i la kumajuloolu sutiyandi 140 
+        8005551220 > À Ä Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, Messasse bou goudou lol, 
+        8005551220 < nbe daani la iye i la kumajuloolu sutiyandi 60
         """
 

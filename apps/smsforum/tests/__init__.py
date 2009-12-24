@@ -6,3 +6,4 @@ from forum_commands import *
 from forum_logging import *
 from forum_i18n import *
 from suggestions import *
+from erreur_francais import *

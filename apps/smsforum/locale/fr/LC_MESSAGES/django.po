@@ -520,10 +520,6 @@ msgstr "Gestion des données"
 msgid "What would you like to do?"
 msgstr "Que souhaitez-vous faire ?"
 
-#: .\apps\smsforum\templates\smsforum\manage.html.py:15
-msgid "Manage villages"
-msgstr "Gestion des communautés"
-
 # as in "i am a member of this village"
 # show all members of a village
 # e.g. '.citizens village_name'
@@ -539,14 +535,6 @@ msgstr "Gestion d'accès aux messages et au site web"
 #: .\apps\tostan\templates\tostan\404.html.py:8
 msgid "Coming Soon"
 msgstr "Travaux en cours"
-
-# as in "i am a member of this village"
-# show all members of a village
-# e.g. '.citizens village_name'
-#: .\apps\smsforum\templates\smsforum\manage_citizens.html.py:8
-#, fuzzy
-msgid "Manage Members"
-msgstr "Gestion des membres"
 
 #: .\apps\smsforum\templates\smsforum\manage_messages.html.py:8
 msgid "Manage Messages"
@@ -2378,9 +2366,8 @@ msgid "Messages received from Tostan"
 msgstr "Messages reçus de Tostan"
 
 #: .\apps\smsforum\templates\smsforum\manage.html.py:15
-#, fuzzy
 msgid "Manage communities"
-msgstr "Gestion des membres des communautés"
+msgstr "Gestion des communautés"
 
 msgid "Manage memberships"
 msgstr "Gestion des membres"

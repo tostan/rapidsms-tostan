@@ -106,3 +106,58 @@ class UnicodeWriter:
     def writerows(self, rows):
         for row in rows:
             self.writerow(row)
+
+class Report(object):
+    """
+    Suggested Usage:
+    r = MyReport()
+    # r.all_fields = [ 'foo', 'baz', 'bar' ]
+    r.fields = ['foo','baz']
+    r.renamed_fields = {'foo':'first', 'baz':'second'}
+    r.get_csv() #returns the raw excel, csv string
+    r.get_csv_response() #returns an http response excel, csv file 
+    # Output looks like: 
+    # first, second
+    # first_val1, first_val2
+    # second_val1, second_val2
+    # etc.
+    """
+    
+    def __init__(self):
+        # select fields you want to be in your report, in the order you want
+        # fields should be a subset of all_fields, or they will be ignored
+        self.fields = self.all_fields
+        # map fields to labels if you don't want to use the default
+        self.renamed_fields = {}
+    
+    @property
+    def all_fields(self):
+        return []
+
+    def get_csv(self, stream):
+        writer = UnicodeWriter(stream)
+        # generate the first row of the csv
+        field_labels=[]
+        for f in self.fields:
+            if f in self.renamed_fields:
+                field_labels.append(self.renamed_fields[f])
+            else:
+                field_labels.append(f)
+        writer.writerow(field_labels)
+        # generate the data
+        data = self._get_rows()
+        for d in data:
+            writer.writerow(d)
+        #stream.seek(0)
+        return stream
+    
+    def get_csv_response(self, req):
+        # Create the HttpResponse object with the appropriate CSV header.
+        response = HttpResponse(mimetype='application/ms-excel')
+        response['Content-Disposition'] = 'attachment; filename=rapidsms.csv'
+        self.get_csv(response)
+        return response
+    
+    def _get_rows(self):
+        raise NotImplementedError
+

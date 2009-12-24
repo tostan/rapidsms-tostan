@@ -7,20 +7,21 @@
 
 <h2>{% trans "Export Data to Excel" %}</h2>
 
+<h4>{% trans "All Villages" %}</h4>
 <ul>
 <li>
 	<a href="{% url contacts.views.csv %}">
-		{% trans "SMS Users" %}
+		{% trans "All Registered Phones" %}
 	</a>
 </li>
 <li>
 	<a href="{% url logger.views.csv_in %}">
-		{% trans "Messages sent to Tostan" %}
+		{% trans "All Messages sent to Tostan" %}
 	</a>
 </li>
 <li>
 	<a href="{% url logger.views.csv_out %}">
-		{% trans "Messages sent from Tostan" %}
+		{% trans "All Messages sent from Tostan" %}
 	</a>
 </li>
 </ul>

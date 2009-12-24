@@ -301,8 +301,9 @@ class Contact(Node):
     # Properties #
     ##############
     def __get_locale(self):
-        return self.reporter.language
-    
+        if hasattr(self,'reporter'):
+            return self.reporter.language
+        return None
     def __set_locale(self,val):
         if val is None:
             raise("Locale can't be None!")
@@ -647,6 +648,12 @@ class Contact(Node):
     @property
     def connections(self):
         return self.reporter.connections
+    
+    def phone_number(self):
+        if hasattr(self,'reporter'):
+            if self.reporter.connection:
+                return self.reporter.connection.identity
+        return None
 
 def contact_from_message(msg,save=True):
     reporter = reporter_from_message(msg, save)

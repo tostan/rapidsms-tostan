@@ -14,4 +14,5 @@ urlpatterns = patterns('',
     url(r'^export$',   views.export, name="export"),
     url(r'^404$',      login_required(direct_to_template), 
                        {'template':"tostan/404.html"}, name="404"),
+    url(r'^export/users$',   views.export_contacts, name="export_contacts"),
 )

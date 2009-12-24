@@ -768,10 +768,6 @@ msgstr "Utilisateurs SMS"
 msgid "Messages sent to Tostan"
 msgstr "Messages envoyés à Tostan"
 
-#: .\apps\tostan\templates\tostan\export.html.py:23
-msgid "Messages sent from Tostan"
-msgstr "Messages reçus de Tostan"
-
 #: .\apps\tostan\templates\tostan\export.html.py:33
 msgid "Current Membership"
 msgstr "Inscription actuelle"
@@ -2283,9 +2279,7 @@ msgstr "nom"
 #: .\apps\userprofile\templates\userprofile\profile\overview.html.py:44
 msgid "E-mail:"
 msgstr "Courriel:"
-
 #: .\apps\userprofile\templates\userprofile\profile\overview.html.py:46
-#, fuzzy
 msgid "Not set yet"
 msgstr "Pas encore créé"
 
@@ -2361,5 +2355,42 @@ msgstr "Envoyer Les Messages SMS"
 msgid "Unknown"
 msgstr "inconnu"
 
+msgid "is free software, available under the"
+msgstr "est software libre, disponible avec"
 
+msgid "ALL VILLAGES"
+msgstr "TOUT LES COMMUNAUTES"
+
+#: .\apps\tostan\templates\tostan\export.html.py:14
+msgid "All Registered Phones"
+msgstr "Tous les Portable Enregistrés"
+
+#: .\apps\tostan\templates\tostan\export.html.py:19
+msgid "History of Member Registration"
+msgstr "Historique d'enregistrement"
+
+#: .\apps\tostan\templates\tostan\export.html.py:39
+msgid "Current Members"
+msgstr "Inscription actuelle"
+
+#: .\apps\tostan\templates\tostan\export.html.py:49
+msgid "Messages received from Tostan"
+msgstr "Messages reçus de Tostan"
+
+#: .\apps\smsforum\templates\smsforum\manage.html.py:15
+#, fuzzy
+msgid "Manage communities"
+msgstr "Gestion des membres des communautés"
+
+msgid "Manage memberships"
+msgstr "Gestion des membres"
+
+msgid "Villages not associated with Regions"
+msgstr "Les villages qui ne sont pas liées à un region"
+
+msgid "Community Name"
+msgstr "Nom de communauté"
+
+msgid "Community"
+msgstr "Communauté"
 

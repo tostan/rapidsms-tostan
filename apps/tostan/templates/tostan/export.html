@@ -16,17 +16,17 @@
 </li>
 <li>
 	<a href="{% url export_registration %}">
-		{% trans "History of Community Registration" %}
+		{% trans "History of Member Registration" %}
 	</a>
 </li>
 <li>
 	<a href="{% url export_incoming_messages %}">
-		{% trans "All Messages sent to Tostan" %}
+		{% trans "Messages sent to Tostan" %}
 	</a>
 </li>
 <li>
 	<a href="{% url export_outgoing_messages %}">
-		{% trans "All Messages sent from Tostan" %}
+		{% trans "Messages received from Tostan" %}
 	</a>
 </li>
 </ul>
@@ -41,17 +41,17 @@
 	</li>
 	<li> 
 		<a href="{% url export_registration village.pk %}">
-			{% trans "History of Registration" %}
+			{% trans "History of Member Registration" %}
 		</a>
 	</li>
 	<li> 
 		<a href="{% url export_incoming_messages village.pk %}">
-			{% trans "Messages received by Tostan" %}
+			{% trans "Messages sent to Tostan" %}
 		</a>
 	</li>
 	<li> 
 		<a href="{% url export_outgoing_messages village.pk %}">
-			{% trans "Messages sent from Tostan" %}
+			{% trans "Messages received from Tostan" %}
 		</a>
 	</li>
 </ul>

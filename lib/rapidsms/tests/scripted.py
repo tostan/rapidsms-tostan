@@ -98,6 +98,8 @@ class TestScript (TestCase):
                 router.run()
             elif dir == '<':
                 msg = self.backend.next_message()
+                if msg is None:
+                    self.fail("Message expected but none returned. Last message sent was: %s" % last_msg)
                 last_msg, msg.text, txt = map(smart_str, [last_msg, msg.text, txt])
                 self.assertTrue(msg is not None, 
                     "message was returned.\nMessage: '%s'\nExpecting: '%s')" % (last_msg, txt))

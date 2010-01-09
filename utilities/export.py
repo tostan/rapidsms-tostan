@@ -84,7 +84,7 @@ class UnicodeWriter:
     A CSV writer which will write rows to CSV file "f",
     which is encoded in the given encoding.
     """
-    def __init__(self, f, dialect=csv.excel, encoding="utf-8", **kwds):
+    def __init__(self, f, dialect='excel-tab', encoding="utf-8", **kwds):
         # Redirect output to a queue
         self.queue = cStringIO.StringIO()
         self.writer = csv.writer(self.queue, dialect=dialect, **kwds)
@@ -135,7 +135,10 @@ class Report(object):
         return []
 
     def get_csv(self, stream):
-        writer = UnicodeWriter(stream)
+        # utf-8 export doesn't work in excel. To remedy, we use utf-16
+        # (and tabs instead of commas since comma-delimited doesn't parse correctly
+        # in excel). See http://stackoverflow.com/questions/155097/microsoft-excel-mangles-diacritics-in-csv-files
+        writer = UnicodeWriter(stream, encoding="utf-16")
         # generate the first row of the csv
         field_labels=[]
         for f in self.fields:

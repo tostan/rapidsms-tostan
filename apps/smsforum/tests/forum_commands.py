@@ -61,7 +61,7 @@ class TestSMSCommands (TestScript):
         8005551215 < You have left these communities: village3
         """
         
-    testLang = """
+    testLang = u"""
         8005551212 > .lang eng
         8005551212 < You language has been set to: English
         8005551212 > .lang fra
@@ -91,7 +91,7 @@ class TestSMSCommands (TestScript):
         8005551220 < You have left these communities: village4
         8005551220 > .remove village4
         8005551220 < The community 'village4' was removed.
-        8005551220 > .language eng
+        8005551220 > .lang eng
         8005551220 < You language has been set to: English
         8005551220 > .help
         8005551220 < Available Commands: #join COMMUNITY - #leave - #name NAME - #lang LANG
@@ -110,7 +110,7 @@ class TestSMSCommands (TestScript):
         8005551220 < Bonjour foo. Merci d'avoir enregistré votre nom! Il apparaitra dorénavant sur tous les messages que vous envoyez
         8005551220 > .quitter village6
         8005551220 < Vous venez de quitter la communauté 'village6' Au revoir!
-        8005551220 > .language fra
+        8005551220 > .lang fra
         8005551220 < La langue que vous avez sélectionnée est 'Français'
         8005551220 > .aide
         8005551220 < Vous pouvez texter: #entrer COMMUNAUTE - #quitter - #nom NOM - #lang LANG
@@ -141,17 +141,17 @@ class TestSMSCommands (TestScript):
         8005551220 > .créer village8
         8005551220 < Sahre nde sinicaa ko village8
         8005551220 > .naalde village8
-        8005551220 < a Jaaraama nde tawtu - daa e Sahre nde 'village8' - Bisimilla!
+        8005551220 < A jaaraama nde tawtu - daa e renndo ngo 'village8' - Bisimilla maa!
         8005551220 > .tawtude village8
-        8005551220 < a Jaaraama nde tawtu - daa e Sahre nde 'village8' - Bisimilla!
+        8005551220 < A jaaraama nde tawtu - daa e renndo ngo 'village8' - Bisimilla maa!
         8005551220 > .yettoode foo
-        8005551220 < Jam waali foo. A jaaraama nde møinndu - daa innde. Maa feeñoy e kala nde  nuldu-don kaøaaruuji.
+        8005551220 < Jam waali foo. A jaaraama ko mbinndu- daa innde maa nde koo. Nde feeñoyat kala ndu nuldu-daa kabaaruuji.
         8005551220 > message to blast
-        8005551220 < nuldu feewde e 'village8'
+        8005551220 < Kabaaru maa o nuldaama to 'village8'
         8005551220 > .yaltude village8
-        8005551220 < On ngiwii to sahre to 'village8' haa nalnde wodnde
+        8005551220 < On mbuddii renndo ngo 'village8'. En laawol godngol.
         8005551220 > .dallal
-        8005551220 < Vous pouvez texter: #naalde VILLAGE - #yaltude - #yettoode NAME - #help-pul
+        8005551220 < 123 naattugol - 123 yaltude - 123 yettoode - 123 ballal
         """
         
     testAllCommandsJoola = u"""
@@ -173,24 +173,24 @@ class TestSMSCommands (TestScript):
 
     testAllCommandsSoninke = u"""
         8005551220 > 123 lang soninke
-        8005551220 < Demngal ngal cubi- daa ko Soninke
+        8005551220 < an ga da xanne be suggandi Sooninken ya ni.
         8005551220 > .créer village10
         8005551220 < Sahre nde sinicaa ko village10
         8005551220 > .ro village10
-        8005551220 < Mama ti an ga ro 'village10' - Bisimilla!
+        8005551220 < Maama ti an ga ro 'village10' - Bisimilla!
         8005551220 > .toxo foo
-        8005551220 < Bisimilla foo! Mama ti an ga da an toxon safa! A wa bangene xibaare su an ga riini a xayini.
+        8005551220 < Bisimilla foo! Maama ti an ga da an toxon safa! A wa bangene xibaare su an ga riini a xayini.
         8005551220 > message to blast
-        8005551220 < An xibaaren joofe i dingira 'village10'"
+        8005551220 < Maama, an xibaaren joofe i dingira 'village10'
         8005551220 > .giri village10
-        8005551220 < An bagu dingiran wa 'village10'. Ma ta tana!
+        8005551220 < Ma a faamu, fo tana xayi '123 deema' ma an raawa fo tana kitta.
         8005551220 > .deema
         8005551220 < 123 ro - 123 toxo - 123 giri - 123 deema
         """
         
     testAllCommandsMandingo = u"""
         8005551220 > 123 lang mandingo
-        8005551220 < La langue que vous avez sélectionnée est 'Mandingo'
+        8005551220 < La langue que vous avez sélectionnée est 'Mandinka'
         8005551220 > 123 créer village11
         8005551220 < Sahre nde sinicaa ko village11
         8005551220 > 123 koo village11
@@ -198,14 +198,14 @@ class TestSMSCommands (TestScript):
         8005551220 > .ntoo foo
         8005551220 < mbee teentula foo kaatu nee ila too taale. Abe a sotola kiliri wokiliri kono.
         8005551220 > message to blast
-        8005551220 < Miu njettiima, mesaaj ma nawaama to sahre to 'village11'
+        8005551220 < a lu la kumakano kiita dulaa-doo to 'village11'
         8005551220 > .nbetaamala village11
         8005551220 < a la mee la boonaa seewo 'village11' kono.
         8005551220 > .n'deemaa
         8005551220 < 123 koo - 123 nbetaamala - 123 ntoo - 123 n'deemaa
         """
         
-    testErrorCodes = """
+    testErrorCodes = u"""
         8005551216 > .join
         8005551216 < Sorry, I don't know that place. Did you mean one of: community name ?
         8005551215 > .leave village
@@ -213,7 +213,7 @@ class TestSMSCommands (TestScript):
         8005551216 > .join village
         8005551216 < Sorry, I don't know that place. Did you mean one of: community name ?
         8005551216 > .lang
-        8005551216 < You may set your language to any of: English, Français, Joola, Pulaar, Wolof
+        8005551216 < You may set your language to any of: English, Français, Joola, Mandinka, Pulaar, Sooninke, Wolof
         8005551216 > .create
         8005551216 < Please send a village name, e.g. #create 'community name'
         8005551216 > .member village
@@ -225,7 +225,7 @@ class TestSMSCommands (TestScript):
         8005551216 > .join village
         8005551216 < Thank you for joining the village community - welcome!
         8005551216 > msg_to_blast_longer_than_160_msg_to_blast_longer_than_160_msg_to_blast_longer_than_160_msg_to_blast_longer_than_160_msg_to_blast_longer_than_160_msg_to_blast_longer_than_160
-        8005551216 < Message length (173) is too long. Latin script max: 140. Unicode max: 60
+        8005551216 < Message length (173) is too long. Please limit to: 140.
         """
     
     testFunnyCharacters = u"""
@@ -241,8 +241,8 @@ class TestSMSCommands (TestScript):
         8005551216 < Your message was sent to these communities: èoâoé
         8005551216 > .leave èoâoé
         8005551216 < You have left these communities: èoâoé
-        8005551216 > .language èoâoé
-        8005551216 < You may set your language to any of: English, Français, Joola, Pulaar, Wolof
+        8005551216 > .lang èoâoé
+        8005551216 < You may set your language to any of: English, Français, Joola, Mandinka, Pulaar, Sooninke, Wolof
         8005551216 > .member èoâoé
         8005551216 < You are not a member of any community
         8005551216 > .citizens èoâoé

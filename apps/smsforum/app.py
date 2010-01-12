@@ -42,7 +42,7 @@ _G = {
         'wol':['Wolof'],
         'dyu':['Joola','Dyula','Dioula','Diola'],
         'snk':['Sooninke','Soninke','Soninké','Sooninké'],
-        'mnk':['Mandinka'],
+        'mnk':['Mandinka','Mandingo'],
         'fr':[u'Français',u'Francais'],
         'en':['English'],
         },

@@ -8,7 +8,7 @@ import apps.contacts.app as contacts_app
 import apps.reporters.app as reporters_app
 import apps.smsforum.app as smsforum_app
  
-class TestSMSCommands (TestScript):
+class TestI18NCommands (TestScript):
     apps = (smsforum_app.App, contacts_app.App, logger_app.App, reporters_app.App, smsforum_app.App )
 
     def setUp(self):
@@ -26,7 +26,7 @@ class TestSMSCommands (TestScript):
         8005551210 < Message length (265) is too long. Please limit to 60
         """
            
-    testMsgTooLongFrench = """
+    testMsgTooLongFrench = u"""
         8005551210 > .creer village20
         8005551210 < La communauté village20 a été créée
         8005551210 > .entrer village20

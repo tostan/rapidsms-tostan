@@ -16,7 +16,7 @@ import apps.reporters.app as reporters_app
 import apps.smsforum.app as smsforum_app
 from apps.smsforum.models import Village
  
-class TestSMSCommands (TestScript):
+class TestErreurFrancai (TestScript):
     apps = (smsforum_app.App, contacts_app.App, logger_app.App, reporters_app.App, smsforum_app.App )
 
     #citizens-fail_no-village
@@ -127,7 +127,7 @@ class TestSMSCommands (TestScript):
         8005551220 < Vous etes membre des communautés suivants: village1, village2, village3, village4, village5, village6, village7, village8 et de plus
         """
     
-    testErrorCodesFrancais = """
+    testErrorCodesFrancais = u"""
         8005551216 > 123 nom nomtroplonguenomtroplonguenomtroplonguenomtroplonguenomtroplonguenomtroplonguenomtroplongue
         8005551216 < Désolé, ce nom fait plus de 30 caractères. Merci de le reccourcir et de l'envoyer à nouveau.
         """

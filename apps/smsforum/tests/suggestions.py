@@ -9,7 +9,7 @@ import apps.reporters.app as reporters_app
 import apps.smsforum.app as smsforum_app
 from apps.smsforum.models import Village
  
-class TestSMSCommands (TestScript):
+class TestSuggestions (TestScript):
     apps = (smsforum_app.App, contacts_app.App, logger_app.App, reporters_app.App, smsforum_app.App )
 
     def setUp(self):
@@ -28,7 +28,7 @@ class TestSMSCommands (TestScript):
         8005551210 < Sorry, I don't know that place. Did you mean one of: nonexistant2, nonexistant1 ?
         """
            
-    testFrenchSuggestions = """
+    testFrenchSuggestions = u"""
         8005551210 > 123 o entrer village20
         8005551210 < Désolé, je ne peux pas comprendre cet ordre. Est-ce que vous voulez dire: unoken ou upur?
         8005551210 > 123 entrer to

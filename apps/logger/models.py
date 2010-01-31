@@ -65,7 +65,22 @@ class IncomingMessage(MessageBase):
             else:
                 note.text = text
                 note.save()
-
+    def update_tag (self , txt):
+        """
+        Allow to update an message's category 
+        It store the category text of the message
+        into the BasicTag table
+        """
+        from tagging.models import BasicTag
+        if self.basictags.count ()>0:
+                tag = self.basictags.all()[0]
+                tag.txt = txt
+                tag.save()
+        else:
+            tag = BasicTag (message =self)
+            tag.txt =txt
+            tag.save ()
+           
 class OutgoingMessage(MessageBase):
     sent = models.DateTimeField(auto_now_add=True)
     

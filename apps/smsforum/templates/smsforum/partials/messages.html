@@ -64,7 +64,7 @@
 	                      {% endif %}
 	                      >None
 	                      {% for category in categories %}
-	                      	  <option value={{ category.name }}
+	                      	  <option value="{{ category.name }}"
 	                          {% ifequal message.selected category.name %}
 	                              selected
 	                          {% endifequal %}>

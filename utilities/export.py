@@ -128,7 +128,15 @@ class Report(object):
         # fields should be a subset of all_fields, or they will be ignored
         self.fields = self.all_fields
         # map fields to labels if you don't want to use the default
-        self.renamed_fields = {}
+        # It is up to the child  class to define 
+        # her renamed_field 
+        # exemple : for Incomming message   self.renamed_fields = {'identity':'Phone Number'}
+        # if we do  self.renamed_fields ={} without 
+        # testing if the child class has already define her renamed fields
+        # it will reset renamed_fields to {} 
+        # this is not what we need 
+        if not hasattr(self,"renamed_fields"):
+            self.renamed_fields = {}
     
     @property
     def all_fields(self):
@@ -139,6 +147,12 @@ class Report(object):
         # (and tabs instead of commas since comma-delimited doesn't parse correctly
         # in excel). See http://stackoverflow.com/questions/155097/microsoft-excel-mangles-diacritics-in-csv-files
         writer = UnicodeWriter(stream, encoding="utf-16")
+        
+        #add header row 
+        if self._get_header_rows()is not None :
+            for h  in self._get_header_rows ():
+                writer.writerow(h)
+            
         # generate the first row of the csv
         field_labels=[]
         for f in self.fields:
@@ -163,4 +177,27 @@ class Report(object):
     
     def _get_rows(self):
         raise NotImplementedError
-
+    
+    def _get_header_rows(self):
+        """
+        This method allow to put some
+        additionales  informations to the 
+        reported file 
+        like Date of creation file 
+        like The Title of report 
+        """
+        rows = []
+        header_fields=[]
+        header_values =[]
+        if hasattr (self ,"header_rows"):
+            header_rows= getattr(self,"header_rows")
+            for  k ,v  in header_rows.items():
+                 header_fields.append (k)
+                 header_values.append (v)
+            rows.append (header_fields)
+            rows.append (header_values)
+            return rows
+        else :
+            return None
+                
+        

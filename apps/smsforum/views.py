@@ -149,7 +149,8 @@ def messages(request, template="smsforum/manage_messages.html"):
             category_txt = request.POST['category_'+str(id)]
             
             # update categories and translation
-            m.tags = category_txt.strip()
+            # m.tags = category_txt.strip()
+            m.update_tag (category_txt)
             m.update_translation(trans_txt)
     if 'next' in request.GET:
         return HttpResponseRedirect(request.GET['next'])
@@ -169,8 +170,10 @@ def messages(request, template="smsforum/manage_messages.html"):
     for m in messages:
         matcher=CMD_MESSAGE_MATCHER.match(m.text)
         if matcher is None: 
-            if len(m.tags)>0:
-                m.selected = m.tags[0].name.strip()
+            #if len(m.tags)>0:
+            #    m.selected = m.tags[0].name.strip()
+            if m.basictags.count()>0:
+                m.selected  = m.basictags.all()[0].txt
             if m.annotations.count() > 0:
                 m.note = m.annotations.all()[0].text
             annotated_messages.append(m)

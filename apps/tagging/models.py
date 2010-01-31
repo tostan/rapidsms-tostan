@@ -18,7 +18,7 @@ from nodegraph.models import NodeSet
 from tagging import settings
 from tagging.utils import calculate_cloud, get_tag_list, get_queryset_and_model, parse_tag_input
 from tagging.utils import LOGARITHMIC
-
+from logger.models import IncomingMessage
 qn = connection.ops.quote_name
 
 ############
@@ -470,6 +470,53 @@ class Tag(NodeSet):
     def save(self, *args, **kwargs):
         self.debug_id = self.name
         super(Tag,self).save(*args, **kwargs)
+ 
+class BasicTag(NodeSet):
+    """
+    Table for storing an basic message Tag 
+    Like an category or sub category of the message
+    exemple : category_root : Les activites de jeunesse
+              sub category  : Les activites scolaires
+    """
+    txt  = models.CharField (max_length =160)
+    message = models.ForeignKey (IncomingMessage, related_name ="basictags")
+    def get_root_tag_name_from_basic_tag (self):
+        """
+        This allow to match a basicTag 
+        with an Tag 
+        If we get an Tag we go to fin the 
+        root tag
+        """
+        name = '"'+self.txt+'"'
+        tag =Tag.objects.filter (name=name)[0]
+        rents = tag.get_parents(klass=Tag)
+        if rents is not None and len (rents)>0:
+                return rents[0].name
+        else :
+            return self.name
+
+    def __unicode__(self):
+        return  "txt  %(txt)s , message  %(message)s"\
+        %{
+          "txt": self.txt , 
+          "message": self.message
+        }
+def tag_from_message(msg):
+    """
+    Fetch tag from given message
+    """
+    basic_tag =None
+    if msg is None \
+            or len (msg.text)==0:
+        return None
+    else:
+        if msg.basictags.count ()>0:
+            basic_tag = msg.basictags.all ()[0]
+        else:
+            basic_tag =None 
+    return basic_tag
+        
+        
         
 class TaggedItem(models.Model):
     """

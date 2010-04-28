@@ -172,6 +172,23 @@ class MTechHandler(RapidBaseHttpHandler):
         '''An HttpHandler for the mtech gateway, for use in Nigeria'''
         self.log_message("Mtech outgoing message: %s" % message)
 
+class UptimeHandler(RapidBaseHttpHandler):
+    '''This is a dummy httphandler just to test whether route is responsive'''  
+    def do_GET(self):
+        if _is_uptime_check(self):
+            self.respond(200, "success")
+
+def _is_uptime_check(handler):
+    '''Determines whether the server is an uptime check
+       which is hackily done by checking if uptimecheck
+       is a passed in parameter'''
+    params = get_params(handler)
+    if not params:
+        return False
+    for param in params:
+        if param[0] == "uptimecheck":
+            return True
+    return False
         
 def get_params(handler):
     '''Pulls the parameters from a query string and returns them in

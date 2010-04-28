@@ -72,10 +72,12 @@ class IncomingMessage(MessageBase):
         into the BasicTag table
         """
         from tagging.models import BasicTag
+        if txt is None or len (txt)==0:
+            return None
         if self.basictags.count ()>0:
-                tag = self.basictags.all()[0]
-                tag.txt = txt
-                tag.save()
+            tag = self.basictags.all()[0]
+            tag.txt = txt
+            tag.save()
         else:
             tag = BasicTag (message =self)
             tag.txt =txt

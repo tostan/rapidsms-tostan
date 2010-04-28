@@ -150,8 +150,13 @@ def messages(request, template="smsforum/manage_messages.html"):
             
             # update categories and translation
             # m.tags = category_txt.strip()
-            m.update_tag (category_txt)
-            m.update_translation(trans_txt)
+            if trans_txt is not None and \
+              len(trans_txt.strip())>0 :
+                m.update_translation (trans_txt)
+            if len(category_txt)>0 and \
+              category_txt is not None and category_txt != "None":
+                m.update_tag(category_txt)
+
     if 'next' in request.GET:
         return HttpResponseRedirect(request.GET['next'])
     messages = IncomingMessage.objects.select_related().order_by('-received')

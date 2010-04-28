@@ -3,20 +3,20 @@
 # rbackup.sh -- secure backup to a remote machine using rsync.
 
 # Directories to backup. Separate with a space. Exclude trailing slash!
-SOURCES="/home/wendy /home/daisy /var/mail"
+SOURCES="/usr/local/rapidsms-install/backup/sql"
 
 # IP or FQDN of Remote Machine
-RMACHINE=192.168.0.2
+RMACHINE=66.246.76.111
 
 # Remote username
-RUSER=brice
+RUSER=rluk
 
 # Location of passphraseless ssh keyfile
-RKEY=/home/user/rsync-key
+RKEY=/home/tostansms/rsync/rsync-key
 
 # Directory to backup to on the remote machine. This is where your backup(s) will be stored
 # Exclude trailing slash!
-RTARGET="/home/user/backups/my_machine"
+RTARGET="/home/rluk/tostan/backup/sql"
 
 # Your EXCLUDE_FILE tells rsync what NOT to backup. Leave it unchanged, missing or
 # empty if you want to backup all files in your SOURCES. If performing a
@@ -27,7 +27,7 @@ RTARGET="/home/user/backups/my_machine"
 # /tmp/
 # /mnt/
 # *.SOME_KIND_OF_FILE
-EXCLUDE_FILE="/path/to/your/exclude_file.txt"
+EXCLUDE_FILE=
 
 # Comment out the following line to disable verbose output
 VERBOSE="-v"

@@ -25,19 +25,19 @@
 #=====================================================================
 
 # Username to access the MySQL server e.g. dbuser
-USERNAME=dbuser
+USERNAME=root
 
 # Username to access the MySQL server e.g. password
-PASSWORD=password
+PASSWORD=
 
 # Host name (or IP address) of MySQL server e.g localhost
 DBHOST=localhost
 
 # List of DBNAMES for Daily/Weekly Backup e.g. "DB1 DB2 DB3"
-DBNAMES="DB1 DB2 DB3"
+DBNAMES="rapidsms_tostan_dec_23_migration"
 
 # Backup directory location e.g /backups
-BACKUPDIR="/backups"
+BACKUPDIR="/usr/local/rapidsms-install/backup/sql"
 
 # Mail setup
 # What would you like to be mailed to you?
@@ -45,13 +45,13 @@ BACKUPDIR="/backups"
 # - files : send log file and sql files as attachments (see docs)
 # - stdout : will simply output the log to the screen if run manually.
 # - quiet : Only send logs if an error occurs to the MAILADDR.
-MAILCONTENT="stdout"
+MAILCONTENT="log"
 
 # Set the maximum allowed email size in k. (4000 = approx 5MB email [see docs])
 MAXATTSIZE="4000"
 
 # Email Address to send mail to? (user@domain.com)
-MAILADDR="user@domain.com"
+MAILADDR="jokkoinitiative@gmail.com"
 
 
 # ============================================================

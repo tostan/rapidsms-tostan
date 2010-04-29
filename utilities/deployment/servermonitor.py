@@ -1,8 +1,8 @@
-#!/usr/bin/env python
+#!/usr/bin/python
 
 # CONFIGURATION ##########################################################
 # email address to use in the to field
-recipient = 'rluk@dimagi.com'
+recipient = 'jokkoinitiative@gmail.com'
 
 # email address to use in the from field
 sender = 'jokkoinitiative@gmail.com'
@@ -59,9 +59,9 @@ def main_loop():
         # create a list of tests that failed
         problemlist = ''
         if http_200 == False:
-            problemlist = problemlist + 'could not connect\n'
+            problemlist = problemlist + 'SMS Process is not responding.\n'
         if http_success == False:
-            problemlist = problemlist + 'did not display\n'
+            problemlist = problemlist + 'SMS Process status is not available.\n'
         print problemlist
         send_email(problemlist)
         print 'attempted to send mail'

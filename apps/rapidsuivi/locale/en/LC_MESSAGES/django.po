@@ -1,0 +1,52 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-08-23 03:19+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: app.py:111
+msgid "register-relay"
+msgstr "Merci %(first_name)s %(last_name)s.Vous etes bien inscrit a RapidSuivi en tant que %(title)s de %(village)s.En cas de probleme,merci de contacter votre Superviseur.Bonne journee!"
+
+#: app.py:200
+msgid "save-classe"
+msgstr "Merci %(first_name)s %(last_name)s .Vous avez fini la sceance %(session)s du %(title)s avec les %(cohort)s de %(village)s .Presents : %(women)s femmes ,%(men)s hommes ,%(girls)s filles et %(boys)s garcons .En cas d'erreur ,merci de contacter votre Superviseur .Bonne journee !"
+
+#: app.py:249
+msgid "update-classe"
+msgstr "Merci %(first_name)s %(last_name)s .Durant le %(title)s ,%(women)s femmes ,%(men)s hommes ,%(girls)s filles et %(boys)s garcons ont abandonne la classe en cours de route .En cas d'erreur ,merci de contacter votre Superviseur"
+
+#: app.py:278
+msgid "save-reunion"
+msgstr "Merci %(first_name)s %(last_name)s .Le CGC de %(village)s s'est reuni aujourd'hui ,%(members)s membres et %(guests)s invites etaient presents et vous avez discute principalement du theme de la %(subject)s .Vous avez planifie d'organiser un %(activity)s bientot .En cas d'erreur ,merci de contacter votre Superviseur .Bonne journee"
+
+#: app.py:302
+msgid "save-finance"
+msgstr "Merci %(first_name)s %(last_name)s .Le CGC de %(village)s dispose apres une transaction bancaire effectuee aujourd'hui de %(balance_com)s CFA dans sa caisse communautaire et de %(balance_bank)s dans son compte en banque .En cas d'erreur ,merci de contacter votre Superviseur .Bonne journee"
+
+#: app.py:331
+msgid "save-mobilization"
+msgstr "Merci %(first_name)s %(last_name)s .Le CGC de %(village)s a organise aujourdhui dans un %(location)s de %(village)s un %(theme)s qui a touche %(attendees)s personnes originaires de %(villages)s villages .En cas d'erreur ,merci de contacter votre supervieur .Bonne journee"
+
+#: app.py:356
+msgid "save-radio"
+msgstr "Merci %(first_name)s %(last_name)s.Votre emission d'aujourd'hui avait pour theme %(theme)s .Il s'agissait d'un %(showtype)s en %(showlocation)s En cas d'erreur , merci de contacter votre superviseur .Bonne journee!"
+
+
+msgid  "relay-exist"
+msgstr "Desole, mais ce relay existe ,Modfication: [321] a la place [123]"
+
+msgid  "village-not-found"
+msgstr "Desole, mais je ne peux pas trouver ce village,etes vous sure des coordonnees"

@@ -1,0 +1,87 @@
+{% load i18n %}
+<style>
+
+ td { margin:0px ;padding:0px;align:top;}
+ p {margin:0px ;padding:0px;align:top;}
+ </style>
+<div id ="calendar-form">
+	<table>
+	        <tr>
+			
+			      <td>
+			        <form  name = ''  method ="POST">
+					<p>
+						<fieldset>
+						<legend> {% trans "Cordinations" %}</legend>
+						<select name='cordination'>
+								<option value=''>--</option>
+								<option value='all'>all</option>
+								{% for item in cordination_options.items   %}
+								   <option  value ='{{ item.0 }}'
+								    {% ifequal cordination_selected item.0  %} selected {% endifequal %}>
+								    	{{ item.1 }}
+								    </option>
+								{% endfor %}
+						</select>
+						</fieldset>
+					</p>
+					<p>	
+							<fieldset>
+							<legend> {% trans  "Projects" %}<legend>
+							<select name='project'>
+									<option value=''>--</option>
+									<option value='all'>all</option>
+									{% for item in project_options.items   %}
+									   <option  value ='{{ item.0 }}' 
+									   {% ifequal project_selected item.0 %} selected {% endifequal %}>
+									   {{ item.1 }}
+									   </option>
+									{% endfor %}
+							</select>
+							</fieldset>
+					</p>
+						
+					<p>
+							<fieldset>
+							<legend> {% trans "Villages"  %}</legend>
+							<select name='village'>
+									<option value=''>--</option>
+									<option value='all'>all</option>
+									{% for sv in village_options %}
+									   <option  value ='{{ sv.village__pk }}'
+									   {% ifequal village_selected sv.village__pk %} selected {% endifequal %}>
+									   	{{ sv.village__name }}
+									   </option>
+									{% endfor %}
+							</select>
+							</fieldset>
+					</p>
+					
+					<p>
+							<fieldset>
+							<legend></legend>
+							<select name='actor'>
+									<option value=''>--</option>
+									<option value='all'>all</option>
+									{% for item in actor_options.items   %}
+									   <option  value ='{{ item.0 }}'  {% ifequal  actor_selected item.0  %} selected {% endifequal %}>
+									   		{{ item.1 }}
+									   </option>
+									{% endfor %}
+							</select>
+							</fieldset>
+							
+						<br/>
+ 						<input  type ="submit"  values ="{% trans 'GO' %}"/>
+					</p>
+					<form>
+					</td>
+					<td>
+					  {% include "rapidsuivi/partials/calendar_ui.html" %}
+					</td>
+			</tr>
+	</table>
+</div>
+
+
+

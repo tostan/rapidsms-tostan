@@ -1,5 +1,5 @@
 from django.contrib import admin
-from rapidsuivi.models import SuiviVillage , Cmc, Relay
+from rapidsuivi.models import *
 class SuiviVillageAdmin(admin.ModelAdmin):
     def suivi_data (self , vil):
         abs  =vil.absents.all ()
@@ -10,8 +10,9 @@ class SuiviVillageAdmin(admin.ModelAdmin):
                                   ]))
             
         return "".join (data)
-    list_display = ("village__name", "suivi_data")
+    list_display = ("village",)
 
 admin.site.register(SuiviVillage , SuiviVillageAdmin)
 admin.site.register(Cmc)
+admin.site.register(Class)
 admin.site.register(Relay)

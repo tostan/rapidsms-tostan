@@ -45,7 +45,7 @@ class Relay(models.Model):
               ("D" , "Delate"),
               ("C" , "Create"))
     contact               = models.ForeignKey (Contact ,related_name = "relay")
-    village_suivi         = models.ForeignKey("SuiviVillage")
+    village_suivi         = models.ForeignKey("SuiviVillage" , related_name ="relay")
     title_id              = models.CharField(max_length=2 ,choices =  TITLE_TYPES)
     cordination_id       = models.CharField(max_length=2  ,choices =  COORDINATION_TYPES)
     project_id            = models.CharField(max_length=2 ,choices =  PROJECT_TYPES)
@@ -169,10 +169,8 @@ class Cmc(NodeSet):
         is_read = models.BooleanField (default =False)
         
         def __unicode__(self):
-                return  u"Relay ++++fisrt_name +++%s, last_name +++%s +++phone+++%s"%(
-                        self.first_name ,
-                        self.last_name ,
-                        self.contact.phone_number
+                return  u"CMC +++relay +++%s"%(
+                        self.relay
                         ) 
             
          
@@ -230,7 +228,7 @@ class SuiviVillage(models.Model):
     Liste of rapidsuivi villages , We made a foreign key to the village to allow settings the location and 
     to link rapidsuivillage to tostan's village used in sms forum
     """
-    village           =models.ForeignKey (Village , null  =True , blank =True , related_name ="village_suivi")
+    village           =models.ForeignKey (Village , related_name ="village_suivi")
     coordination      =models.CharField (max_length =160 , null =True, blank=True)
     region            =models.CharField(max_length=160, null =True , blank =True)
     departement       =models.CharField (max_length =160 , null =True , blank =True)
@@ -238,10 +236,16 @@ class SuiviVillage(models.Model):
     communaute_rurale =models.CharField (max_length=160, null =True , blank =True)
     commune           =models.CharField(max_length =160, null =True , blank =True)
     langue            =models.CharField(max_length =160, null =True, blank =True)
-    name              =models.CharField (max_length =160 ,null =True , blank =True)
+    
+    # Tostan utilise un systeme de coordonnees avec arcgis aui differe du systeme
+    # de google map , nous devons alors faire la conversion des coordonnees 
+    # sous gmap , pour pouvoir les utiliser 
+    
+    gmap_latitude     =models.DecimalField(max_digits=8, decimal_places=6, blank=True, null=True)
+    gmap_longitude    =models.DecimalField(max_digits=8, decimal_places=6, blank=True, null=True)
     
     def __unicode__(self):
-        return u"SuiviVilllage +++village+++%s"%self.village.name 
+        return u"SuiviVilllage +++village_pk+++%s +++village__name++%s"%(self.pk ,self.village.name)
 
 
 def relay_from_message (**kwargs):

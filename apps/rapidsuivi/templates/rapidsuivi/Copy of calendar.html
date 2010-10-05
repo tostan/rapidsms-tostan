@@ -1,0 +1,11 @@
+{% extends "layout.html" %}
+{% load i18n %}
+{% load rapidsuivi %}
+{% block  content %}
+<div class="module">
+
+ {{ actor_selected }}
+ <div style  = "float:left;">
+	{% calendar_forms %}   
+ </div>
+{% endblock %}

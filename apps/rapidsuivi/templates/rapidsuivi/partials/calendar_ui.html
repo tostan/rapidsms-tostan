@@ -1,0 +1,60 @@
+<style type='text/css'>
+
+	body {
+		margin-top: 40px;
+		text-align: center;
+		font-size: 14px;
+		font-family: "Lucida Grande",Helvetica,Arial,Verdana,sans-serif;
+		}
+		
+	#loading {
+		position: absolute;
+		top: 5px;
+		right: 5px;
+		}
+
+	#calendar {
+		width: 800px;
+		height:500px;
+		margin: 0 auto;
+		}
+
+</style>
+<script type='text/javascript'>
+   $(document).ready(function(){
+    /*$.getJSON("/test",function(data){
+	 $.each (data , function () {
+                alert (data);
+             })
+    });
+    */
+    event_data =[]
+    var i = 0
+    {% for item  in data %}
+        event_data[i] = 
+            {"title":"{{ item.title }}" ,
+             "url" :"{{ item.url }}",
+             "start":"{{ item.start }}"}
+        i= i +1
+    {% endfor %}
+    $('#calendar').fullCalendar({
+    /*editable: true,*/
+    events:event_data,
+    eventClick: function(event){
+              if (event.url) {
+                  window.open(event.url);
+                  return false;
+              }
+          }
+  });
+ $('#calendar').fullCalendar('option', 'eventClick', function(event) {
+          if (event.url) {
+              window.open(event.url);
+              return false;
+          }
+      });
+   }
+    )
+</script>
+<div id='loading' style='display:none'>loading...</div>
+<div id='calendar'></div>

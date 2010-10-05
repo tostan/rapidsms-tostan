@@ -287,7 +287,9 @@ class App (rapidsms.app.App):
             print msg
             #Envoi un message au relay
             relay.send_to(msg)
-        
+            
+            # Retourn le message pour etre stocke dans la  base 
+            return msg
         
     
     @kw("321 (\d+) (\d+) (\d+\.?\d+?) (\d+\.?\d+?) (\d+)\s+(\S+) (\S+)")
@@ -332,10 +334,11 @@ class App (rapidsms.app.App):
                             *args , 
                             force =False)
             
-                return  self.send_response(          
+                self.send_response(          
                         relay =rel,
                         key="register-relay"                  
                         )
+                return True
             except RelayExistError , e:
                 traceback.print_exc()
                 Message(
@@ -408,11 +411,13 @@ class App (rapidsms.app.App):
                         relay =message.relay, 
                         **kw_args
                         )
-        self.send_response (
+        msg  =self.ssend_response (
                         classe =cla , 
                         key ="save-classe"
                 )
         
+        cla.message_resp = msg
+        cla.save ()
         return True
                         
                         
@@ -446,10 +451,12 @@ class App (rapidsms.app.App):
                      classe =prec_class ,
                      **kw_args)
       
-        self.send_response(
+        msg  =self.send_response(
                 classe = abs_cla ,           
                 key ="update-classe"
                 )
+        cla.message_resp  =msg
+        cla.save ()
         return True 
     
     
@@ -471,10 +478,13 @@ class App (rapidsms.app.App):
                             relay = message.relay , 
                             **kw_args
                             )
-        self.send_response (
+        msg =self.send_response (
                         cmc  = cmc,
                         key  ="save-reunion"           
                         )  
+        
+        cmc.message_resp  = msg
+        cmc.save()
         return True 
     
     
@@ -493,10 +503,12 @@ class App (rapidsms.app.App):
                 relay  =message.relay, 
                 **kw_args)
         
-        return self.send_response (
+        msg =self.send_response (
                     cmc   = cmc,
                     key   = "save-finance"                
                     )
+        cmc.message_resp =msg
+        cmc.save ()
         return True
     
     
@@ -520,10 +532,12 @@ class App (rapidsms.app.App):
                         **kw_args
                         )
         
-        self.send_response (
+        msg =self.send_response (
                     key ="save-mobilization",
                     cmc = cmc
                     )
+        cmc.message_resp =msg
+        smc.save ()
         return True 
         
     @kw ("rad (\d+?) (\d+?) (\d+?)$")
@@ -538,12 +552,12 @@ class App (rapidsms.app.App):
                             relay =message.relay, 
                             **kw_args
                     )
-        self.send_response (
+        msg =self.send_response (
                 cmc  = cmc,
                 key = "save-radio"
                 )
-    
-    
+        cmc.message_resp =msg
+        cmc.save ()
         return True
     @kw ("lang (.{2,3})")
     @identify 

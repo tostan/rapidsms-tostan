@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+{% load i18n %}
+{% load rapidsuivi %}
+{% block javascripts %}
+<script type='text/javascript' src='/static/rapidsuivi/js/calendar/jquery/jquery.js'></script>
+<script type='text/javascript' src='/static/rapidsuivi/js/calendar/fullcalendar.min.js'></script>
+<script type='text/javascript' src='/static/rapidsuivi/js/calendar/gcal.js'></script>
+{% endblock %}
+
+{% block stylesheets %}
+<link rel='stylesheet' type='text/css' href='/static/rapidsuivi/css/fullcalendar.css' />
+{% endblock %}
+
+
+{% block  content %}
+<div class="module">
+ {{ actor_selected }}
+ <div style  = "float:left;">
+	{% include  "rapidsuivi/partials/calendar_form.html" %}   
+ </div>
+{% endblock %}

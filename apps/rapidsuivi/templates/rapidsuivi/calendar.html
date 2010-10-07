@@ -1,4 +1,4 @@
-{% extends "layout.html" %}
+{% extends   "layout.html" %}
 {% load i18n %}
 {% load rapidsuivi %}
 {% block javascripts %}
@@ -12,10 +12,8 @@
 {% endblock %}
 
 
-{% block  content %}
-<div class="module">
- {{ actor_selected }}
- <div style  = "float:left;">
-	{% include  "rapidsuivi/partials/calendar_form.html" %}   
+{% block content %}
+ <div class="module">
+ {% include "rapidsuivi/partials/calendar_form.html" %}
  </div>
 {% endblock %}

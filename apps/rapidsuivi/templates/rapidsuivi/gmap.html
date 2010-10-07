@@ -1,27 +1,17 @@
-<html>
-<body>
-<head>
+{% extends  "layout.html" %}
+{% block stylesheets %}
 <script type="text/javascript" src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAA16Es4vVKB3LR3KqSzgmFgBQSrYE7M2jFIn0ilamqd471pr_vwhSJD83yoTDES8fAIy4Uo867U3tirQ"></script>
 
 <script type="text/javascript" src="/static/rapidsuivi/js/gmap/jquery-1.4.2.min.js"></script>
 <script type="text/javascript" src="/static/rapidsuivi/js/gmap/jquery.gmap-1.1.0-min.js"></script>
-<style type ='text/css'>
-   
-</style>
-</head>
-
-<body >
 <!--script src="http://maps.google.com/maps?file=api&key=" type="text/javascript"></script-->
+
 <script src="/static/rapidsuivi/js/gmap/labeledmarker.js" type="text/javascript"></script>
+{% endblock %}
+{% block content %}
+
 <script type="text/javascript">
 $(function() {
-	    //
-	    {% for village in villages %}
-			alert ("{{ village.gmap_latitude  }} ++ {{ village.gmap_longitude }} ++ {{ village.name }}  ++ {{ village.new_message}}");  
-	    {% endfor %}
-	    
-	   
-	    //
         var gm = google.maps;
         if(gm.BrowserIsCompatible()) {
                 var INITIAL_ZOOM = 7;
@@ -53,32 +43,29 @@ $(function() {
 		        return icon;
                 };
 				*/
-                var sprite2 = function (new_message){
-						var icon = new GIcon (G_DEFAULT_ICON)
-						if (new_message =="true"){
-							icon.sprite ={"image": "/static/locations/images/markers.png"}
-						}
-						else {
-							icon.sprite ={"image": "/static/locations/images/markers.png"}
-						}
+                var sprite2 = function (){
+			var icon = new GIcon (G_DEFAULT_ICON)
+			icon.sprite= {
+			
+			};
+			return icon;
                }
                 /* iterate each of the markers (ALL locations),
                 * and add a sprite to the map for each one */
 				{%  for village    in villages  %} 
-	                    var point = new GLatLng("{{ village.latitute }}","{{ village.longitude }}");
+	                    var point = new GLatLng("{{ village.gmap_latitude }}","{{ village.gmap_longitude }}");
 			            var marker = new LabeledMarker(point, 
 						    { "labelText": "{{ village.name }}",
 							  "labelClass": "caption", 
-						   	  "icon": sprite2("{{village.new_message}}") 	
+						   	  "icon": sprite2() 	
 						    });
-				        marker.bindInfoWindow("<div>{{ village.message }}</div>");
+				        marker.bindInfoWindow("<div>{{ village.name}}</div>");
 			            map.addOverlay(marker);
 			    {% endfor %}
         }
 });
 </script>
-
-<div id="map">
+<div id="map" style ='width:800px; height:500px;'>
     &nbsp;
 </div>
-
+{% endblock %}

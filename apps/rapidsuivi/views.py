@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from apps.rapidsuivi.models import *
 from apps.smsforum.models import *
 from apps.rapidsuivi.models import Relay as r
+from django.http import HttpResponse
 
 
 @login_required
@@ -28,13 +29,10 @@ def calendar(req, template="rapidsuivi/calendar.html"):
                     relay_filtres["village_suivi__village"] = Village.objects.get (pk =req.POST["village"])
                 context["village_selected"]= req.POST["village"]
                    
-        print "relay_filtres++++++++++++++++++++++++++" , relay_filtres
         if len (relay_filtres)>0:
             all_relays =all_relays.filter (**relay_filtres)
         
-        print "all_relay++++++++++++++++++++++++++" ,all_relays
-        if len (all_relays):
-                if "actor" in req.POST:
+        if "actor" in req.POST:
                         if req.POST.get("actor") not in ("", "all"):
                             cmc_or_class =req.POST["actor"]
                             if cmc_or_class =="1" :
@@ -49,11 +47,9 @@ def calendar(req, template="rapidsuivi/calendar.html"):
     else :
                         context  ["cmcs"]  =Cmc.objects.all ()
                         context   ["classes"]=Class.objects.all ()
-    print "context ++++++++++++++++++++++++" , context 
     calendar_events (context)
-    print  "context +++++++++++++++++++++++++",context
-    return render_to_response ( req, template, context )                    
-
+    return render_to_response (req ,template, context)
+	
 def calendar_form (context):
      context ["cordination_options"] =dict (r.COORDINATION_TYPES)
      context ["project_options"]     =dict(r.PROJECT_TYPES)
@@ -95,7 +91,6 @@ def calendar_events (context):
         
     if len (calendar_event):
         context ["data"]  = calendar_event 
-    print "calendar_event++++++++++++++++++++++++++++++",calendar_event
     
             
 def map (req , template = "rapidsuivi/gmap.html"):
@@ -113,13 +108,12 @@ def map (req , template = "rapidsuivi/gmap.html"):
                   suivi_village.new_message  =False 
             
              gmap_data.append  (
-                {"gmap_latitude" : suivi_village.gmap_latitude  ,
-                 "gmap_longitude" : suivi_village.gmap_longitude  ,
+                {"gmap_latitude" : suivi_village.village.location.latitude  ,
+                 "gmap_longitude" : suivi_village.village.location.longitude,
                  "name"  :     suivi_village.village.name , 
                  "new_message" :suivi_village.new_message
                  })
-        
-        print  "data +++++++++++++++++++++++" ,gmap_data
+        #return HttpResponse (gmap_data)
         context ["villages"]  =gmap_data
         return render_to_response (req , template , context)
     

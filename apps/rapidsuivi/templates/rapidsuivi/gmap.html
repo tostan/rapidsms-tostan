@@ -1,4 +1,5 @@
 {% extends  "layout.html" %}
+{% load i18n %}
 {% block stylesheets %}
 <script type="text/javascript" src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAA16Es4vVKB3LR3KqSzgmFgBQSrYE7M2jFIn0ilamqd471pr_vwhSJD83yoTDES8fAIy4Uo867U3tirQ"></script>
 
@@ -59,12 +60,13 @@ $(function() {
 							  "labelClass": "caption", 
 						   	  "icon": sprite2() 	
 						    });
-				        marker.bindInfoWindow("<div>{{ village.name}}</div>");
+				        marker.bindInfoWindow("<div><ul><li>Village :{{ village.name}}</li><li>Relay :{{ village.name}}</li><i>Message: {{ village.name}}</li></ul></div>");
 			            map.addOverlay(marker);
 			    {% endfor %}
         }
 });
 </script>
+<a href="{% url map %}" >{% trans "Refraichir la map" %}</a>
 <div id="map" style ='width:800px; height:500px;'>
     &nbsp;
 </div>

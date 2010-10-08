@@ -30,18 +30,29 @@
          },
      	 eventRender: function (event , el){
 		el.qtip({
-		content:'Le contentenu du message :)'
-		})
-         }
-     }
+		content:'Le contentenu du message :)',
+		position: {corner: {tooltip: 'bottomLeft', target: 'topRight'}},
+                style   : {
+                                                    width: 200,
+                                                    padding: 5,
+                                                    background: '#66CCFF',
+                                                    color: 'black',
+                                                    textAlign: 'center',
+                                                    border: {
+                                                        width: 7,
+                                                        radius: 5,
+                                                        color: '#009CEB'
+                                                    },
+                                                    tip: 'bottomLeft',
+                                                    name: 'dark' // Inherit the rest of the attributes from the preset dark style
+ 
+                }
+                });
+		}
+	}	
  );
- $('#calendar').fullCalendar('option', 'eventClick', function(event) {
-          if (event.url) {
-              window.open(event.url);
-              return false;
-          }
-      });
-   }
-    )
+
+
+});
 </script>
 <div id='calendar'></div>

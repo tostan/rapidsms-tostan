@@ -111,8 +111,9 @@ class App (rapidsms.app.App):
                     # using the keyworder parser
                     func, captures = self.kw.match(self, message.text) 
                 except Exception:
-                    #traceback.print_exc()
-                    # If the user message start with our key, to be sure that message is for us
+                    traceback.print_exc()
+                    self.debug ("RapidSMS  Suivi ne peut traiter ++++++++++++++++++%s"%message.text)
+		    # If the user message start with our key, to be sure that message is for us
                     for start in ("reu", "cla" , "abs" , "ms" , "rad"):
                         if message.text.strip().startswith (start):
                             Message(
@@ -328,6 +329,7 @@ class App (rapidsms.app.App):
             args [0] :coordination_id  ,args [1] :project_id ,args [2] :latitude ,args [3] :longitude ,args [4] :title_id ,
             args [5]: first_nameargs [6] :last_name
             """
+            self.debug("Register++++++++++++++++++++++++++++++++++++%s"%message.text)
             try:
                 rel =self.__register_relay(
                             message ,
@@ -398,7 +400,7 @@ class App (rapidsms.app.App):
         """Sauvegarde une nouvelle classe [Kobi 1 ,Awade 1, ...] 
         args [0] :cohort_id, args [1] :title_id ,args [2] :num_session ,args [3] :num_women
         args [4] :num_men ,args [5]: num_girls  ,args [6] :num_boys"""
-    
+        self.debug("Add class +++++++++++++++++++++++++++++++++++%s"%message.text)
         keys = ["cohort_id" , 
                 "title_id" , 
                 "num_session" ,
@@ -429,7 +431,7 @@ class App (rapidsms.app.App):
         args [3] : num_girls_drpped  ,args [4] :num_boys_dropped ]"""
         # Si le rapport sur le awade ou le  Kobi precedent ne passe 
         # pas alors on envoie un message
-        
+        self.debug("Add clas absence  ++++++++++++++++++++++++++++++%s"%message.text)
         prec_class =exists(
                     Class , 
                     **{"title_id" :int (args[0])-1})
@@ -468,6 +470,7 @@ class App (rapidsms.app.App):
         Ajouter une nouvelle reunion  au systeme 
         args [0]  :num_members ,args [1]  :num_guests ,args [2]  :subject_id  ,args [3] :activity_id
         """
+        self.debug ("Add reunion ++++++++++++++++++++++++++++++++++%s"%message.text)
         attrs    = ["num_members" ,
                     "num_guests" , 
                     "subject_id" ,
@@ -494,7 +497,7 @@ class App (rapidsms.app.App):
     def add_finance (self, message ,  *args ,**kwargs):
         """Ajouter un rapport financier au systeme
         args [0]:balance_com,args [1]:balance_bank"""
-        
+        self.debug("Add finance ++++++++++++++++++++++++++++++%s"%message.text)        
         attrs = ["balance_com" ,
                  "balance_bank"]
         kw_args   =dict (zip (attrs , args))
@@ -519,7 +522,7 @@ class App (rapidsms.app.App):
         Ajouter un rapport su une mobilization
         args [0] : num_attendees ,args [1] :num_villages ,args [2] :theme_id  ,args [3] :location_id
         """
-        
+        self.debug ("Add mobilization++++++++++++++++++++%s"%message.text)
         attrs  = ["num_attendees" ,
                    "num_villages" ,
                    "theme_id" ,
@@ -545,6 +548,7 @@ class App (rapidsms.app.App):
     def add_radio (self ,message , *args , **kwargs):
         """Ajouter une nouvelle radio 
         args [0] : theme ,args [1] :show_location ,args [2] :show_type """
+        self.debug ("Add Radio   +++++++++++++++++%s "%message.text)
         attrs    = ["theme_id" , "show_location_id" , "show_type_id"]
         kw_args  = dict (zip (attrs , args))
         cmc      = Cmc.objects.create (

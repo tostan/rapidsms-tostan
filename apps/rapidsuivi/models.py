@@ -237,12 +237,17 @@ class SuiviVillage(models.Model):
     commune           =models.CharField(max_length =160, null =True , blank =True)
     langue            =models.CharField(max_length =160, null =True, blank =True)
     
-    # Tostan utilise un systeme de coordonnees avec arcgis aui differe du systeme
-    # de google map , nous devons alors faire la conversion des coordonnees 
-    # sous gmap , pour pouvoir les utiliser 
-    
-    gmap_latitude     =models.DecimalField(max_digits=8, decimal_places=6, blank=True, null=True)
-    gmap_longitude    =models.DecimalField(max_digits=8, decimal_places=6, blank=True, null=True)
+    # Je stock ici  les latitudes et mongitudes de tostan , les latitudes 
+    # et les longitudes utilises par google map sont dans location.latitude
+    # et dans location.longitude
+    # Ceci nous par exemple lorque Cheikh Ba  s'enregistre de passer 
+    # Les latitudes et longitudes de arc gis ou bien ceux de google map
+    # qui sont dans  location
+    # Nous mettons ici le type char au lieu de Decimal car pour le systeme 
+    # de coordonnees de arc gis de tostan je ne maitrise pas le max_digit 
+    # et le decimal places
+    latitude     =models.CharField(max_length=20 , blank=True, null=True)
+    longitude    =models.CharField(max_length=20,  blank=True, null=True)
     
     def __unicode__(self):
         return u"SuiviVilllage +++village_pk+++%s +++village__name++%s"%(self.pk ,self.village.name)

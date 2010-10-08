@@ -20,15 +20,21 @@
         i= i +1
     {% endfor %}
     $('#calendar').fullCalendar({
-    /*editable: true,*/
-    events:event_data,
-    eventClick: function(event){
+    	/*editable: true,*/
+   	 events:event_data,
+    	 eventClick: function(event){
               if (event.url) {
                   window.open(event.url);
                   return false;
               }
-          }
-  });
+         },
+     	 eventRender: function (event , el){
+		el.qtip({
+		content:'Le contentenu du message :)'
+		})
+         }
+     }
+ );
  $('#calendar').fullCalendar('option', 'eventClick', function(event) {
           if (event.url) {
               window.open(event.url);

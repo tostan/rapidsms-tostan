@@ -71,9 +71,7 @@ class Relay(models.Model):
         FR : Cette methode nous permet de recuperer le relay a partir du contact
         """
         try:
-             return klass.objects.get (
-                            contact = contact
-                        )
+             return klass.objects.get ( contact = contact)
         except  Exception  , e :
             traceback.print_exc()
             return None 
@@ -249,7 +247,25 @@ class SuiviVillage(models.Model):
     latitude     =models.CharField(max_length=20 , blank=True, null=True)
     longitude    =models.CharField(max_length=20,  blank=True, null=True)
     
-    def __unicode__(self):
+    def current_message (self):
+	"""Le plus rescent message non lu ou le plus rescent message lu """
+	cmc_to_read=Cmc.objects.filter (relay__village ==self.village , is_read=False)
+	if cmc_to_read.count ()==0:
+		class_to_read =Class.objects.filter (relay__village=self.village, is_read=False)
+		if class_to_read.count()>0:
+			return class_to_read.order_by("-date") [0]
+		else :
+		     cmc_readed = Class.objects.filter (relay__village=self.village)
+		     if cmc_reader.count ()==0:
+			   class_readed =Class.objects.filter (relay__village=self.village)
+			   if class_reader.count()>0:
+				return class_readed.order_by("-date")[0]
+			   else :return None 
+		     else :
+			        return cmc_readed.order_by("-date")[0]
+	else : return  cmc_to_read .oder_by("-date")[0]
+    
+   def __unicode__(self):
         return u"SuiviVilllage +++village_pk+++%s +++village__name++%s"%(self.pk ,self.village.name)
 
 
@@ -261,76 +277,54 @@ def relay_from_message (**kwargs):
     Si force ==False , si le relay existe deja alors on doir envoyer l'execption 
     que le relay exite deja
     """
-    vil= vil_from_la_lo(
-                        
-                kwargs.get('latitude') ,
-                kwargs.get('longitude')
-                )
+    vil= vil_from_la_vil(kwargs.get('latitude') ,kwargs.get('longitude'))
     kwargs["village_suivi" ] =vil
-    rel = exists(
-            Relay ,
-            contact =kwargs.get ("message").sender
-            )
-    
+    rel = exists(Relay ,contact =kwargs.get ("message").sender)
     # Si le relay existe , qu'est ce que nous devons faire 
     # mettre son etat  a delete ou bien  envoyer une erreur ,je ne sais a tostan de definir
     # par defaut on force en mettant l'ancien a statut delete    
-    if rel:
-        if   not "force" in kwargs or not  kwargs["force"]: 
-               # Le relay ne doit pas etre cree  deux fois
-               raise RelayExistError 
-                
+    #if rel:
+    #    if   not "force" in kwargs or not  kwargs["force"]: 
+    #           # Le relay ne doit pas etre cree  deux fois
+    #           raise RelayExistError 
+    if rel :           
         rel.statut  = "D"
         rel.save ()
     # Nous enelevons ici les paramettre  qui ne font pas parti  des parametres pour le relay
     # comme le message , force
-    
     try:
         kwargs.pop("message")
     except KeyError, err:
         pass
-    
     try:
         
         kwargs.pop ("force")
     except KeyError,err:
         pass
-    
-    
     try:
         kwargs.pop("latitude")
-    except KeyError , e:
-        
+    except KeyError , 
         pass
     try:
         kwargs.pop("longitude")
     except KeyError , e:
         pass
-    
     # Ok on doit creer le relay ou bien force sa creation
-    rel = Relay.objects.create (
-                **kwargs
-                )
+    rel = Relay.objects.create (**kwarg)
     return rel
 
 
 def vil_from_la_lo(latitude , longitude):
     try:
-        return SuiviVillage.objects.get (
-                    village__location__latitude =latitude ,
-                    village__location__longitude =longitude
-                )
-    except:
-        #traceback.print_exc()
-        #raise VillageNotExistError
+        return SuiviVillage.objects.get (village__location__latitude =latitude ,village__location__longitude =longitude)
+    except Exception , e:
+        traceback.print_exc()
+        raise VillageNotExistError
         pass
-    
     
 def exists (klass , **kwargs ):
     try:
-       return  klass.objects.get (
-                        **kwargs
-                        )
+       return  klass.objects.get (**kwargs)
     except Exception, e:
         #traceback.print_exc()
         return None

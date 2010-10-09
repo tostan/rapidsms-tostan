@@ -265,7 +265,7 @@ class SuiviVillage(models.Model):
 			        return cmc_readed.order_by("-date")[0]
 	else : return  cmc_to_read .oder_by("-date")[0]
     
-   def __unicode__(self):
+    def __unicode__(self):
         return u"SuiviVilllage +++village_pk+++%s +++village__name++%s"%(self.pk ,self.village.name)
 
 
@@ -303,7 +303,7 @@ def relay_from_message (**kwargs):
         pass
     try:
         kwargs.pop("latitude")
-    except KeyError , 
+    except KeyError ,e: 
         pass
     try:
         kwargs.pop("longitude")

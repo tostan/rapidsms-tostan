@@ -93,13 +93,23 @@ def map (req , template = "rapidsuivi/gmap.html"):
         villages =  SuiviVillage.objects.all ()
         gmap_data  =[]
         for suivi_village in villages :
-             current_message = suivi_village.current_message ().message if  suivi_village.current_message () else None 
-             gmap_data.append  (
-                {"gmap_latitude" : suivi_village.village.location.latitude  ,
+             icon = "red"
+	     display_message ="Pas encore de sms pour le village"
+	     cur_msg  =suivi_village.current_message ()
+	     if cur_msg:
+	 	display_message = cur_msg.message
+		if not cur_msg.is_read:
+			icon = 'green'
+	     dict = {
+		 "gmap_latitude" : suivi_village.village.location.latitude  ,
                  "gmap_longitude" : suivi_village.village.location.longitude,
                  "name"  :     suivi_village.village.name , 
-                 "current_message" :current_message
-                 })
+                 "current_message" :display_message
+                 }
+	     # Quel icon pour goolemap (rouge  ou vert 
+	     dict["icon"]=icon
+	     gmap_data.append (dict)
+
         #return HttpResponse (gmap_data)
         context ["villages"]  =gmap_data
         return render_to_response (req , template , context)

@@ -42,11 +42,10 @@ $(function() {
 		                "top": offset * 34
 				};
 		        return icon;
-                };
-				*/
+                */
                 var sprite2 = function (what_icon){
 			var icon = new GIcon (G_DEFAULT_ICON)
-			if (what_icon!="None"){ 
+			if (what_icon!="red"){ 
 				icon.sprite= {
 				 "image":"/static/rapidsuivi/images/new-sms.png"
 				};
@@ -57,7 +56,7 @@ $(function() {
                 * and add a sprite to the map for each one */
 				{%  for village    in villages  %}
                          
-			    var what_icon ="{{ village.current_message }}";
+			    var what_icon ="{{ village.icon}}";
 	                    var point = new GLatLng("{{ village.gmap_latitude }}","{{ village.gmap_longitude }}");
 			            var marker = new LabeledMarker(point, 
 						    { "labelText": "{{ village.name }}",

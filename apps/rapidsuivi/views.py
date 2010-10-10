@@ -71,17 +71,17 @@ def calendar_events (context):
         classes  =context["classes"]
         for cls in classes :
             values ={"title" :"CLASS"}
-            values ["url"] ="/suivi/messages/%s"%(cls.pk)
+            values ["url"] ="/calendar"
             values ["start"] = "%s"%cls.date
-            values ["current_message"] = "%s"%cls.message
+            values ["current_message"] = "%s"%(cls.message if cls.message else "Pas de message")
             calendar_event.append (values)
     if "cmcs" in context :
         cmcs =context["cmcs"]
         for cmc in cmcs :
             values ={"title" :"CMC"}
-            values ["url"] ="/suivi/messages/%s"%(cmc.pk)
+            values ["url"] ="/calendar"
             values ["start"] = "%s"%cmc.date 
-            values ["current_message"]="%s"%cmc.message 
+            values ["current_message"]="%s"%(cmc.message if cmc.message else "Pas de message")
             calendar_event.append (values)
         
     if len (calendar_event):

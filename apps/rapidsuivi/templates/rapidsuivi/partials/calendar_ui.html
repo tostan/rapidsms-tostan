@@ -23,12 +23,12 @@
     $('#calendar').fullCalendar({
     	/*editable: true,*/
    	 events:event_data,
-    	 eventClick: function(event){
+    	/* eventClick: function(event){
               if (event.url) {
                   window.open(event.url);
                   return false;
               }
-         },
+         },*/
      	 eventRender: function (event , el){
 		el.qtip({
 		content:'<i>' +  event.current_message +'</i>',

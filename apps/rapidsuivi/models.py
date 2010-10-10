@@ -249,21 +249,21 @@ class SuiviVillage(models.Model):
     
     def current_message (self):
 	"""Le plus rescent message non lu ou le plus rescent message lu """
-	cmc_to_read=Cmc.objects.filter (relay__village__suivi ==self, is_read=False)
+	cmc_to_read=Cmc.objects.filter (relay__village_suivi =self, is_read=False)
 	if cmc_to_read.count ()==0:
 		class_to_read =Class.objects.filter (relay__village_suivi=self, is_read=False)
 		if class_to_read.count()>0:
 			return class_to_read.order_by("-date") [0]
 		else :
-		     cmc_readed = Class.objects.filter (relay__village_suivi=self)
-		     if cmc_reader.count ()==0:
+		     cmc_readed = Cmc.objects.filter (relay__village_suivi=self)
+		     if cmc_readed.count ()==0:
 			   class_readed =Class.objects.filter (relay__village_suivi=self)
-			   if class_reader.count()>0:
+			   if class_readed.count()>0:
 				return class_readed.order_by("-date")[0]
 			   else :return None 
 		     else :
 			        return cmc_readed.order_by("-date")[0]
-	else : return  cmc_to_read .oder_by("-date")[0]
+	else : return  cmc_to_read .order_by("-date")[0]
     
     def __unicode__(self):
         return u"SuiviVilllage +++village_pk+++%s +++village__name++%s"%(self.pk ,self.village.name)

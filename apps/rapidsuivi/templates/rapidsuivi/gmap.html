@@ -44,23 +44,28 @@ $(function() {
 		        return icon;
                 };
 				*/
-                var sprite2 = function (){
+                var sprite2 = function (what_icon){
+			alert (what_icon);
 			var icon = new GIcon (G_DEFAULT_ICON)
-			icon.sprite= {
-			
-			};
+			if (what_icon!="None"){ 
+				icon.sprite= {
+				 "image":"/static/rapidsuivi/images/new-sms.png"
+				};
+			}
 			return icon;
                }
                 /* iterate each of the markers (ALL locations),
                 * and add a sprite to the map for each one */
-				{%  for village    in villages  %} 
+				{%  for village    in villages  %}
+                         
+			    var what_icon ="{{ village.current_message }}";
 	                    var point = new GLatLng("{{ village.gmap_latitude }}","{{ village.gmap_longitude }}");
 			            var marker = new LabeledMarker(point, 
 						    { "labelText": "{{ village.name }}",
 							  "labelClass": "caption", 
-						   	  "icon": sprite2() 	
+						   	  "icon": sprite2(what_icon)	
 						    });
-				        marker.bindInfoWindow("<div><ul><li>Village :{{ village.name}}</li><li>Relay :{{ village.name}}</li><i>Message: {{ village.name}}</li></ul></div>");
+				        marker.bindInfoWindow("<div><ul><li><i>{{ village.current_message}}</li></li></ul></div>");
 			            map.addOverlay(marker);
 			    {% endfor %}
         }

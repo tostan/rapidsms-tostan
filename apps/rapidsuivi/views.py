@@ -93,20 +93,12 @@ def map (req , template = "rapidsuivi/gmap.html"):
         villages =  SuiviVillage.objects.all ()
         gmap_data  =[]
         for suivi_village in villages :
-             if Cmc.objects.filter (relay__village_suivi = suivi_village, is_read = False).count ()>0:
-                    suivi_village.new_message = True 
-             
-             elif   Class.objects.filter (relay__village_suivi =suivi_village , is_read =False).count ()>0:
-                    suivi_village.new_message  =True 
-                    
-             else :
-                  suivi_village.new_message  =False 
-            
+             current_message = suivi_village.current_message ().message if  suivi_village.current_message () else None 
              gmap_data.append  (
                 {"gmap_latitude" : suivi_village.village.location.latitude  ,
                  "gmap_longitude" : suivi_village.village.location.longitude,
                  "name"  :     suivi_village.village.name , 
-                 "new_message" :suivi_village.new_message
+                 "current_message" :current_message
                  })
         #return HttpResponse (gmap_data)
         context ["villages"]  =gmap_data

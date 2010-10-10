@@ -16,7 +16,8 @@
         event_data[i] = 
             {"title":"{{ item.title }}" ,
              "url" :"{{ item.url }}",
-             "start":"{{ item.start }}"}
+             "start":"{{ item.start }}",
+             "current_message":"{{item.current_message}}"}
         i= i +1
     {% endfor %}
     $('#calendar').fullCalendar({
@@ -30,7 +31,7 @@
          },
      	 eventRender: function (event , el){
 		el.qtip({
-		content:'Le contentenu du message :)',
+		content:'<i>' +  event.current_message +'</i>',
 		position: {corner: {tooltip: 'bottomLeft', target: 'topRight'}},
                 style   : {
                                                     width: 200,

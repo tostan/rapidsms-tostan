@@ -70,23 +70,18 @@ def calendar_events (context):
     if "classes" in context :
         classes  =context["classes"]
         for cls in classes :
-            values ={"title" :"[CLASS] ,[Relay]:%s , [Village] :%s  )"%(
-                    (cls.relay.first_name + cls.relay.last_name),
-                    (cls.relay.village_suivi.village.name)
-                    
-                    )}
+            values ={"title" :"CLASS"}
             values ["url"] ="/suivi/messages/%s"%(cls.pk)
-            values ["start"] = "%s"%cls.date 
+            values ["start"] = "%s"%cls.date
+            values ["current_message"] = "%s"%cls.message
             calendar_event.append (values)
     if "cmcs" in context :
         cmcs =context["cmcs"]
         for cmc in cmcs :
-            values ={"title" :"[CMC] , [Relay] : %s , [Village] :%s"%(
-                (cmc.relay.first_name +cmc.relay.last_name),
-                 cmc.relay.village_suivi.village.name
-            )}
+            values ={"title" :"CMC"}
             values ["url"] ="/suivi/messages/%s"%(cmc.pk)
             values ["start"] = "%s"%cmc.date 
+            values ["current_message"]="%s"%cmc.message 
             calendar_event.append (values)
         
     if len (calendar_event):

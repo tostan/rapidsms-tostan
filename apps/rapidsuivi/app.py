@@ -303,7 +303,7 @@ class App (rapidsms.app.App):
         kw_args  = dict (zip (keys , args))
         cla  =Class.objects.create (relay =message.relay, **kw_args)
         msg  =self.ssend_response (classe =cla , key ="save-classe")
-        cla.message_resp = msg
+        cla.message = msg
         cla.save ()
         return True
                         
@@ -326,7 +326,7 @@ class App (rapidsms.app.App):
         kw_args =dict (zip (attrs , args[1:]))
         abs_cla = ClassAbs.objects.create(relay  = message.relay,classe =prec_class , **kw_args)
         msg  =self.send_response( classe = abs_cla , key ="update-classe")
-        cla.message_resp  =msg
+        cla.message=msg
         cla.save ()
         return True 
     
@@ -344,7 +344,7 @@ class App (rapidsms.app.App):
         kw_args  = dict (zip (attrs  , args ))
         cmc  = Cmc.objects.create(type_id  =1, relay = message.relay , **kw_args)
         msg =self.send_response (cmc  = cmc,key  ="save-reunion")  
-        cmc.message_resp  = msg
+        cmc.message  = msg
         cmc.save()
         return True 
     
@@ -360,7 +360,7 @@ class App (rapidsms.app.App):
         kw_args   =dict (zip (attrs , args))
         cmc =Cmc.objects.create(type_id =2 ,relay  =message.relay, **kw_args)
         msg =self.send_response (cmc   = cmc,key   = "save-finance")
-        cmc.message_resp =msg
+        cmc.message =msg
         cmc.save ()
         return True
     
@@ -377,7 +377,7 @@ class App (rapidsms.app.App):
         kw_args  = dict (zip (attrs , args))
         cmc  = Cmc.objects.create(type_id =3 , relay =message.relay ,**kw_args)
         msg =self.send_response (key ="save-mobilization",cmc = cmc)
-        cmc.message_resp =msg
+        cmc.message =msg
         smc.save ()
         return True 
         
@@ -391,7 +391,7 @@ class App (rapidsms.app.App):
         kw_args  = dict (zip (attrs , args))
         cmc      = Cmc.objects.create (type_id = 4, relay =message.relay, **kw_args)
         msg =self.send_response (cmc  = cmc,key = "save-radio")
-        cmc.message_resp =msg
+        cmc.message =msg
         cmc.save ()
         return True
 

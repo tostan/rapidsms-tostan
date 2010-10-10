@@ -165,7 +165,7 @@ class Cmc(NodeSet):
         relay     = models.ForeignKey ("Relay" , related_name ="cmcs")
         date = models.DateTimeField (default =datetime.datetime.now())
         is_read = models.BooleanField (default =False)
-        
+        message = models.CharField (max_length = 160, null =True , blank =True) 
         def __unicode__(self):
                 return  u"CMC +++relay +++%s"%(
                         self.relay
@@ -195,7 +195,7 @@ class Class(NodeSet):
         relay        = models.ForeignKey ("Relay" , related_name="classes")
         date         = models.DateTimeField(default = datetime.datetime.now ())
         is_read      = models.BooleanField (default =False)
-        
+        message      = models.CharField (max_length=160, blank=True ,null =True)
         def __unicode__(self):
                 return u"Class +++ cohort_id +++%s , cohort_id_display ++++%s"%(
                                 self.cohort_id  , 

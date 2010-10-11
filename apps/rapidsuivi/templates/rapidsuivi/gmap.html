@@ -63,7 +63,7 @@ $(function() {
 							  "labelClass": "caption", 
 						   	  "icon": sprite2(what_icon)	
 						    });
-				        marker.bindInfoWindow("<div><ul><li><i>{{ village.current_message}}</li></li></ul></div>");
+				        marker.bindInfoWindow("<div style ='width:200px;'><ul><li><i>{{ village.current_message }}</li><li><a href='/message_read/{{ village.pk }}'>message lu</a></li></ul></div>");
 			            map.addOverlay(marker);
 			    {% endfor %}
         }

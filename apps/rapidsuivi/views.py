@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from apps.rapidsuivi.models import *
 from apps.smsforum.models import *
 from apps.rapidsuivi.models import Relay as r
-from django.http import HttpResponse
+from django.http import HttpResponse , HttpResponseRedirect
 
 
 @login_required
@@ -94,17 +94,20 @@ def map (req , template = "rapidsuivi/gmap.html"):
         gmap_data  =[]
         for suivi_village in villages :
              icon = "red"
+             pk =""
 	     display_message ="Pas encore de sms pour le village"
 	     cur_msg  =suivi_village.current_message ()
 	     if cur_msg:
 	 	display_message = cur_msg.message
+		pk =cur_msg.pk
 		if not cur_msg.is_read:
 			icon = 'green'
 	     dict = {
 		 "gmap_latitude" : suivi_village.village.location.latitude  ,
                  "gmap_longitude" : suivi_village.village.location.longitude,
                  "name"  :     suivi_village.village.name , 
-                 "current_message" :display_message
+                 "current_message" :display_message,
+                 "pk":pk
                  }
 	     # Quel icon pour goolemap (rouge  ou vert 
 	     dict["icon"]=icon
@@ -114,7 +117,16 @@ def map (req , template = "rapidsuivi/gmap.html"):
         context ["villages"]  =gmap_data
         return render_to_response (req , template , context)
     
-    
+def message_read (req ,pk =None):
+	try:
+	   Cmc.objects.filter(pk =pk).update (is_read =True)
+	except Exception, e:
+		print "CE N'EST PAS UN CMC"
+	try:
+	   Class.objects.filter (pk=pk).update(is_read=True)
+	except Exception , e:
+	       print "CE N'EST PAS UNE CLASS"
+        return HttpResponseRedirect ("/map") 
     
 def messages (req , msg_id = None):
     # If we have a urrent message id 

@@ -189,7 +189,7 @@ class App (rapidsms.app.App):
                         "men": abs_cla.num_men_dropped ,      
 			"girls": abs_cla.num_girls_dropped ,
 			"boys": abs_cla.num_boys_dropped ,
-                         "title": abs_cla.classe.get_title_id_display()
+                         "title": abs_cla.get_title_id_display()
 	     }     
             
 	    elif key =="save-reunion":
@@ -354,7 +354,8 @@ class App (rapidsms.app.App):
         """Envoi un repport detaille sur les absences de la classe precedente  
         [args [0]  :parent_class_id,args [1]  :num_women_dropped ,args [2]: num_men_drpped 
         args [3] : num_girls_drpped  ,args [4] :num_boys_dropped ]"""
-        # Si le rapport sur le awade ou le  Kobi precedent ne passe 
+        
+	# Si le rapport sur le awade ou le  Kobi precedent ne passe 
         # pas alors on envoie un message
         
 	#Il semble que tostan n'a pas besion de voir si la classe exite  bien avant de pouvoir enoyer les avsences
@@ -367,7 +368,10 @@ class App (rapidsms.app.App):
         
         attrs   =["num_women_dropped" ,"num_men_dropped", "num_girls_dropped" ,   "num_boys_dropped"]
         kw_args =dict (zip (attrs , args[1:]))
-        abs_cla = ClassAbs.objects.create(relay  = message.relay , **kw_args)
+        # Because args[0]is the gegining classe
+        # we should do args [0]	-1 to get the class refered by the reporting
+	kw_args.update({"title_id": str(int(args[0])-1)})
+	abs_cla = ClassAbs.objects.create(relay  = message.relay , **kw_args)
         msg  =self.send_response( classe = abs_cla , key ="update-classe")
         abs_cla.message=msg
         abs_cla.save ()

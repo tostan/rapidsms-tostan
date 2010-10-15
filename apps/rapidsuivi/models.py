@@ -178,7 +178,7 @@ class Class(NodeSet):
         d'avoir des rapports sur les activites de la classes.
         """
         COHORT_TYPES  =(("1", "adult"),
-                        ("2" ,"adolescent"))
+                        ("2" ,"adolescent"))			
         
         TITLE_TYPES = (("1", "Kobi1"),
                        ("2" ,"Kobi2"),
@@ -206,7 +206,13 @@ class  ClassAbs(NodeSet):
         the relay sent us a message to report the liste of men , women , grils , boys which dropped
         this classe
         """
-        classe            =models.ForeignKey ("Class" , related_name = "absents")
+	
+        TITLE_TYPES = (("1", "Kobi1"),
+                       ("2" ,"Kobi2"),
+                       ("3" ,"Awade1"), 
+                       ("4" ,"Awade2"))
+        title_id    = models.CharField(max_length =2 ,null=True , blank =True ,choices  =TITLE_TYPES)
+        classe            =models.ForeignKey ("Class" , related_name = "absents" ,null=True , blank=True)
         relay             =models.ForeignKey ("Relay", related_name   = "classabsents")
         num_women_dropped =models.IntegerField (default =0)
         num_men_dropped   =models.IntegerField (default =0)

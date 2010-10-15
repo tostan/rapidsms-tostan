@@ -52,6 +52,25 @@
 	</a>
 </td>
 {% endif %}
+{% if perms.rapidsuivi.see_calendar %}
+   <td>
+      <a href = "{% url calendar %}">
+      	    <img src ="/static/tostan/images/calendar.jpeg" /></br>
+		{% trans "Celendrier CMC-CLASS" %}
+      </a>
+   </td>
+{% endif %}
+
+
+{% if perms.rapidsuivi.see_map %}
+   <td>
+      <a href = "{% url map %}">
+            <img src ="/static/tostan/images/map.jpeg" /></br>
+                {% trans "Cartographie" %}
+      </a>
+   </td>
+{% endif %}
+
 </tr>
 </table>
 

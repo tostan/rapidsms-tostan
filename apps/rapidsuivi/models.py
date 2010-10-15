@@ -39,8 +39,8 @@ class Relay(models.Model):
     # Type du Relay               )
     TITLE_TYPES =(("1", "Facilitator"),
                    ("2", "CMC"),
-                   ("3", "Radio Host"))
-                
+                   ("3", "Radio Host")
+                 )
     STATUS = (("U" , "Update"),
               ("D" , "Delate"),
               ("C" , "Create"))
@@ -94,55 +94,55 @@ class Cmc(NodeSet):
         les operations de transferts banquaires,  les mobilizations 
         les radios  communautaires.
         """
-        CMC_TYPES = (("1" ,_("Meetings")), 
-                    ("2" ,_("Account Operation")),
-                    ("3" , _("Social Mobilisation")),
-                    ("4" , _("Radio")))
+        CMC_TYPES = (("1" ,"Meetings"), 
+                    ("2" ,"Account Operation"),
+                    ("3" ,"Social Mobilisation"),
+                    ("4" ,"Radio"))
         
         #Village Location type
-        LOCATION_TYPES=(( "1" , _("My Village")),
-                        ( "2" , _("Village adopte")),
-                        ( "3" , _("Other Village")))
+        LOCATION_TYPES=(( "1" , "My Village"),
+                        ( "2" , "Village adopte"),
+                        ( "3" , "Other Village"))
         
         #Show location type
-        SHOW_LOCATION_TYPES=(("1" , _("Live")),
-                             ("2" , _("Tape Delayed")))
+        SHOW_LOCATION_TYPES=(("1" , "Live"),
+                             ("2" , "Tape Delayed"))
         
-        SHOW_TYPES =(("1" ,_("With guests")),
-                     ("2", _("Debate")), 
-                     ("3", _("Reportage")))
+        SHOW_TYPES =(("1" ,"With guests"),
+                     ("2", "Debate"), 
+                     ("3", "Reportage"))
         
-        SUBJECT_TYPES =(("1" ,_("Health")), 
-                        ("2" ,_("Environnement")),
-                        ("3" ,_("Education")),
-                        ("4" ,_("Income Generating Activity")),
-                        ("5" ,_("Youth protection")),
-                        ("6" ,_("Social Activity")),
-                        ("7" ,_("Conflit Resolution")),
-                        ("8" ,_("Microcredit")),
-                        ("9" ,_("External RElation")),
-                        ("10" ,_("Others")))
-        ACTIVITY_TYPES =( ("1"  , _("Assainissement-Set Settal")),
-                        ("2"  , _("Sensibilisation etat Civil")),
-                        ("3"  , _("Sensibilisation inscriptiondes enfants a l'ecole")),
-                        ("4"  , _("Sensibilisation Paludisme")),
-                        ("5"  , _("Sensibilisation Paludisme")),
-                        ("6"  , _("Sensibilisation sur la sante de la femme et de la fille")),
-                        ("7" , _("Vente produit divers")),
-                        ("8"  , _("Apui Structure de Sante")),
-                        ("9"  , _("Reception de delegation")),
-                        ("10" , _("Other")))
+        SUBJECT_TYPES =(("1" ,"Health"), 
+                        ("2" ,"Environnement"),
+                        ("3" ,"Education"),
+                        ("4" ,"Income Generating Activity"),
+                        ("5" ,"Youth protection"),
+                        ("6" ,"Social Activity"),
+                        ("7" ,"Conflit Resolution"),
+                        ("8" ,"Microcredit"),
+                        ("9" ,"External RElation"),
+                        ("10" ,"Others"))
+        ACTIVITY_TYPES =( ("1"  ,"Assainissement-Set Settal"),
+                        ("2"  ,"Sensibilisation etat Civil"),
+                        ("3"  , "Sensibilisation inscriptiondes enfants a l'ecole"),
+                        ("4"  , "Sensibilisation Paludisme"),
+                        ("5"  , "Sensibilisation Paludisme"),
+                        ("6"  , "Sensibilisation sur la sante de la femme et de la fille"),
+                        ("7" , "Vente produit divers"),
+                        ("8"  , "Apui Structure de Sante"),
+                        ("9"  , "Reception de delegation"),
+                        ("10" , "Other"))
             
-        THEME_TYPES = ( ("1" , _("Health"))  , 
-                        ("2" , _("Environnement")),
-                        ("3" , _("Education")) , 
-                        ("4" , _("Income Generating Activity")) ,
-                        ("5" , _("Youth protection")),
-                        ("6" , _("Social Activity")),
-                        ("7" , _("Conflict Resolution")),
-                        ("8" , _("Microcredit")),
-                        ("9" , _("External Relation")),
-                        ("10" ,_("Other")))
+        THEME_TYPES = ( ("1" , "Health")  , 
+                        ("2" , "Environnement"),
+                        ("3" , "Education") , 
+                        ("4" , "Income Generating Activity"),
+                        ("5" , "Youth protection"),
+                        ("6" , "Social Activity"),
+                        ("7" , "Conflict Resolution"),
+                        ("8" , "Microcredit"),
+                        ("9" , "External Relation"),
+                        ("10" ,"Other"))
         # Metting 
         type_id      = models.CharField(max_length =2,choices = CMC_TYPES , null =True , blank =True)
         num_members  = models.PositiveIntegerField(default =0)
@@ -177,13 +177,13 @@ class Class(NodeSet):
         Les rapports d'activites sur les classes , nous essayons ici 
         d'avoir des rapports sur les activites de la classes.
         """
-        COHORT_TYPES  =(("1", _("adult")),
-                        ("2" ,_("adolescent")))
+        COHORT_TYPES  =(("1", "adult"),
+                        ("2" ,"adolescent"))
         
-        TITLE_TYPES = (("1", _("Kobi 1")),
-                       ("2" ,_("Kobi2")),
-                       ("3" ,_("Awade1")), 
-                       ("4" ,_( "Awade2")))
+        TITLE_TYPES = (("1", "Kobi1"),
+                       ("2" ,"Kobi2"),
+                       ("3" ,"Awade1"), 
+                       ("4" ,"Awade2"))
         
         cohort_id    = models.CharField(max_length =2 ,null=True , blank =True ,choices  =COHORT_TYPES)
         title_id     = models.CharField (max_length =2 ,null =True ,blank=True ,choices  =TITLE_TYPES)
@@ -277,9 +277,11 @@ def relay_from_message (**kwargs):
     Si force ==False , si le relay existe deja alors on doir envoyer l'execption 
     que le relay exite deja
     """
-    vil= vil_from_la_vil(kwargs.get('latitude') ,kwargs.get('longitude'))
+    vil= vil_from_la_lo(kwargs.get('latitude') ,kwargs.get('longitude'))
+    
+    print  "Village +++++++++++++++++++++++++++++++++++" , vil
     kwargs["village_suivi" ] =vil
-    rel = exists(Relay ,contact =kwargs.get ("message").sender)
+    rel = exists(Relay ,contact =kwargs.get ("message").sender , status = "C")
     # Si le relay existe , qu'est ce que nous devons faire 
     # mettre son etat  a delete ou bien  envoyer une erreur ,je ne sais a tostan de definir
     # par defaut on force en mettant l'ancien a statut delete    
@@ -288,7 +290,7 @@ def relay_from_message (**kwargs):
     #           # Le relay ne doit pas etre cree  deux fois
     #           raise RelayExistError 
     if rel :           
-        rel.statut  = "D"
+        rel.status  = "D"
         rel.save ()
     # Nous enelevons ici les paramettre  qui ne font pas parti  des parametres pour le relay
     # comme le message , force
@@ -310,17 +312,25 @@ def relay_from_message (**kwargs):
     except KeyError , e:
         pass
     # Ok on doit creer le relay ou bien force sa creation
-    rel = Relay.objects.create (**kwarg)
+    rel = Relay.objects.create (**kwargs)
     return rel
 
 
 def vil_from_la_lo(latitude , longitude):
     try:
-        return SuiviVillage.objects.get (village__location__latitude =latitude ,village__location__longitude =longitude)
+        # Nous recherons d'abord les coordonnees dans  location , 
+        # Nous stockons les longitudes et latitudes  pour goole map
+        # Si nous ne trouvons rien , nous allons rechercher dans 
+        # latitude  et dans longitude , qui sont les coordonnees de arc gis
+	return SuiviVillage.objects.get (village__location__latitude =latitude ,village__location__longitude ="-"+longitude)
     except Exception , e:
-        traceback.print_exc()
-        raise VillageNotExistError
-        pass
+	try:
+	    # Cherchons dans arc gis
+            return SuiviVillage.objects.get (latitude=latitude ,longitude=longitude)
+	except :
+       		traceback.print_exc()
+        	raise VillageNotExistError
+        	pass
     
 def exists (klass , **kwargs ):
     try:
@@ -329,3 +339,13 @@ def exists (klass , **kwargs ):
         #traceback.print_exc()
         return None
     
+
+
+class Permissions (models.Model):
+   """ Cette classe n'est ici que pour les permissions ,car django exige que la permission soit dans un model,
+   d'ailleurs il faut que  je  verifie ca """
+   class Meta:
+	permissions = (
+		("see_calendar", "Voir le calendier"),
+		("see_map" ,"Voir la map"),
+        )

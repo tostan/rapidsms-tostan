@@ -16,202 +16,204 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+
+#:models.py
+msgid "Facilitator"
+msgstr "Facilitateur"
+msgid "CMC"
+msgstr "CMC"
+msgid  "Radio Host"
+msgstr "Radio Host"
+
+
 #: models.py:78
 msgid "Meetings"
-msgstr ""
+msgstr "Meetings"
 
 #: models.py:79
 msgid "Account Operation"
-msgstr ""
+msgstr "Operation bancaire"
 
 #: models.py:80
 #, fuzzy
 msgid "Social Mobilisation"
-msgstr ""
+msgstr "Mobilisation sociale"
 #: models.py:81
 msgid "Radio"
-msgstr ""
+msgstr "Radio"
 
 #: models.py:84
 msgid "My Village"
-msgstr ""
+msgstr "Mon Village"
 
 #: models.py:85
 msgid "Village adopte"
-msgstr ""
+msgstr "Village Adopte"
 
 #: models.py:86
 msgid "Other Village"
-msgstr ""
+msgstr "Autre Village"
 
 #: models.py:89
 msgid "Live"
-msgstr ""
+msgstr "en direct"
 
 #: models.py:90
 msgid "Tape Delayed"
-msgstr ""
+msgstr "En differe"
 
 #: models.py:93
 msgid "With guests"
-msgstr ""
+msgstr "Avec invites"
 
 #: models.py:94
 msgid "Debate"
-msgstr ""
+msgstr "Debat"
 
 #: models.py:95
 msgid "Reportage"
-msgstr ""
+msgstr "Reportage"
 
 #: models.py:98 models.py:122
 msgid "Health"
-msgstr ""
+msgstr "Sante"
 
 #: models.py:99 models.py:123
 msgid "Environnement"
-msgstr ""
+msgstr "Environnement"
 
 #: models.py:100 models.py:124
 msgid "Education"
-msgstr ""
+msgstr "Education"
 
 #: models.py:101 models.py:125
 msgid "Income Generating Activity"
-msgstr ""
+msgstr "Activite generatrice de revevus"
 
 #: models.py:102 models.py:126
 msgid "Youth protection"
-msgstr ""
+msgstr "Protection jeunesse"
 
 #: models.py:103 models.py:127
 msgid "Social Activity"
-msgstr ""
+msgstr "Activite socilale"
 
 #: models.py:104
 msgid "Conflit Resolution"
-msgstr ""
+msgstr "Resolution de conflit"
 
 #: models.py:105 models.py:129
 msgid "Microcredit"
-msgstr ""
+msgstr "Microcredit"
 
 #: models.py:106
 msgid "External RElation"
-msgstr ""
+msgstr "Relations externes"
 
 #: models.py:107
 msgid "Others"
-msgstr ""
+msgstr "Autres"
 
 #: models.py:110
 msgid "Assainissement-Set Settal"
-msgstr ""
+msgstr "Assainissement-Set Settal"
 
 #: models.py:111
 msgid "Sensibilisation etat Civil"
-msgstr ""
+msgstr "Sensibilisation etat Civil"
 
 #: models.py:112
-msgid "Sensibilisation inscriptiondes enfants a l'ecole"
-msgstr ""
+msgid "Sensibilisation inscription des enfants a l'ecole"
+msgstr "Sensibilisation inscription des enfants a l'ecole"
 
 #: models.py:113 models.py:114
 msgid "Sensibilisation Paludisme"
-msgstr ""
+msgstr "Sensibilisation Paludisme"
 
 #: models.py:115
 msgid "Sensibilisation sur la sante de la femme et de la fille"
-msgstr ""
+msgstr "Sensibilisation sur la sante de la femme et de la fille"
 
 #: models.py:116
 msgid "Vente produit divers"
-msgstr ""
+msgstr "Vente produit divers"
 
 #: models.py:117
 msgid "Apui Structure de Sante"
-msgstr ""
+msgstr "Apui Structure de Sante"
 
 #: models.py:118
 msgid "Reception de delegation"
-msgstr ""
+msgstr "Reception de delegation"
 
 #: models.py:119 models.py:131
 msgid "Other"
-msgstr ""
+msgstr "Autre"
 
 #: models.py:128
 msgid "Conflict Resolution"
-msgstr ""
+msgstr "Resolution de conflits"
 
 #: models.py:130
 msgid "External Relation"
-msgstr ""
+msgstr "Relation externe"
 
 #: models.py:181
 msgid "adult"
-msgstr ""
+msgstr "adult"
 
 #: models.py:182
 msgid "adolescent"
-msgstr ""
+msgstr "adolescent"
 
 #: models.py:185
-msgid "Kobi 1"
-msgstr ""
+msgid "Kobi1"
+msgstr "Kobi1"
 
 #: models.py:186
 msgid "Kobi2"
-msgstr ""
+msgstr "Kobi2"
 
 #: models.py:187
 msgid "Awade1"
-msgstr ""
+msgstr "Awade1"
 
 #: models.py:188
 msgid "Awade2"
-msgstr ""
+msgstr "Awade2"
 
 msgid "register-relay"
 msgstr "Merci %(first_name)s %(last_name)s.Vous etes bien inscrit a RapidSuivi en "
 "tant que %(title)s de %(village)s.En cas de probleme,merci de contacter " 
-"votre Superviseur.Bonne journee!"
+"votre Superviseur"
 
 msgid "save-classe"
 msgstr "Merci %(first_name)s %(last_name)s .Vous avez fini la sceance %(session)s "
-"du %(title)s avec les %(cohort)s de %(village)s .Presents : %(women)s "
-"femmes ,%(men)s hommes ,%(girls)s filles et %(boys)s garcons .En cas " 
-"d'erreur ,merci de contacter votre Superviseur .Bonne journee !"
+"du %(title)s avec les %(cohort)s de %(village)s .Presents : %(women)s femmes ,%(men)s hommes ,%(girls)s filles et %(boys)s garcons"
 
 msgid "update-classe"
 msgstr "Merci %(first_name)s %(last_name)s .Durant le %(title)s ,%(women)s "
 "femmes ,%(men)s hommes ,%(girls)s filles et %(boys)s garcons ont "
-"abandonne la classe en cours de route .En cas d'erreur ,merci de "
-"contacter votre Superviseur"
+"abandonne la classe en cours de route"
 
 msgid "save-reunion"
 msgstr "Merci %(first_name)s %(last_name)s .Le CGC de %(village)s s'est reuni " 
-"aujourd'hui ,%(members)s membres et %(guests)s invites etaient presents "
-"et vous avez discute principalement du theme de la %(subject)s .Vous avez " 
-"planifie d'organiser un %(activity)s bientot .En cas d'erreur ,merci de "
-"contacter votre Superviseur .Bonne journee"
+"avec %(members)s membres et %(guests)s invites au sujet de %(subject)s .Vous organiserai un %(activity)s bientot"
 
 msgid "save-finance"
 msgstr "Merci %(first_name)s %(last_name)s .Le CGC de %(village)s dispose apres "
-"une transaction bancaire effectuee aujourd'hui de %(balance_com)s CFA "
-"dans sa caisse communautaire et de %(balance_bank)s dans son compte en " 
-"banque .En cas d'erreur ,merci de contacter votre Superviseur .Bonne journee"
+"une transaction bancaire de %(balance_com)s CFA dans sa caisse communautaire et de %(balance_bank)s dans son compte en banque"
 
 msgid "save-radio"
 msgstr "Merci %(first_name)s %(last_name)s.Votre emission d'aujourd'hui avait " 
-"pour theme %(theme)s .Il s'agissait d'un %(showtype)s en %(showlocation)s "
-"En cas d'erreur , merci de contacter votre superviseur .Bonne journee!"
+"pour theme %(theme)s .Il s'agissait d'un %(showtype)s en %(showlocation)s"
+
 msgid "save-mobilization"
-msgstr "Merci %(first_name)s %(last_name)s .Le CGC de %(village)s a organise aujourdhui dans un %(location)s de %(village)s un " "%(theme)s qui a touche %(attendees)s personnes originaires de %(villages)s villages .En cas d'erreur ,"
-"merci de contacter votre supervieur .Bonne journee"
+msgstr "Merci %(first_name)s %(last_name)s .Le CGC de %(village)s a organise"
+" dans un %(location)s de %(village)s un %(theme)s avec %(attendees)s personnes de %(villages)s villages"
 
 msgid  "relay-exist"
-msgstr "Desole , mais ce relay existe ,Modfication: [321] a la place [123]"
+msgstr "Desole , mais ce relay existe"
 
 msgid  "village-not-found"
 msgstr "Desole, mais je ne peux pas trouver ce village,etes vous sure des coordonnees"

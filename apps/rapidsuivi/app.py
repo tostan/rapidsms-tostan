@@ -60,7 +60,7 @@ def _st(relay,text):
     # new hotness 3-letter codes 'eng'
     #return _t(sender.locale, text)
     return _t (relay.contact.locale , text)
-
+    
 # Bah , il ne sert qu'a permettre d'appeller _(key)
 # et de permettre a django-admin makemessages -l fr 
 # d'identifier les cles 
@@ -73,7 +73,7 @@ def identify(func):
     FR: Cette fonction nous permet de savoir si le relay s'est authentifier dans notre system
     """
     def  wrapper (sself , message , *args , **kwargs):            
-            rel =exists(Relay,contact =message.sender)
+            rel =exists(Relay,contact =message.sender , status ="C")
             if not rel:
                     Message(message.connection, "Identification requise!").send ()
                     return True 
@@ -111,7 +111,6 @@ class App (rapidsms.app.App):
                     func, captures = self.kw.match(self, message.text) 
                 except Exception:
                     traceback.print_exc()
-                    self.debug ("RapidSMS  Suivi ne peut traiter ++++++++++++++++++%s"%message.text)
 		    # If the user message start with our key, to be sure that message is for us
                     for start in ("reu", "cla" , "abs" , "ms" , "rad"):
                         if message.text.strip().startswith (start):
@@ -151,79 +150,119 @@ class App (rapidsms.app.App):
             """Etant donnee une clef on retourne le bon message ie : "reunion"  ==>{first_name: relay.first_name}"""
             key = kwargs["key"]
             if key =="register-relay":
-                relay  = kwargs.get("relay" , None)
-                return{"first_name":  relay.first_name,"last_name":relay.last_name,"title": relay.get_title_id_display() ,
-                       "village":     relay.village_suivi.village.name}
-                
+                relay   = kwargs.get("relay" , None)	
+		return {
+			"first_name":  relay.first_name,
+		        "last_name":relay.last_name,
+		        "title":  relay.get_title_id_display() ,
+                        "village":     relay.village_suivi.village.name
+		}
             elif key =="already-registered":
                 relay  = kwargs.get("relay" , None)
-                return{"first_name":  relay.first_name,"last_name":relay.last_name,"title": relay.get_title_id_display() ,
-                       "village":     relay.village_suivi.village.name}
+                return{
+			"first_name":  relay.first_name,
+			"last_name":relay.last_name,
+			"title": relay.get_title_id_display() ,
+                        "village":    relay.village_suivi.village.name
+		}
                        
             elif  key =="save-classe": 
                  cla = kwargs.get("classe",None)
-                 return {"first_name": cla.relay.first_name ,       "last_name": cla.relay.last_name,       "session":   cla.num_session ,
-                        "title":       cla.get_title_id_display() , "cohort": cla.get_cohort_id_display() , "village": cla.relay.village_suivi.village.name ,
-                        "women": cla.num_women ,                    "men":cla.num_men  ,                    "girls":cla.num_girls ,
-                        "boys" : cla.num_boys}
+                 return { "first_name": cla.relay.first_name ,
+			  "last_name": cla.relay.last_name, 
+                          "session": cla.num_session ,
+			  "title" :cla.get_title_id_display(),
+			  "cohort" : cla.get_cohort_id_display(),
+			  "village": cla.relay.village_suivi.village.name, 
+               		  "women": cla.num_women , 
+			  "men":cla.num_men  ,
+			  "girls":cla.num_girls ,
+                          "boys" : cla.num_boys
+		}
                      
             elif key =="update-classe":
               abs_cla  =kwargs.get("classe",None)
-              return    {"first_name":abs_cla.relay.first_name, "last_name":abs_cla.relay.last_name , "women" : abs_cla.num_women_dropped ,
-                         "men": abs_cla.num_men_dropped ,       "girls": abs_cla.num_girls_dropped ,  "boys": abs_cla.num_boys_dropped ,
-                         "title": abs_cla.classe.get_title_id_display()}     
+              return    {
+			"first_name":abs_cla.relay.first_name, 
+			"last_name":abs_cla.relay.last_name ,
+			"women" : abs_cla.num_women_dropped ,
+                        "men": abs_cla.num_men_dropped ,      
+			"girls": abs_cla.num_girls_dropped ,
+			"boys": abs_cla.num_boys_dropped ,
+                         "title": abs_cla.classe.get_title_id_display()
+	     }     
             
 	    elif key =="save-reunion":
               cmc  = kwargs.get("cmc",None)
-              return {"first_name":cmc.relay.first_name ,"last_name":cmc.relay.last_name ,"members":cmc.num_members ,
-                      "guests":cmc.num_guests ,"activity":cmc.get_activity_id_display(),"village":cmc.relay.village_suivi.village.name,
-                      "subject":cmc.get_subject_id_display() }
+              return {
+			"first_name":cmc.relay.first_name ,
+			"last_name":cmc.relay.last_name ,
+			"members":cmc.num_members ,
+                        "guests":cmc.num_guests ,
+			"activity":cmc.get_activity_id_display(),
+			"village":cmc.relay.village_suivi.village.name,
+                        "subject":cmc.get_subject_id_display()
+		 }
    
             elif key =="save-finance":
                 cmc  = kwargs.get ("cmc" ,None)
-                return {"first_name":cmc.relay.first_name ,"last_name":cmc.relay.last_name ,"village":cmc.relay.village_suivi.village.name,
-                        "balance_com": cmc.balance_com ,"balance_bank":cmc.balance_bank }
+                return {
+			"first_name":cmc.relay.first_name ,
+			"last_name":cmc.relay.last_name ,
+			"village":cmc.relay.village_suivi.village.name,
+                        "balance_com": cmc.balance_com ,
+			"balance_bank":cmc.balance_bank
+		 }
             elif key =="save-mobilization":
                 cmc  = kwargs.get("cmc" ,None)
-                return {"first_name":   cmc.relay.first_name ,"last_name":    cmc.relay.last_name, "attendees":    cmc.num_attendees ,
-                        "village" :     cmc.relay.village_suivi.village.name,"location":     cmc.get_location_id_display() ,
-                        "theme":        cmc.get_theme_id_display() ,"villages":     cmc.num_villages , "attendees":    cmc.num_attendees}
-                
+                return {
+			"first_name":   cmc.relay.first_name ,
+			"last_name":    cmc.relay.last_name, 
+			"attendees":    cmc.num_attendees ,
+                        "village" :     cmc.relay.village_suivi.village.name,
+			"location":     cmc.get_location_id_display() ,
+                        "theme":        cmc.get_theme_id_display() ,
+			"villages":     cmc.num_villages ,
+			"attendees":    cmc.num_attendees
+		}
             elif key=="save-radio":
                 cmc  = kwargs.pop ("cmc")
-                return {"first_name": cmc.relay.first_name ,"last_name":  cmc.relay.last_name,"showtype" :  cmc.get_show_type_id_display(),
-                         "theme":      cmc.get_theme_id_display() ,"showlocation": cmc.get_show_location_id_display()
+                return {
+				"first_name": cmc.relay.first_name ,
+				"last_name":  cmc.relay.last_name,
+				"showtype" :  cmc.get_show_type_id_display(),
+                         	"theme":      cmc.get_theme_id_display() ,
+				"showlocation": cmc.get_show_location_id_display()
                 }
-        
-        
         def _get_relay (**kwargs):
                 """Recherche le relay dans la liste des argumenst , soit  dans kwargs  , ou dans kwargs.pop("cmc")"""
                 # Check the relay
                 if "relay" in kwargs :
-                    return  kwargs.pop("relay")
+                    return  kwargs.get("relay")
                     
                 elif "cmc" in kwargs   :
-                    cmc =kwargs.pop("cmc") 
+                    cmc =kwargs.get("cmc") 
                     if cmc.relay : 
                             return cmc.relay
                 elif "classe" in kwargs:
-                    classe =kwargs.pop ("classe")
+                    classe =kwargs.get("classe")
                     if classe.relay:
                             return classe.relay
-                        
-                
         relay  =_get_relay (**kwargs)           
         # Esce  que nous sommes sure que le relay  n 'est pas  null 
         assert (relay is not None)    
         if relay:
-            msg =kwargs.get ("key")
+            key=kwargs.get ("key")
 	    try:
-                msg =_st (relay, key)
-		msg= msg%_get_param_values (**kwargs)
-            except: 
-                pass
-            relay.send_to(msg)
-            return msg
+                key=_st (relay, key)
+		key= key%_get_param_values (**kwargs)
+            except Exception, e:
+                print  "ERROR finding message parameter values"
+		print  e
+		traceback.print_exc ()
+		pass
+            relay.send_to(key)
+            return key
         
     
     @kw("321 (\d+) (\d+) (\d+\.?\d+?) (\d+\.?\d+?) (\d+)\s+(\S+) (\S+)")
@@ -232,13 +271,13 @@ class App (rapidsms.app.App):
                 relay= self.__register_relay( message ,*args , force =True)
                 self.send_response( relay ,"register-relay")
                 return True 
-            
             except VillageNotExistError , err:
                 traceback.print_exc()
-                Message(message.connection, "Desole mais il ya pas de village sur cette latitude").send ()
+                Message(
+			message.connection,
+			"Desole mais il ya pas de village sur cette latitude"
+		).send ()
                 return True
-                
-                
             except Exception, e :               
                 traceback.print_exc()
                 message.forward(alioune, str(e))
@@ -252,22 +291,23 @@ class App (rapidsms.app.App):
             args [0] :coordination_id  ,args [1] :project_id ,args [2] :latitude ,args [3] :longitude ,args [4] :title_id ,
             args [5]: first_nameargs [6] :last_name
             """
-            self.debug("Register++++++++++++++++++++++++++++++++++++%s"%message.text)
             try:
                 rel =self.__register_relay(message ,*args , force =False)
                 self.send_response( relay =rel,key="register-relay")
                 return True
             except RelayExistError , e:
                 traceback.print_exc()
-                Message(message.connection,"Vous etes deja enregistre").send()
-                
-                
-                
+                Message(
+			message.connection,
+			"Vous etes deja enregistre"
+		).send()
             except VillageNotExistError , e:
                 traceback.print_exc()
-                Message(message.connection ,"Desole mais il ya pas de village sur cette latitude").send()
+                Message(
+			message.connection ,
+			"Desole mais il ya pas de village sur cette latitude"
+		).send()
                 return True
-                   
             except Exception, e :
                 traceback.print_exc()
                 message.forward(alioune ,"Erreur dans rapidsms :%s"%str (e))
@@ -298,11 +338,11 @@ class App (rapidsms.app.App):
         """Sauvegarde une nouvelle classe [Kobi 1 ,Awade 1, ...] 
         args [0] :cohort_id, args [1] :title_id ,args [2] :num_session ,args [3] :num_women
         args [4] :num_men ,args [5]: num_girls  ,args [6] :num_boys"""
-        self.debug("Add class +++++++++++++++++++++++++++++++++++%s"%message.text)
-        keys = ["cohort_id" ,"title_id" , "num_session" ,"num_women" ,"num_men" , "num_girls" ,"num_boys"]
+        keys = ["cohort_id" ,"title_id" , "num_session" ,"num_women" ,
+		"num_men" , "num_girls" ,"num_boys"]
         kw_args  = dict (zip (keys , args))
         cla  =Class.objects.create (relay =message.relay, **kw_args)
-        msg  =self.ssend_response (classe =cla , key ="save-classe")
+        msg  =self.send_response (classe =cla , key ="save-classe")
         cla.message = msg
         cla.save ()
         return True
@@ -316,33 +356,35 @@ class App (rapidsms.app.App):
         args [3] : num_girls_drpped  ,args [4] :num_boys_dropped ]"""
         # Si le rapport sur le awade ou le  Kobi precedent ne passe 
         # pas alors on envoie un message
-        self.debug("Add clas absence  ++++++++++++++++++++++++++++++%s"%message.text)
-        prec_class =exists(Class , **{"title_id" :int (args[0])-1})
-        if not prec_class:
-            Message(message.connection ,"Je ne peux pas trouver la classe concernee par ces absence").send ()
-            return True
+        
+	#Il semble que tostan n'a pas besion de voir si la classe exite  bien avant de pouvoir enoyer les avsences
+        # Pour l'instant on le commente
+	
+	#prec_class =exists(Class , **{"title_id" :int (args[0])-1})       
+	#if not prec_class:
+        #  Message(message.connection ,"Je ne peux pas trouver la classe concernee par ces absence").send ()
+        #   return True
         
         attrs   =["num_women_dropped" ,"num_men_dropped", "num_girls_dropped" ,   "num_boys_dropped"]
         kw_args =dict (zip (attrs , args[1:]))
-        abs_cla = ClassAbs.objects.create(relay  = message.relay,classe =prec_class , **kw_args)
+        abs_cla = ClassAbs.objects.create(relay  = message.relay , **kw_args)
         msg  =self.send_response( classe = abs_cla , key ="update-classe")
-        cla.message=msg
-        cla.save ()
+        abs_cla.message=msg
+        abs_cla.save ()
         return True 
     
     
                     
-    @kw ("reu\s+(\d+?)\s+(\d+?)\s+(\d+?)\s+(\d+?)$")
+    @kw ("reu (\d+?) (\d+?) (\d+?) (\d+?)$")
     @identify
     def add_reunion (self , message ,*args , **kwargs):  
         """
         Ajouter une nouvelle reunion  au systeme 
         args [0]  :num_members ,args [1]  :num_guests ,args [2]  :subject_id  ,args [3] :activity_id
         """
-        self.debug ("Add reunion ++++++++++++++++++++++++++++++++++%s"%message.text)
         attrs    = ["num_members" ,"num_guests" , "subject_id" ,"activity_id"]
         kw_args  = dict (zip (attrs  , args ))
-        cmc  = Cmc.objects.create(type_id  =1, relay = message.relay , **kw_args)
+        cmc  = Cmc.objects.create(type_id  ="1", relay = message.relay , **kw_args)
         msg =self.send_response (cmc  = cmc,key  ="save-reunion")  
         cmc.message  = msg
         cmc.save()
@@ -350,15 +392,14 @@ class App (rapidsms.app.App):
     
     
     
-    @kw("fin\s+(\d+?)\s+(\d+?)$")
+    @kw("fin (\d+?) (\d+?)$")
     @identify
     def add_finance (self, message ,  *args ,**kwargs):
         """Ajouter un rapport financier au systeme
-        args [0]:balance_com,args [1]:balance_bank"""
-        self.debug("Add finance ++++++++++++++++++++++++++++++%s"%message.text)        
+        args [0]:balance_com,args [1]:balance_bank"""     
         attrs = ["balance_com" ,"balance_bank"]
         kw_args   =dict (zip (attrs , args))
-        cmc =Cmc.objects.create(type_id =2 ,relay  =message.relay, **kw_args)
+        cmc =Cmc.objects.create(type_id ="2" ,relay  =message.relay, **kw_args)
         msg =self.send_response (cmc   = cmc,key   = "save-finance")
         cmc.message =msg
         cmc.save ()
@@ -372,13 +413,12 @@ class App (rapidsms.app.App):
         Ajouter un rapport su une mobilization
         args [0] : num_attendees ,args [1] :num_villages ,args [2] :theme_id  ,args [3] :location_id
         """
-        self.debug ("Add mobilization++++++++++++++++++++%s"%message.text)
         attrs  = ["num_attendees" , "num_villages" ,"theme_id" ,"location_id"]
         kw_args  = dict (zip (attrs , args))
-        cmc  = Cmc.objects.create(type_id =3 , relay =message.relay ,**kw_args)
+        cmc  = Cmc.objects.create(type_id ="3" , relay =message.relay ,**kw_args)
         msg =self.send_response (key ="save-mobilization",cmc = cmc)
         cmc.message =msg
-        smc.save ()
+        cmc.save ()
         return True 
         
     @kw ("rad (\d+?) (\d+?) (\d+?)$")
@@ -386,10 +426,9 @@ class App (rapidsms.app.App):
     def add_radio (self ,message , *args , **kwargs):
         """Ajouter une nouvelle radio 
         args [0] : theme ,args [1] :show_location ,args [2] :show_type """
-        self.debug ("Add Radio   +++++++++++++++++%s "%message.text)
         attrs    = ["theme_id" , "show_location_id" , "show_type_id"]
         kw_args  = dict (zip (attrs , args))
-        cmc      = Cmc.objects.create (type_id = 4, relay =message.relay, **kw_args)
+        cmc      = Cmc.objects.create (type_id = "4", relay =message.relay, **kw_args)
         msg =self.send_response (cmc  = cmc,key = "save-radio")
         cmc.message =msg
         cmc.save ()

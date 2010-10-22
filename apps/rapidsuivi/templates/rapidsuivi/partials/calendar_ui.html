@@ -27,7 +27,7 @@
              "url" :"{{ item.url }}",
              "start":"{{ item.start }}",
              "className":"message_readed",
-             "current_message":"{{item.current_message}}"}
+             "current_message":"{{item.current_message|safe}}"}
         i= i +1
     {% endfor %}
     $('#calendar').fullCalendar({

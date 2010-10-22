@@ -13,14 +13,18 @@ The MESSAGE_FOR_UI will be displayed from calendar and  from map
 Le MESSAGE_FOR_UI est utilise pour etre affiche dans la amp et dans le calendrier
 """
 
-
-MESSAGE_FOR_UI="""
-<ul>
-<li>Message envoye par :%(first_and_last_name)s</li>
-<li>Contact :%(phone)s</li>
-<li>Role :%(role)s</li>
-<li>Message:%(message)s</li>
-</ul>
+"""
+**Important***
+Don't forget to use {{ var|safe }} into your template 
+because django does auto-scape for every views .
+Also don't forget to do _\_ to avoid unterminated line from JQUERY
+"""
+MESSAGE_FOR_UI="""<ul>\
+<li>Message envoye par :%(first_and_last_name)s</li>\
+<li>Contact :%(phone)s</li>\
+<li>Role :%(role)s</li>\
+<li>Message:%(message)s</li>\
+</ul>\
 """
 
 
@@ -179,16 +183,17 @@ def map (req , template = "rapidsuivi/gmap.html"):
         return render_to_response (req , template , context)
 
 
-def message_ui_from_classe(classe):
+def message_ui_from_class(classe):
 	"""Return un dict of data to fill into the MESSAGE_FOR_UI text"""
 	dict = {}
 	dict["first_and_last_name"] =\
 		classe.relay.first_name + classe.relay.last_name
 	dict["phone"]=\
-		classe.relay.contact.phone
+		classe.relay.contact.phone_number()
 	dict["role"]=\
 		classe.relay.get_title_id_display()
 	dict["message"] =classe.message 
+        return dict
 
 def message_ui_from_cmc(cmc):
 	"""Return a dict of data to fill into the MESSAGE_FOR_UI text"""
@@ -196,10 +201,11 @@ def message_ui_from_cmc(cmc):
 	dict["first_and_last_name"]=\
 		cmc.relay.first_name + cmc.relay.last_name
 	dict["phone"]=\
-		cmc.relay.contact.phone
+		cmc.relay.contact.phone_number()
 	dict["role"]=\
-		cmc.relay.get_title_id_dispaly()
+		cmc.relay.get_title_id_display()
 	dict["message"] = cmc.message
+	return dict
 
 def message_ui_from_radio(radio):
 	""" Return a dict of data  to fill  into MESSAGE_UI text """
@@ -207,15 +213,15 @@ def message_ui_from_radio(radio):
 	dict["fisrt_and_last_name"]=\
 		radio.relay.first_name + radio.relay.last_name
 	dict["phone"]=\
-		radio.relay.contact.phone
+		radio.relay.contact.phone_number()
         dict["role"]=\
 		radio.relay.get_title_id_display()
-	dict["message"]=radio.message
-
- 
+  	dict["message"]=radio.message
+	return dict 
+        
 def message_ui_from_village (current_village_message):
 	"""Return a dict of data to fill into the MESSAGE_FOR_UI text
-	In Fact this is the current message  from  village 
+ 	In Fact this is the current message  from  village 
 	Either the latest message not  yet readed from village
 	Either the latest message received by the village 
 	Also the message can be CMC , CLASS , OR RADIO

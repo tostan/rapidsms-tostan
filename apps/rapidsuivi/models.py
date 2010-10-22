@@ -77,8 +77,7 @@ class Relay(models.Model):
             return None 
 
     def __unicode__(self): 
-        return """"Relay +++++phone +++%s+++cordination+++%s
-                +++projet+++%s+++fisrt_name+++%s+++last_name+++%s+++village+++%s"""%(
+        return """"Relay[(phone ,%s)(cordination,%s)(projet,%s)(fisrt_name,%s)(last_name,%s)(village,%s)]"""%(
                 self.contact.phone_number ,
                 self.get_cordination_id_display (), 
                 self.get_project_id_display (), 
@@ -167,7 +166,7 @@ class Cmc(NodeSet):
         is_read = models.BooleanField (default =False)
         message = models.CharField (max_length = 260, null =True , blank =True) 
         def __unicode__(self):
-                return  u"CMC[(relay, %s)"%(self.relay) 
+                return  u"CMC[(relay, %s)]"%(self.relay) 
             
          
 class Class(NodeSet):
@@ -281,7 +280,8 @@ def relay_from_message (**kwargs):
     que le relay exite deja
     """
     vil= vil_from_la_lo(kwargs.get('latitude') ,kwargs.get('longitude'))
-    
+    # Add village relay
+    kwargs ["village_suivi"] =vil
     rel = exists(Relay ,contact =kwargs.get ("message").sender , status = "C")
     # Si le relay existe , qu'est ce que nous devons faire 
     # mettre son etat  a delete ou bien  envoyer une erreur ,je ne sais a tostan de definir

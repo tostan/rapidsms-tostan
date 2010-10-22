@@ -143,65 +143,97 @@ class App (rapidsms.app.App):
     def outgoing(self, message):
         pass 
     
-    def _get_register_rel_args (**kwargs):
+    def _get_register_relay_args (self,**kwargs):
         """ Get argument dict to fill to the register relay  success response """
         relay   = kwargs.get("relay" , None)    
-        return {"first_name":  relay.first_name,"last_name":relay.last_name,
-                "title":  relay.get_title_id_display() ,"village":relay.village_suivi.village.name
+        return {
+                    "first_name":  relay.first_name,
+                    "last_name":relay.last_name,
+                    "title":  relay.get_title_id_display() ,
+                    "village":relay.village_suivi.village.name
         }
-    def _get_already_register_args (**kwargs):
+    def _get_already_register_args (self,**kwargs):
         """Get arguemnt dict to fill to the already registered succes response """
         relay  = kwargs.get("relay" , None)
-        return{"first_name":  relay.first_name,"last_name":relay.last_name,
-            "title": relay.get_title_id_display() ,"village": relay.village_suivi.village.name
+        return{
+                    "first_name":  relay.first_name,
+                    "last_name":relay.last_name,
+                    "title": relay.get_title_id_display() ,
+                    "village": relay.village_suivi.village.name
         }
-    def _get_save_class_args (**kwargs):
+    def _get_save_class_args (self,**kwargs):
         """ Get the  arguments dict to  fill save class sucess response """
         cla = kwargs.get("classe",None)
-        return { "first_name": cla.relay.first_name ,"last_name": cla.relay.last_name, 
-                "session": cla.num_session ,"title" :cla.get_title_id_display(),
-               "cohort" : cla.get_cohort_id_display(),"village": cla.relay.village_suivi.village.name, 
-              "women": cla.num_women , "men":cla.num_men  ,
-              "girls":cla.num_girls ,"boys" : cla.num_boys
+        return { 
+                    "first_name": cla.relay.first_name ,
+                    "last_name": cla.relay.last_name, 
+                    "session": cla.num_session ,
+                    "title" :cla.get_title_id_display(),
+                    "cohort" : cla.get_cohort_id_display(),
+                    "village": cla.relay.village_suivi.village.name, 
+                    "women": cla.num_women ,
+                    "men":cla.num_men  ,
+                    "girls":cla.num_girls ,
+                    "boys" : cla.num_boys
         }
          
-    def _get_update_class_args (**kwargs):
+    def _get_update_class_args (self,**kwargs):
         """Get arguement to fill into the response arg for success update """
         abs_cla  =kwargs.get("classe",None)
-        return    {"first_name":abs_cla.relay.first_name, "last_name":abs_cla.relay.last_name ,
-            "women" : abs_cla.num_women_dropped ,"men": abs_cla.num_men_dropped ,      
-            "girls": abs_cla.num_girls_dropped ,"boys": abs_cla.num_boys_dropped ,"title": abs_cla.get_title_id_display()
+        return    {
+                    "first_name":abs_cla.relay.first_name, 
+                    "last_name":abs_cla.relay.last_name ,
+                    "women" : abs_cla.num_women_dropped ,
+                    "men": abs_cla.num_men_dropped ,      
+                    "girls": abs_cla.num_girls_dropped ,
+                    "boys": abs_cla.num_boys_dropped ,
+                    "title": abs_cla.get_title_id_display()
          }     
     
-    def _get_save_reunion_args (**kwargs):
+    def _get_save_reunion_args (self,**kwargs):
         """ Get argument to fill the reunion add success response"""
         cmc  = kwargs.get("cmc",None)
-        return {"first_name":cmc.relay.first_name ,"last_name":cmc.relay.last_name ,
-            "members":cmc.num_members ,"guests":cmc.num_guests ,
-            "activity":cmc.get_activity_id_display(),"village":cmc.relay.village_suivi.village.name,
-            "subject":cmc.get_subject_id_display()
+        return {
+                    "first_name":cmc.relay.first_name ,
+                    "last_name":cmc.relay.last_name ,
+                    "members":cmc.num_members ,
+                    "guests":cmc.num_guests ,
+                    "activity":cmc.get_activity_id_display(),
+                    "village":cmc.relay.village_suivi.village.name,
+                    "subject":cmc.get_subject_id_display()
          }
-    def _get_save_finance_args (**kwargs):
+    def _get_save_finance_args (self ,**kwargs):
         """ Get the arguement dict to fill the save finance response """
         cmc  = kwargs.get ("cmc" ,None)
-        return {"first_name":cmc.relay.first_name ,"last_name":cmc.relay.last_name ,
-            "village":cmc.relay.village_suivi.village.name,"balance_com": cmc.balance_com ,
-            "balance_bank":cmc.balance_bank
+        return {
+                    "first_name":cmc.relay.first_name ,
+                    "last_name":cmc.relay.last_name ,
+                    "village":cmc.relay.village_suivi.village.name,
+                    "balance_com": cmc.balance_com ,
+                    "balance_bank":cmc.balance_bank
          }
-    def _get_save_mobilization_args (**kwargs):
+    def _get_save_mobilization_args (self,**kwargs):
         """ Get the dict arguement response to fill into the save moblilization success response """
         cmc  = kwargs.get("cmc" ,None)
-        return {"first_name":   cmc.relay.first_name ,"last_name":    cmc.relay.last_name, 
-            "attendees":    cmc.num_attendees ,"village" :     cmc.relay.village_suivi.village.name,
-            "location":     cmc.get_location_id_display() ,"theme":        cmc.get_theme_id_display() ,
-            "villages":     cmc.num_villages ,"attendees":    cmc.num_attendees
+        return {
+                    "first_name":   cmc.relay.first_name ,
+                    "last_name":    cmc.relay.last_name, 
+                    "attendees":    cmc.num_attendees ,
+                    "village" :   cmc.relay.village_suivi.village.name,
+                    "location":     cmc.get_location_id_display() ,
+                    "theme":        cmc.get_theme_id_display() ,
+                    "villages":     cmc.num_villages ,
+                    "attendees":cmc.num_attendees
         }
-    def _get_save_radio_args (**kwargs):
+    def _get_save_radio_args (self ,**kwargs):
         """Get args to fill the save radio succes response """
         cmc  = kwargs.pop ("cmc")
-        return {"first_name": cmc.relay.first_name ,"last_name":  cmc.relay.last_name,
-                "showtype" :  cmc.get_show_type_id_display(),"theme":      cmc.get_theme_id_display() ,
-                "showlocation": cmc.get_show_location_id_display()
+        return {
+                    "first_name": cmc.relay.first_name ,
+                    "last_name":  cmc.relay.last_name,
+                    "showtype" :  cmc.get_show_type_id_display(),
+                    "theme":      cmc.get_theme_id_display() ,
+                    "showlocation": cmc.get_show_location_id_display()
         }
     
           
@@ -216,7 +248,8 @@ class App (rapidsms.app.App):
             try:
                 rel =self.__register_relay(message ,*args , force =False)
                 # Get the response to send to the relay 
-                text = _st (relay , "register-relay")%_get_register_relay_args (rel)
+                text = _st (rel , "register-relay")%\
+                        self._get_register_relay_args (relay=rel)
                 message.respond (text)
                 return True
             except RelayExistError , e:
@@ -265,7 +298,8 @@ class App (rapidsms.app.App):
         kw_args  = dict (zip (keys , args))
         cla  =Class.objects.create (relay =message.relay, **kw_args)
         try:
-            text =_st(message.relay,"save-classe")%_get_save_class_args (classe =cla)
+            text =_st(message.relay,"save-classe")%\
+                 self._get_save_class_args (classe =cla)
         except Exception, e:
             traceback.print_exc()
             # Error systeme
@@ -305,7 +339,8 @@ class App (rapidsms.app.App):
         abs_cla = ClassAbs.objects.create(relay  = message.relay , **kw_args)
         # Get the response with argument to send  to the relay
         try:
-            text =_st (message.relay,"update-classe")%_get_update_class_args (abs_cla)
+            text =_st (message.relay,"update-classe")%\
+                    self._get_update_class_args (abs_cla)
        
         except Exception, e:
             traceback.print_exc()
@@ -332,7 +367,8 @@ class App (rapidsms.app.App):
         kw_args  = dict (zip (attrs  , args ))
         cmc  = Cmc.objects.create(type_id  ="1", relay = message.relay , **kw_args)
         try:
-            text =_st (message.relay, "save-reunion")%_get_save_reunion_args (cmc =cmc)
+            text =_st (message.relay, "save-reunion")%\
+                 self._get_save_reunion_args (cmc =cmc)
         except Exception, e:
             traceback.print_exc()
             # Error systeme
@@ -356,7 +392,8 @@ class App (rapidsms.app.App):
         kw_args   =dict (zip (attrs , args))
         cmc =Cmc.objects.create(type_id ="2" ,relay  =message.relay, **kw_args)
         try:
-            text = _st(message.relay, "save-finance")%_get_save_finance_args (cmc =cmc)
+            text = _st(message.relay, "save-finance")%\
+                  self._get_save_finance_args (cmc =cmc)
         except Exception, e:
             traceback.print_exc()
             # Error systeme
@@ -382,7 +419,8 @@ class App (rapidsms.app.App):
         cmc  = Cmc.objects.create(type_id ="3" , relay =message.relay ,**kw_args)
         # Get the response with arguement to send to the user 
         try:
-            text =_st(message.relay,"save-mobilization")%_get_save_mobilization (cmc=cmc)
+            text =_st(message.relay,"save-mobilization")%\
+                 self._get_save_mobilization (cmc=cmc)
         except Exception, e:
             traceback.print_exc()
             # Error systeme
@@ -404,7 +442,8 @@ class App (rapidsms.app.App):
         kw_args  = dict (zip (attrs , args))
         cmc      = Cmc.objects.create (type_id = "4", relay =message.relay, **kw_args)
         try:
-            text = _st (message.relay, "save-radio")%_get_save_radio(cmc= cmc)
+            text = _st (message.relay, "save-radio")%\
+                    self._get_save_radio(cmc= cmc)
         except Exception, e:
             traceback.print_exc()
             # Error systeme

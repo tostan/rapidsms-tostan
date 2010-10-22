@@ -26,7 +26,8 @@ def calendar(req, template="rapidsuivi/calendar.html"):
         
         if "village" in req.POST:
                 if req.POST.get ("village") not in ("" , "all"):
-                    relay_filtres["village_suivi__village"] = Village.objects.get (pk =req.POST["village"])
+                    relay_filtres["village_suivi__village"] =\
+			 Village.objects.get (pk =req.POST["village"])
                 context["village_selected"]= req.POST["village"]
                    
         if len (relay_filtres)>0:
@@ -34,19 +35,37 @@ def calendar(req, template="rapidsuivi/calendar.html"):
         
         if "actor" in req.POST:
                         if req.POST.get("actor") not in ("", "all"):
-                            cmc_or_class =req.POST["actor"]
-                            if cmc_or_class =="1" :
-                                context["cmcs"]  =Cmc.objects.filter (relay__in =all_relays)
-                            if cmc_or_class =="2" :
-                                context["classes"]=Class.objects.filter(relay__in=all_relays)                    
+                            cmc_or_class_or_radio =req.POST["actor"]
+                            if cmc_or_class_or_radio =="1" :
+                                context["cmcs"]  =\
+				Cmc.objects.filter (relay__in =all_relays)
+                            if cmc_or_class_or_radio =="2" :
+                                context["classes"]=\
+				Class.objects.filter(relay__in=all_relays)
+			    if cmc_or_class_or_radio ="3":
+				context["radios"]=\
+				Radio.objects.filter(relay__in =all_relays) 
+			                   
                         else:
-                             context["cmcs"]  =Cmc.objects.filter (relay__in=all_relays)
-                             context["classes"] =Class.objects.filter (relay__in =all_relays)
+                             context["cmcs"]    =\
+				Cmc.objects.filter (relay__in=all_relays)
+                             context["classes"] =\
+				Class.objects.filter (relay__in =all_relays)
+			     context["radios"]  =\
+				Radio.objects.filter()
                         context["actor_selected"] =req.POST["actor"]
                         
     else :
-                        context  ["cmcs"]  =Cmc.objects.all ()
-                        context   ["classes"]=Class.objects.all ()
+                        context  ["cmcs"]   =Cmc.objects.all ()
+                        context  ["classes"]=Class.objects.all ()
+			context  ["radios"] =Radio.objects.all()
+    # Now We have a liste of cmcs  , relays , and  radios we can go to 
+    # go to  format data  for calendar UI by providing dict data to fill
+    # for exemple into  MESSAGE_FOR_UI , 
+    # ***ulr  for calendar ebent ***
+    # ***date for caledar event 
+    # ***is_read to  determine  class css  for  the calendar event 
+    # So if message is already readed the callendar is **RED** else the calendar is *GREEN*
     calendar_events (context)
     return render_to_response (req ,template, context)
 	

@@ -114,6 +114,19 @@ class App (rapidsms.app.App):
 		            # If the user message start with our key, to be sure that message is for us
                     # This message is not for this app
                     # Ce message n'est pas pour RAPID SUIVI
+                    # Regarde si le message est bien pour rapidsuivi 
+                    # si c'est la cas alors le relay essaie de contacter rapidsuivi avec la mauvaise syntaxe
+                    try:
+                        for key in ["cla"  ,"abs",
+                                "reu" ,"ms" ,
+                                "rad", "fin"]:
+                            if message.text.strip ().startswith (key):
+                                message.respond (_t("fr" , "help-message"))
+                                return True
+                    
+                    except :
+                        traceback.print_exc()
+                        pass
                     return False
                 try:
                     handle = func(self, message, *captures) 
@@ -420,7 +433,7 @@ class App (rapidsms.app.App):
         # Get the response with arguement to send to the user 
         try:
             text =_st(message.relay,"save-mobilization")%\
-                 self._get_save_mobilization (cmc=cmc)
+                 self._get_save_mobilization_args(cmc=cmc)
         except Exception, e:
             traceback.print_exc()
             # Error systeme
@@ -443,7 +456,7 @@ class App (rapidsms.app.App):
         cmc      = Cmc.objects.create (type_id = "4", relay =message.relay, **kw_args)
         try:
             text = _st (message.relay, "save-radio")%\
-                    self._get_save_radio(cmc= cmc)
+                    self._get_save_radio_args(cmc= cmc)
         except Exception, e:
             traceback.print_exc()
             # Error systeme

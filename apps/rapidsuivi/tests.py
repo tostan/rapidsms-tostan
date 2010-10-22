@@ -228,7 +228,7 @@ class TestApp (TestScript):
     775526745 > cla 1 2 23 12 7 23 9
     775526745 < Identification requise!
     775526745 > 123 3 2 25.1 43.12 1 chekh Ba 
-    775526745 < Merci chekh Ba.Vous etes bien inscrit a RapidSuivi en tant que Facilitator de Keur Samba Laobe.En cas de probleme,merci de contacter votre Superviseur.Bonne journee!
+    775526745 < Merci chekhou Ba.Vous etes bien inscrit a RapidSuivi en tant que Facilitator de Keur Samba Laobe.En cas de probleme,merci de contacter votre Superviseur.Bonne journee!
     775526745 > 123 3 2 25.1 43.12 1 chekh Ba
     775526745 < Vous etes deja enregistre
     775526745 > cla 1 2 23 12 7 23 9
@@ -291,7 +291,7 @@ class TestApp (TestScript):
     775526748 > 123 3 2 25.1 43.12 1 Fatou Fall
     775526748 < Merci Fatou Fall.Vous etes bien inscrit a RapidSuivi en tant que Facilitator de Keur Samba Laobe.En cas de probleme,merci de contacter votre Superviseur.Bonne journee!
     775526748 > rad 321 8 2 A
-    775526748 < Il y'a une erreur sur le message ,contacter le superviseur
+    775526748 < Il y'a une erreur sur le message pour Rapidsuivi,merci de contacter votre superviseur.
     """
     
     

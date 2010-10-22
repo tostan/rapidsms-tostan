@@ -10,8 +10,6 @@ from app import App
 class TestApp (TestScript):
     fixtures =["rapidsuivi.json"]
     apps = (reporter_app.App ,contact_app.App, App,)
-
-#    def testa(self):
 #        print  "Exceution du test a"
 #        script_add_cla_fail = """
 #        775526745 > cla 1 2 23 12 7 23 9
@@ -222,7 +220,7 @@ class TestApp (TestScript):
          loc=  Location (code= "00" , latitude = "25.1" , longitude = "43.12")
          loc.save ()
          vil = Village.objects.create (location =loc  , name ="Keur Samba Laobe")
-         svil  =SuiviVillage (village=vil)
+         svil  =SuiviVillage (latitude ="25.1" , longitude ="43.12" , village = vil)
          svil.save ()
          super(TestApp,self).setUp()
         

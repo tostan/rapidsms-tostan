@@ -167,9 +167,7 @@ class Cmc(NodeSet):
         is_read = models.BooleanField (default =False)
         message = models.CharField (max_length = 260, null =True , blank =True) 
         def __unicode__(self):
-                return  u"CMC +++relay +++%s"%(
-                        self.relay
-                        ) 
+                return  u"CMC[(relay, %s)"%(self.relay) 
             
          
 class Class(NodeSet):
@@ -197,7 +195,7 @@ class Class(NodeSet):
         is_read      = models.BooleanField (default =False)
         message      = models.CharField (max_length=260, blank=True ,null =True)
         def __unicode__(self):
-                return u"Class +++ cohort_id +++%s , cohort_id_display ++++%s"%(
+                return u"Class[(cohort_id,%s),(cohort_id_display,%s)]"%(
                                 self.cohort_id  , 
                                 self.get_cohort_id_display ()) 
 class  ClassAbs(NodeSet):
@@ -221,8 +219,7 @@ class  ClassAbs(NodeSet):
         date              =models.DateTimeField(default =datetime.datetime.now ())
              
         def __unicode__(self):
-            return u"AbsClass +++ women +++%s  , men +++ %s"%\
-                (
+            return u"AbsClass[(women,%s) , (men , %s)]"%(
                  self.num_women_dropped ,
                  self.num_men_dropped
                  )
@@ -272,7 +269,7 @@ class SuiviVillage(models.Model):
 	else : return  cmc_to_read .order_by("-date")[0]
     
     def __unicode__(self):
-        return u"SuiviVilllage +++village_pk+++%s +++village__name++%s"%(self.pk ,self.village.name)
+        return u"SuiviVilllage [(village_pk,%s),(village__name,%s)]"%(self.pk ,self.village.name)
 
 
 def relay_from_message (**kwargs):
@@ -285,8 +282,6 @@ def relay_from_message (**kwargs):
     """
     vil= vil_from_la_lo(kwargs.get('latitude') ,kwargs.get('longitude'))
     
-    print  "Village +++++++++++++++++++++++++++++++++++" , vil
-    kwargs["village_suivi" ] =vil
     rel = exists(Relay ,contact =kwargs.get ("message").sender , status = "C")
     # Si le relay existe , qu'est ce que nous devons faire 
     # mettre son etat  a delete ou bien  envoyer une erreur ,je ne sais a tostan de definir
@@ -323,20 +318,24 @@ def relay_from_message (**kwargs):
 
 
 def vil_from_la_lo(latitude , longitude):
+    print "**VILLAGES **"
+    print SuiviVillage.objects.all ()
     try:
         # Nous recherons d'abord les coordonnees dans  location , 
         # Nous stockons les longitudes et latitudes  pour goole map
         # Si nous ne trouvons rien , nous allons rechercher dans 
         # latitude  et dans longitude , qui sont les coordonnees de arc gis
-	return SuiviVillage.objects.get (village__location__latitude =latitude ,village__location__longitude ="-"+longitude)
+        return SuiviVillage.objects.get\
+            (village__location__latitude =latitude ,village__location__longitude ="-"+longitude)
     except Exception , e:
-	try:
-	    # Cherchons dans arc gis
-            return SuiviVillage.objects.get (latitude=latitude ,longitude=longitude)
-	except :
-       		traceback.print_exc()
-        	raise VillageNotExistError
-        	pass
+        try:
+        	    # Cherchons dans arc gis
+                    return SuiviVillage.objects.get\
+                            (latitude=latitude ,longitude=longitude)
+        except Exception ,e:
+               		traceback.print_exc()
+                	raise VillageNotExistError
+                	pass
     
 def exists (klass , **kwargs ):
     try:

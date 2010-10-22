@@ -338,6 +338,7 @@ def vil_from_la_lo(latitude , longitude):
                 	pass
     
 def exists (klass , **kwargs ):
+    """ Check if the objects exist"""
     try:
        return  klass.objects.get (**kwargs)
     except Exception, e:

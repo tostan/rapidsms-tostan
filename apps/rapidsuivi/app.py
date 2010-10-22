@@ -74,8 +74,12 @@ def identify(func):
     """
     def  wrapper (sself , message , *args , **kwargs):            
             rel =exists(Relay,contact =message.sender , status ="C")
+            
+            print "** RELAYS**"
+            print Relay.objects.all ()
+            print rel
             if not rel:
-                    Message(message.connection, "Identification requise!").send ()
+                    message.respond(_t("fr","identification-requise"))
                     return True 
             message.relay  = rel 
             return func (sself ,message ,*args , **kwargs)
@@ -260,6 +264,9 @@ class App (rapidsms.app.App):
             """
             try:
                 rel =self.__register_relay(message ,*args , force =False)
+                print  "** AFTER ** register"
+                print rel.contact
+                print rel.status
                 # Get the response to send to the relay 
                 text = _st (rel , "register-relay")%\
                         self._get_register_relay_args (relay=rel)

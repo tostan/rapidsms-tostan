@@ -226,27 +226,27 @@ class TestApp (TestScript):
         
     testClasseFail ="""
     775526745 > cla 1 2 23 12 7 23 9
-    775526745 < Identification requise!
+    775526745 < Identifiez vous s'il vous plait.
     775526745 > 123 3 2 25.1 43.12 1 chekh Ba 
-    775526745 < Merci chekhou Ba.Vous etes bien inscrit a RapidSuivi en tant que Facilitator de Keur Samba Laobe.En cas de probleme,merci de contacter votre Superviseur.Bonne journee!
+    775526745 < Merci chekh Ba.Vous etes bien inscrit a RapidSuivi en tant que Facilitator de Keur Samba Laobe.En cas de probleme,merci de contacter votre Superviseur
     775526745 > 123 3 2 25.1 43.12 1 chekh Ba
-    775526745 < Vous etes deja enregistre
+    775526745 < Merci chekh Ba.Vous etes bien inscrit a RapidSuivi en tant que Facilitator de Keur Samba Laobe.En cas de probleme,merci de contacter votre Superviseur
     775526745 > cla 1 2 23 12 7 23 9
-    775526745 < Merci chekh Ba .Vous avez fini la sceance 23 du Kobi2 avec les adult de Keur Samba Laobe .Presents : 12 femmes ,7 hommes ,23 filles et 9 garcons .En cas d'erreur ,merci de contacter votre Superviseur .Bonne journee !
+    775526745 < Merci chekh Ba .Vous avez fini la sceance 23 du Kobi2 avec les adult de Keur Samba Laobe .Presents : 12 femmes ,7 hommes ,23 filles et 9 garcons
     """
    
      
      
     testAddClasseFail="""
     775526745 > cla 1 2 23 12 7 23 9
-    775526745 < Identification requise!  
+    775526745 < Merci chekh Ba .Vous avez fini la sceance 23 du Kobi2 avec les adult de Keur Samba Laobe .Presents : 12 femmes ,7 hommes ,23 filles et 9 garcons
     """
     
     testUpdateClasse="""
     775526745 > cla 1 2 23 12 7 23 9
-    775526745 < Identification requise!
+    775526745 < Identifiez vous s'il vous plait.
     775526745 > 123 3 2 25.1 43.12 1 chekh Ba
-    775526745 < Merci chekh Ba.Vous etes bien inscrit a RapidSuivi en tant que Facilitator de Keur Samba Laobe.En cas de probleme,merci de contacter votre Superviseur.Bonne journee!
+    775526745 < Merci chekh Ba.Vous etes bien inscrit a RapidSuivi en tant que Facilitator de Keur Samba Laobe.En cas de probleme,merci de contacter votre Superviseur
     775526745 > cla 1 1 23 12 7 23 9
     775526745 < Merci chekh Ba .Vous avez fini la sceance 23 du Kobi 1 avec les adult de Keur Samba Laobe .Presents : 12 femmes ,7 hommes ,23 filles et 9 garcons .En cas d'erreur ,merci de contacter votre Superviseur .Bonne journee !
     775526745 > abs 2 4 2 2 1
@@ -257,7 +257,7 @@ class TestApp (TestScript):
     
     testAddReunion ="""
     775526748 > 123 3 2 25.1 43.12 1 Fatou Fall
-    775526748 < Merci Fatou Fall.Vous etes bien inscrit a RapidSuivi en tant que Facilitator de Keur Samba Laobe.En cas de probleme,merci de contacter votre Superviseur.Bonne journee!
+    775526748 < Merci Fatou Fall.Vous etes bien inscrit a RapidSuivi en tant que Facilitator de Keur Samba Laobe.En cas de probleme,merci de contacter votre Superviseur
     775526748 > reu 14 25 1 5
     775526748 < Merci Fatou Fall .Le CGC de Keur Samba Laobe s'est reuni aujourd'hui ,14 membres et 25 invites etaient presents et vous avez discute principalement du theme de la Health .Vous avez planifie d'organiser un Sensibilisation Paludisme bientot .En cas d'erreur ,merci de contacter votre Superviseur .Bonne journee
     """
@@ -265,7 +265,7 @@ class TestApp (TestScript):
         
     testAddFinance="""
     775526748 > 123 3 2 25.1 43.12 1 Fatou Fall
-    775526748 < Merci Fatou Fall.Vous etes bien inscrit a RapidSuivi en tant que Facilitator de Keur Samba Laobe.En cas de probleme,merci de contacter votre Superviseur.Bonne journee!
+    775526748 < Merci Fatou Fall.Vous etes bien inscrit a RapidSuivi en tant que Facilitator de Keur Samba Laobe.En cas de probleme,merci de contacter votre Superviseur
     775526748 > fin 25000 45000
     775526748 < Merci Fatou Fall .Le CGC de Keur Samba Laobe dispose apres une transaction bancaire effectuee aujourd'hui de 25000 CFA dans sa caisse communautaire et de 45000 dans son compte en banque .En cas d'erreur ,merci de contacter votre Superviseur .Bonne journee
     """
@@ -273,7 +273,7 @@ class TestApp (TestScript):
 
     testAddMobilization="""
     775526748 > 123 3 2 25.1 43.12 1 Fatou Fall
-    775526748 < Merci Fatou Fall.Vous etes bien inscrit a RapidSuivi en tant que Facilitator de Keur Samba Laobe.En cas de probleme,merci de contacter votre Superviseur.Bonne journee!
+    775526748 < Merci Fatou Fall.Vous etes bien inscrit a RapidSuivi en tant que Facilitator de Keur Samba Laobe.En cas de probleme,merci de contacter votre Superviseur
     775526748 > ms 321 8 2 1
     775526748 < Merci Fatou Fall .Le CGC de Keur Samba Laobe a organise aujourdhui dans un My Village de Keur Samba Laobe un Environnement qui a touche 321 personnes originaires de 8 villages .En cas d'erreur ,merci de contacter votre supervieur .Bonne journee
     """
@@ -282,14 +282,14 @@ class TestApp (TestScript):
     
     testAddRadio="""
     775526748 > 123 3 2 25.1 43.12 1 Fatou Fall
-    775526748 < Merci Fatou Fall.Vous etes bien inscrit a RapidSuivi en tant que Facilitator de Keur Samba Laobe.En cas de probleme,merci de contacter votre Superviseur.Bonne journee!
+    775526748 < Merci Fatou Fall.Vous etes bien inscrit a RapidSuivi en tant que Facilitator de Keur Samba Laobe.En cas de probleme,merci de contacter votre Superviseur
     775526748 > ms 321 8 2 1
     775526748 < Merci Fatou Fall .Le CGC de Keur Samba Laobe a organise aujourdhui dans un My Village de Keur Samba Laobe un Environnement qui a touche 321 personnes originaires de 8 villages .En cas d'erreur ,merci de contacter votre supervieur .Bonne journee
     """
     
     testAddRadioFail="""
     775526748 > 123 3 2 25.1 43.12 1 Fatou Fall
-    775526748 < Merci Fatou Fall.Vous etes bien inscrit a RapidSuivi en tant que Facilitator de Keur Samba Laobe.En cas de probleme,merci de contacter votre Superviseur.Bonne journee!
+    775526748 < Merci Fatou Fall.Vous etes bien inscrit a RapidSuivi en tant que Facilitator de Keur Samba Laobe.En cas de probleme,merci de contacter votre Superviseur
     775526748 > rad 321 8 2 A
     775526748 < Il y'a une erreur sur le message pour Rapidsuivi,merci de contacter votre superviseur.
     """

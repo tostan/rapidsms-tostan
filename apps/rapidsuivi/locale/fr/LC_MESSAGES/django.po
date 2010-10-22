@@ -217,3 +217,5 @@ msgstr "Desole , mais ce relay existe"
 
 msgid  "village-not-found"
 msgstr "Desole, mais je ne peux pas trouver ce village,etes vous sure des coordonnees"
+msgid "identification-requise"
+msgstr "Identifiez vous s'il vous plait."

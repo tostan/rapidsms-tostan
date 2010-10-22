@@ -103,14 +103,7 @@ class Cmc(NodeSet):
                         ( "2" , "Village adopte"),
                         ( "3" , "Other Village"))
         
-        #Show location type
-        SHOW_LOCATION_TYPES=(("1" , "Live"),
-                             ("2" , "Tape Delayed"))
-        
-        SHOW_TYPES =(("1" ,"With guests"),
-                     ("2", "Debate"), 
-                     ("3", "Reportage"))
-        
+      
         SUBJECT_TYPES =(("1" ,"Health"), 
                         ("2" ,"Environnement"),
                         ("3" ,"Education"),
@@ -132,33 +125,26 @@ class Cmc(NodeSet):
                         ("9"  , "Reception de delegation"),
                         ("10" , "Other"))
             
-        THEME_TYPES = ( ("1" , "Health")  , 
-                        ("2" , "Environnement"),
-                        ("3" , "Education") , 
-                        ("4" , "Income Generating Activity"),
-                        ("5" , "Youth protection"),
-                        ("6" , "Social Activity"),
-                        ("7" , "Conflict Resolution"),
-                        ("8" , "Microcredit"),
-                        ("9" , "External Relation"),
-                        ("10" ,"Other"))
+     
         # Metting 
         type_id      = models.CharField(max_length =2,choices = CMC_TYPES , null =True , blank =True)
         num_members  = models.PositiveIntegerField(default =0)
         num_guests   = models.PositiveIntegerField(default =0)
-        subject_id   = models.CharField(max_length=2,null =True , blank=True,choices = SUBJECT_TYPES)
-        activity_id  = models.CharField(max_length=2,null =True ,blank=True ,choices = ACTIVITY_TYPES)
+        # The CMC mobilization has not a subject_id  only  CMC meeting has an  subject
+	subject_id   = models.CharField(max_length=2,null =True , blank=True,choices = SUBJECT_TYPES)
+	# The activity of the CMC is the same as the activity of the meeting
+	activity_id  = models.CharField(max_length=2,null =True ,blank=True ,choices = ACTIVITY_TYPES)
         #Account Operation
         balance_com   = models.PositiveIntegerField(default =0)
         balance_bank  = models.PositiveIntegerField(default =0)
         #Social Mobilzation
         num_attendees = models.PositiveIntegerField (default =0)
         num_villages  = models.PositiveIntegerField (default =0)
-        theme_id      = models.CharField(max_length =2,null=True , blank =True ,choices =THEME_TYPES)
-        location_id   = models.CharField(max_length =2,null=True ,blank =True,choices = LOCATION_TYPES)
+
+	location_id   = models.CharField(max_length =2,null=True ,blank =True,choices = LOCATION_TYPES)
         #Radio
-        show_location_id = models.CharField(max_length =2,null =True ,blank =True ,choices  = SHOW_LOCATION_TYPES)
-        show_type_id    = models.CharField(max_length  =2,null =True ,blank =True ,choices = SHOW_TYPES)
+        #show_location_id = models.CharField(max_length =2,null =True ,blank =True ,choices  = SHOW_LOCATION_TYPES)
+        #show_type_id    = models.CharField(max_length  =2,null =True ,blank =True ,choices = SHOW_TYPES)
         
         #Relay
         relay     = models.ForeignKey ("Relay" , related_name ="cmcs")
@@ -167,7 +153,39 @@ class Cmc(NodeSet):
         message = models.CharField (max_length = 260, null =True , blank =True) 
         def __unicode__(self):
                 return  u"CMC[(relay, %s)]"%(self.relay) 
-            
+          
+class Radio(NodeSet):
+	"""The radio host activity , models to store the messages sent to RapidSuivi from radio Host"""
+        THEME_TYPES = ( ("1" , "Health")  , 
+                        ("2" , "Environnement"), 
+                        ("3" , "Education") , 
+                        ("4" , "Income Generating Activity"),
+                        ("5" , "Youth protection"),
+                        ("6" , "Social Activity"),
+                        ("7" , "Conflict Resolution"),
+                        ("8" , "Microcredit"),
+                        ("9" , "External Relation"),
+                        ("10" ,"Other"))
+        LOCATION_TYPES=(("1" , "Live"),
+                        ("2" , "Tape Delayed"))
+        
+        SHOW_TYPES =(("1" ,"With guests"),
+                     ("2", "Debate"), 
+                     ("3", "Reportage"))
+	
+	theme_id      = models.CharField(max_length =2,null=True , blank =True ,choices =THEME_TYPES)
+        location_id = models.CharField(max_length =2,null =True ,blank =True ,choices  = LOCATION_TYPES)
+        type_id    = models.CharField(max_length  =2,null =True ,blank =True ,choices = SHOW_TYPES)
+        relay     = models.ForeignKey ("Relay" , related_name ="radios")
+        date = models.DateTimeField (default =datetime.datetime.now())
+        is_read = models.BooleanField (default =False)
+        message = models.CharField (max_length = 260, null =True , blank =True) 
+        
+	def __unicode__(self):
+		return u"Radio[(theme,%s),(location_id, %s),(type_id,%s)]"%\
+		(self.get_theme_id_display() , self.get_location_id_display() , self.get_type_id_display())
+ 
+	
          
 class Class(NodeSet):
         """

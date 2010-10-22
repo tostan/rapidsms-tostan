@@ -74,10 +74,6 @@ def identify(func):
     """
     def  wrapper (sself , message , *args , **kwargs):            
             rel =exists(Relay,contact =message.sender , status ="C")
-            
-            print "** RELAYS**"
-            print Relay.objects.all ()
-            print rel
             if not rel:
                     message.respond(_t("fr","identification-requise"))
                     return True 
@@ -115,7 +111,7 @@ class App (rapidsms.app.App):
                     func, captures = self.kw.match(self, message.text) 
                 except Exception:
                     traceback.print_exc()
-		            # If the user message start with our key, to be sure that message is for us
+		    # If the user message start with our key, to be sure that message is for us
                     # This message is not for this app
                     # Ce message n'est pas pour RAPID SUIVI
                     # Regarde si le message est bien pour rapidsuivi 
@@ -238,19 +234,21 @@ class App (rapidsms.app.App):
                     "attendees":    cmc.num_attendees ,
                     "village" :   cmc.relay.village_suivi.village.name,
                     "location":     cmc.get_location_id_display() ,
-                    "theme":        cmc.get_theme_id_display() ,
+                    # Ce qui serai mieu c'est de remplacer dans locale/django.po le theme par activity car
+		    # pour la mobilization le theme en fait c'est l'activity
+		    "theme":        cmc.get_activity_id_display() ,
                     "villages":     cmc.num_villages ,
                     "attendees":cmc.num_attendees
         }
     def _get_save_radio_args (self ,**kwargs):
         """Get args to fill the save radio succes response """
-        cmc  = kwargs.pop ("cmc")
+        radio  = kwargs.pop ("radio")
         return {
-                    "first_name": cmc.relay.first_name ,
-                    "last_name":  cmc.relay.last_name,
-                    "showtype" :  cmc.get_show_type_id_display(),
-                    "theme":      cmc.get_theme_id_display() ,
-                    "showlocation": cmc.get_show_location_id_display()
+                    "first_name": radio.relay.first_name ,
+                    "last_name":  radio.relay.last_name,
+                    "showtype" :  radio.get_type_id_display(),
+                    "theme":      radio.get_theme_id_display() ,
+                    "showlocation": radio.get_location_id_display()
         }
     
           
@@ -265,8 +263,6 @@ class App (rapidsms.app.App):
             try:
                 rel =self.__register_relay(message ,*args , force =False)
                 print  "** AFTER ** register"
-                print rel.contact
-                print rel.status
                 # Get the response to send to the relay 
                 text = _st (rel , "register-relay")%\
                         self._get_register_relay_args (relay=rel)
@@ -432,9 +428,9 @@ class App (rapidsms.app.App):
     def add_mobilization (self,message , *args , **kwargs):
         """
         Ajouter un rapport su une mobilization
-        args [0] : num_attendees ,args [1] :num_villages ,args [2] :theme_id  ,args [3] :location_id
+        args [0] : num_attendees ,args [1] :num_villages ,args [2] :activity_id  ,args [3] :location_id
         """
-        attrs  = ["num_attendees" , "num_villages" ,"theme_id" ,"location_id"]
+        attrs  = ["num_attendees" , "num_villages" ,"activity_id" ,"location_id"]
         kw_args  = dict (zip (attrs , args))
         cmc  = Cmc.objects.create(type_id ="3" , relay =message.relay ,**kw_args)
         # Get the response with arguement to send to the user 
@@ -458,12 +454,12 @@ class App (rapidsms.app.App):
     def add_radio (self ,message , *args , **kwargs):
         """Ajouter une nouvelle radio 
         args [0] : theme ,args [1] :show_location ,args [2] :show_type """
-        attrs    = ["theme_id" , "show_location_id" , "show_type_id"]
+        attrs    = ["theme_id" , "location_id" , "type_id"]
         kw_args  = dict (zip (attrs , args))
-        cmc      = Cmc.objects.create (type_id = "4", relay =message.relay, **kw_args)
+        radio      = Radio.objects.create (relay =message.relay, **kw_args)
         try:
             text = _st (message.relay, "save-radio")%\
-                    self._get_save_radio_args(cmc= cmc)
+                    self._get_save_radio_args(radio= radio)
         except Exception, e:
             traceback.print_exc()
             # Error systeme

@@ -1,6 +1,15 @@
 <style type='text/css'>
 	#calendar {
 		width: 800px;
+        }
+	.message_readed, 
+        .fc-agend a .message_readed .fc-event-time,
+        .message_readed a
+         {
+          background-color: red; /* background color */
+       
+         }
+
 </style>
 <script type='text/javascript'>
    $(document).ready(function(){
@@ -17,6 +26,7 @@
             {"title":"{{ item.title }}" ,
              "url" :"{{ item.url }}",
              "start":"{{ item.start }}",
+             "className":"message_readed",
              "current_message":"{{item.current_message}}"}
         i= i +1
     {% endfor %}
@@ -30,15 +40,20 @@
               }
          },*/
      	 eventRender: function (event , el){
+		var content_ =""
+		content_+="<form  action  =\"/update_message_status"+event.current_message.pk+"\" method =\"post\">"
+		content_+="<p>Message :"+event.current_message+"</p>"
+		//content_+="<p><input type =\"submit\"  value =\"LU\"/>(Clicker ici pour le marquer comme lu(ROUGE))</p>"
+		content_+="</form>"
 		el.qtip({
-		content:'<i>' +  event.current_message +'</i>',
+		content:content_,
 		position: {corner: {tooltip: 'bottomLeft', target: 'topRight'}},
                 style   : {
-                                                    width: 200,
+                                                    width:400,
                                                     padding: 5,
-                                                    background: '#66CCFF',
+                                                    background: '#FFF',
                                                     color: 'black',
-                                                    textAlign: 'center',
+                                                    textAlign: 'let',
                                                     border: {
                                                         width: 7,
                                                         radius: 5,
@@ -47,9 +62,10 @@
                                                     tip: 'bottomLeft',
                                                     name: 'dark' // Inherit the rest of the attributes from the preset dark style
  
-                }
-                });
+                }});
+              
 		}
+
 	}	
  );
 

@@ -67,23 +67,42 @@ def calendar_events (context):
     Cette methode parcours les classes et cmcs pour retouner le bon format
     """
     calendar_event =[]
+    # Get classes for the calendar UI
     if "classes" in context :
         classes  =context["classes"]
         for cls in classes :
             values ={"title" :"CLASS"}
-            values ["url"] ="/calendar"
+            values ["url"] =\
+		"/update_message_status/%s"%cls.pk
             values ["start"] = "%s"%cls.date
-            values ["current_message"] = "%s"%(cls.message if cls.message else "Pas de message")
+            values ["current_message"] =\
+		MESSAGE_FOR_UI%message_ui_from_class(cls)
             calendar_event.append (values)
-    if "cmcs" in context :
+    # Get cmc/CGC for the calendar UI
+    if "cmcs" in context:
         cmcs =context["cmcs"]
         for cmc in cmcs :
             values ={"title" :"CMC"}
-            values ["url"] ="/calendar"
+            values ["url"] =\
+		"/update_message_status/%s"%cmc.pk
             values ["start"] = "%s"%cmc.date 
-            values ["current_message"]="%s"%(cmc.message if cmc.message else "Pas de message")
+            values ["current_message"]=\
+		MESSAGE_FOR_UI%message_ui_from_cmc(cmc)
             calendar_event.append (values)
-        
+
+
+    # Get Radio Messages for the calendar UI
+    if "radios" in context:
+	radios = context["radios"]
+	for radio in radios:
+	    values = {"title": "RAD"}
+            values ["url"]=\
+		"/update_message_status/%s"%radio.pk
+	    values["start"] ="%s"%radio.date
+	    values["current_message"]=\
+		MESSAGE_FOR_UI%message_ui_from_radio(radio)
+	    calendar_event.append(values)
+
     if len (calendar_event):
         context ["data"]  = calendar_event 
     
@@ -95,7 +114,6 @@ def map (req , template = "rapidsuivi/gmap.html"):
         for suivi_village in villages :
              icon = "red"
              pk =""
-	     display_message ="Pas encore de sms pour le village"
 	     cur_msg  =suivi_village.current_message ()
 	     if cur_msg:
 	 	display_message = cur_msg.message
@@ -106,7 +124,7 @@ def map (req , template = "rapidsuivi/gmap.html"):
 		 "gmap_latitude" : suivi_village.village.location.latitude  ,
                  "gmap_longitude" : suivi_village.village.location.longitude,
                  "name"  :     suivi_village.village.name , 
-                 "current_message" :display_message,
+                 "current_message" :MESSAGE_FOR_UI%message_ui_from_village (suivi_village),
                  "pk":pk
                  }
 	     # Quel icon pour goolemap (rouge  ou vert 
@@ -116,7 +134,45 @@ def map (req , template = "rapidsuivi/gmap.html"):
         #return HttpResponse (gmap_data)
         context ["villages"]  =gmap_data
         return render_to_response (req , template , context)
-    
+
+
+def message_ui_from_classe(classe):
+	"""Return un dict of data to fill into the MESSAGE_FOR_UI text"""
+	dict = {}
+	dict["first_and_last_name"] =\
+		classe.relay.firt_name + classe.relay.last_name
+	dict["contact_phone"]=\
+		classe.relay.contact.phone
+	dict["type"]=\
+		classe.relay.get_title_id_display()
+	dict["message"] =classe.message 
+
+def message_ui_from_cmc(cmc):
+	"""Return a dict of data to fill into the MESSAGE_FOR_UI text"""
+	dict ={}
+	dict["first_and_last_name"]=\
+		cmc.relay.first_name + cmc.relay.last_name
+	dict["contact_phone"]=\
+		cmc.relay.contact.phone
+	dict["type"]=\
+		cmc.relay.get_title_id_dispaly()
+	dict["message"] = cmc.message
+
+def message_ui_from_village (current_village_message):
+	"""Return a dict of data to fill into the MESSAGE_FOR_UI text
+	In Fact this is the current message  from  village 
+	Either the latest message not  yet readed from village
+	Either the latest message received by the village 
+	Also the message can be CMC , CLASS , OR RADIO
+	"""
+	if isinstance (current_village_message , Cmc):
+		return message_ui_from_cmc(current_village_message)
+        if isinstance (current_village_message,Class):
+		return message_ui_from_class(current_village_message)
+	if isinstance(current_village_message ,Radio):
+		return message_ui_from_radio(current_village_message)
+        return None
+
 def message_read (req ,pk =None):
 	try:
 	   Cmc.objects.filter(pk =pk).update (is_read =True)
@@ -166,8 +222,9 @@ def to_message (context):
             message["village"] =cls.relay.village_suivi.village.name 
             messages.append (message)
     context ["messages"]
-    
-
+ 
+def update_message_status (req , message_pk):
+	return  HttpResponse ("OK")
      
             
                 

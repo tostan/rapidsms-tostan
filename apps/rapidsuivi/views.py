@@ -7,6 +7,23 @@ from apps.rapidsuivi.models import Relay as r
 from django.http import HttpResponse , HttpResponseRedirect
 
 
+"""
+**Note**
+The MESSAGE_FOR_UI will be displayed from calendar and  from map
+Le MESSAGE_FOR_UI est utilise pour etre affiche dans la amp et dans le calendrier
+"""
+
+
+MESSAGE_FOR_UI="""
+<ul>
+<li>Message envoye par :%(first_and_last_name)s</li>
+<li>Contact :%(phone)s</li>
+<li>Role :%(role)s</li>
+<li>Message:%(message)s</li>
+</ul>
+"""
+
+
 @login_required
 def calendar(req, template="rapidsuivi/calendar.html"):
     context ={}
@@ -42,7 +59,7 @@ def calendar(req, template="rapidsuivi/calendar.html"):
                             if cmc_or_class_or_radio =="2" :
                                 context["classes"]=\
 				Class.objects.filter(relay__in=all_relays)
-			    if cmc_or_class_or_radio ="3":
+			    if cmc_or_class_or_radio =="3":
 				context["radios"]=\
 				Radio.objects.filter(relay__in =all_relays) 
 			                   
@@ -70,10 +87,17 @@ def calendar(req, template="rapidsuivi/calendar.html"):
     return render_to_response (req ,template, context)
 	
 def calendar_form (context):
-     context ["cordination_options"] =dict (r.COORDINATION_TYPES)
-     context ["project_options"]     =dict(r.PROJECT_TYPES)
-     context ["village_options"]     =SuiviVillage.objects.values ("village__pk" , "village__name")
-     context ["actor_options"]       = dict ((("1" , "CMC" ) , ("2" , "Class")))
+     context ["cordination_options"] =\
+	dict (r.COORDINATION_TYPES)
+     context ["project_options"]     =\
+	dict(r.PROJECT_TYPES)
+     context ["village_options"]     =\
+	SuiviVillage.objects.values ("village__pk" , "village__name")
+     context ["actor_options"]       =\
+		dict ([
+		      ("1" , "CMC" ) , 
+		      ("2" , "CLASS") ,
+		      ("3" ,"RAD")])
      
 def calendar_events (context):
     """
@@ -159,10 +183,10 @@ def message_ui_from_classe(classe):
 	"""Return un dict of data to fill into the MESSAGE_FOR_UI text"""
 	dict = {}
 	dict["first_and_last_name"] =\
-		classe.relay.firt_name + classe.relay.last_name
-	dict["contact_phone"]=\
+		classe.relay.first_name + classe.relay.last_name
+	dict["phone"]=\
 		classe.relay.contact.phone
-	dict["type"]=\
+	dict["role"]=\
 		classe.relay.get_title_id_display()
 	dict["message"] =classe.message 
 
@@ -171,12 +195,24 @@ def message_ui_from_cmc(cmc):
 	dict ={}
 	dict["first_and_last_name"]=\
 		cmc.relay.first_name + cmc.relay.last_name
-	dict["contact_phone"]=\
+	dict["phone"]=\
 		cmc.relay.contact.phone
-	dict["type"]=\
+	dict["role"]=\
 		cmc.relay.get_title_id_dispaly()
 	dict["message"] = cmc.message
 
+def message_ui_from_radio(radio):
+	""" Return a dict of data  to fill  into MESSAGE_UI text """
+	dict ={}
+	dict["fisrt_and_last_name"]=\
+		radio.relay.first_name + radio.relay.last_name
+	dict["phone"]=\
+		radio.relay.contact.phone
+        dict["role"]=\
+		radio.relay.get_title_id_display()
+	dict["message"]=radio.message
+
+ 
 def message_ui_from_village (current_village_message):
 	"""Return a dict of data to fill into the MESSAGE_FOR_UI text
 	In Fact this is the current message  from  village 

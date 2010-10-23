@@ -54,17 +54,17 @@ $(function() {
                }
                 /* iterate each of the markers (ALL locations),
                 * and add a sprite to the map for each one */
-				{%  for village    in villages  %}
+			   {%  for village    in villages  %}
                          
-			    var what_icon ="{{ village.icon}}";
-	                    var point = new GLatLng("{{ village.gmap_latitude }}","{{ village.gmap_longitude }}");
-			            var marker = new LabeledMarker(point, 
+			   	 var what_icon ="{{ village.icon}}";
+	                   	 var point = new GLatLng("{{ village.gmap_latitude }}","{{ village.gmap_longitude }}");
+			         var marker = new LabeledMarker(point, 
 						    { "labelText": "{{ village.name }}",
 							  "labelClass": "caption", 
 						   	  "icon": sprite2(what_icon)	
 						    });
-				        marker.bindInfoWindow("<div style ='width:200px;'><ul><li><i>{{ village.current_message }}</li><li><a href='/message_read/{{ village.pk }}'>message lu</a></li></ul></div>");
-			            map.addOverlay(marker);
+				  marker.bindInfoWindow("<div style ='width:400px;'>{{ village.message|safe }}</div>");
+			           map.addOverlay(marker);
 			    {% endfor %}
         }
 });

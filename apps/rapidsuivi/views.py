@@ -135,7 +135,8 @@ def calendar_events (context):
             values ["url"] =\
 		"/update_message_status/%s"%cls.pk
             values ["start"] = "%s"%cls.date
-            values ["current_message"] =\
+            values ['is_read']=cls.is_read
+	    values ["current_message"] =\
 		MESSAGE_FOR_UI%message_ui_from_class(cls)
             calendar_event.append (values)
     # Get cmc/CGC for the calendar UI
@@ -145,7 +146,8 @@ def calendar_events (context):
             values ={"title" :"CMC"}
             values ["url"] =\
 		"/update_message_status/%s"%cmc.pk
-            values ["start"] = "%s"%cmc.date 
+            values ["start"] = "%s"%cmc.date
+            values ["is_read"] =cmc.is_read 
             values ["current_message"]=\
 		MESSAGE_FOR_UI%message_ui_from_cmc(cmc)
             calendar_event.append (values)
@@ -159,6 +161,7 @@ def calendar_events (context):
             values ["url"]=\
 		"/update_message_status/%s"%radio.pk
 	    values["start"] ="%s"%radio.date
+	    values["is_read"]=radio.is_read
 	    values["current_message"]=\
 		MESSAGE_FOR_UI%message_ui_from_radio(radio)
 	    calendar_event.append(values)
@@ -265,49 +268,31 @@ def message_read (req ,pk =None):
 	       print "CE N'EST PAS UNE CLASS"
         return HttpResponseRedirect ("/map") 
     
-def messages (req , msg_id = None):
-    # If we have a urrent message id 
-    if msg_id :
-        # Are you a  class message 
-        try:
-            context ["current_cmc "] =\
-	    Cmc.objects.get(pk = msg_id)    
-        except :
-            pass
-        # Are you a cmc  message
-        try:
-            context ["current_class"]=\
-	   Class.objects.get (pk =msg_id)
-        except :
-            pass
-        
-    context ["cmcs"]  =Cmc.objects.all ().order("is_read" , "date")
-    context ["classes"]=Class.objects.all ().order("is_read ", "date")
-    to_message (context)
-    return render_to_response (req, template , context)
-    
-             
-def to_message (context):
-    messages =[]
-    if "cmcs" in context and len (context["cmcs"]) :
-            message = { "type" : "CMC"}
-            message["content"] = cmc.message_resp
-            message["relay"]  = cmc.relay.fisrt_name + cmc.relay.last_name 
-            message["date"]   = cmc.date 
-            message["village"]=cls.relay.village_suivi.village.name
-            messages.append (message)
-            
-    if "classes" in context and len (context["classes"]) :
-            message = { "type" : "CLASS"}
-            message["content"] = cls.message_resp
-            message["relay"]  = cls.relay.first_name + cls.relay.last_name 
-            message["date"]   = cls.date 
-            message["village"] =cls.relay.village_suivi.village.name 
-            messages.append (message)
-    context ["messages"]
- 
 def update_message_status (req , message_pk):
-	return  HttpResponse ("OK")
+	"""Update message from calendar UI"""
+	# Are you a CMC ?
+	errors =[]
+	try:
+		Class.objects.filter(pk=message_pk).update (is_read=True)
+	except Exception,e:
+		errors.append (str (e))
+		# Are you a Class
+		pass
+	try:
+		Cmc.objects.filter(pk =message_pk).update(is_read=True)
+	except Exception ,e:
+		errors.append(str(e))
+		pass
+	try:
+	        Radio.objects.filter(pk =message_pk).update(is_read=True)
+	except Exception ,e:
+		# I dont understant It is impossible
+		errors.append (str(e))
+		pass
+	# Goto To calendar index
+	#return  HttpResponse ("*".join(errors))
+	return HttpResponseRedirect ("/calendar")
+		
      
             
                 

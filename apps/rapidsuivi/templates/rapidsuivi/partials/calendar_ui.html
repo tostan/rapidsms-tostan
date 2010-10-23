@@ -9,6 +9,20 @@
           background-color: red; /* background color */
        
          }
+	$.fn.qtip.styles.tipstyle = {
+    width: 400,
+    padding: 0,
+    background: '#FFFFFF',
+    color: 'black',
+    textAlign: 'center',
+    border: {
+        width: 3,
+        radius: 4
+    },
+    tip: 'bottomMiddle',
+    name: 'dark'
+}
+
 
 </style>
 <script type='text/javascript'>
@@ -24,29 +38,33 @@
     {% for item  in data %}
         event_data[i] = 
             {"title":"{{ item.title }}" ,
-             "url" :"{{ item.url }}",
+             "status_url" :"{{ item.url }}",
              "start":"{{ item.start }}",
-             "className":"message_readed",
+            // "className":"message_readed",
              "current_message":"{{item.current_message|safe}}"}
-        i= i +1
+            //Si le message est deja lu ,il doit etre rouge sinon bleue
+	    {% if item.is_read %}
+		event_data[i]['className']="message_readed"
+	    {% endif %}
+	  i= i +1
     {% endfor %}
     $('#calendar').fullCalendar({
     	/*editable: true,*/
    	 events:event_data,
-    	/* eventClick: function(event){
-              if (event.url) {
-                  window.open(event.url);
-                  return false;
-              }
-         },*/
      	 eventRender: function (event , el){
 		var content_ =""
-		content_+="<form  action  =\"/update_message_status"+event.current_message.pk+"\" method =\"post\">"
-		content_+="<p>Message :"+event.current_message+"</p>"
-		//content_+="<p><input type =\"submit\"  value =\"LU\"/>(Clicker ici pour le marquer comme lu(ROUGE))</p>"
-		content_+="</form>"
+		content_+= "<form action ='" +event.status_url+ "' method ='post'>"
+		content_+= event.current_message
+		content_+="<br/><input type ='submit' value ='MARQUER LU'/>"
+		content_+="</form>" 
 		el.qtip({
 		content:content_,
+		show: {
+		when: {event: 'click'}
+		},
+                hide: {
+		when :{event:'click'}
+		},
 		position: {corner: {tooltip: 'bottomLeft', target: 'topRight'}},
                 style   : {
                                                     width:400,
@@ -66,7 +84,7 @@
               
 		}
 
-	}	
+	}
  );
 
 

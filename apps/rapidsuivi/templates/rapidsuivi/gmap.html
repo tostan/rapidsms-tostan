@@ -63,7 +63,11 @@ $(function() {
 							  "labelClass": "caption", 
 						   	  "icon": sprite2(what_icon)	
 						    });
-				  marker.bindInfoWindow("<div style ='width:400px;'>{{ village.message|safe }}</div>");
+				   var content = "<form action ='{{village.url}}/map' method ='post'>"
+				   content +="{{village.message|safe}}"
+				   content +="<br/><input type ='submit'  value ='MARQUER LU' />"
+				   content +="</form>"
+				   marker.bindInfoWindow("<div style ='width:400px;'>"+content+"</div>");
 			           map.addOverlay(marker);
 			    {% endfor %}
         }

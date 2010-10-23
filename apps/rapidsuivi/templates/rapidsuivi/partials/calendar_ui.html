@@ -9,21 +9,6 @@
           background-color: red; /* background color */
        
          }
-	$.fn.qtip.styles.tipstyle = {
-    width: 400,
-    padding: 0,
-    background: '#FFFFFF',
-    color: 'black',
-    textAlign: 'center',
-    border: {
-        width: 3,
-        radius: 4
-    },
-    tip: 'bottomMiddle',
-    name: 'dark'
-}
-
-
 </style>
 <script type='text/javascript'>
    $(document).ready(function(){
@@ -53,7 +38,7 @@
    	 events:event_data,
      	 eventRender: function (event , el){
 		var content_ =""
-		content_+= "<form action ='" +event.status_url+ "' method ='post'>"
+		content_+= "<form action ='" +event.status_url+ "/calendar' method ='post'>"
 		content_+= event.current_message
 		content_+="<br/><input type ='submit' value ='MARQUER LU'/>"
 		content_+="</form>" 

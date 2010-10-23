@@ -184,6 +184,7 @@ def map (req , template = "rapidsuivi/gmap.html"):
 		if not cur_msg.is_read:
 			icon = 'green'
 		dict["message"] =MESSAGE_FOR_UI%message_ui_from_village(cur_msg)
+		dict["url"]     ="/update_message_status/%s"%cur_msg.pk
 	     else :
 		dict["message"]=EMPTY_VILLAGE_MESSAGE
 	     dict.update ({"gmap_latitude": suivi_village.village.location.latitude})
@@ -268,8 +269,12 @@ def message_read (req ,pk =None):
 	       print "CE N'EST PAS UNE CLASS"
         return HttpResponseRedirect ("/map") 
     
-def update_message_status (req , message_pk):
-	"""Update message from calendar UI"""
+def update_message_status (req , message_pk =None ,from_template =None):
+	"""Update message from calendar UI 
+	Note ***
+	From _template_ param tell us where the req come from 
+	Either from calendar ui ,or from map ui .We need to know for redirection
+	"""
 	# Are you a CMC ?
 	errors =[]
 	try:
@@ -291,7 +296,9 @@ def update_message_status (req , message_pk):
 		pass
 	# Goto To calendar index
 	#return  HttpResponse ("*".join(errors))
-	return HttpResponseRedirect ("/calendar")
+	return HttpResponseRedirect (
+	 "/map" if  from_template =="map" 
+	 else "/calendar")
 		
      
             

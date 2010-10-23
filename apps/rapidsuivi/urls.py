@@ -8,7 +8,6 @@ import rapidsuivi.views as views
 urlpatterns = patterns('',
     url(r'^calendar', views.calendar , name ="calendar"),
     url(r'^map', views.map , name ="map"),
-    url(r'^update_message_status/(?P<message_pk>\d+)$' ,views.update_message_status ,name ="update_message"),
-    url(r'^message_read/(?P<pk>\d+)?$', views.message_read ,name="message_read")
+    url(r'^update_message_status/(?P<message_pk>\d+)/(?P<from_template>\w+)$' ,views.update_message_status ,name ="update_message"),
     )
 

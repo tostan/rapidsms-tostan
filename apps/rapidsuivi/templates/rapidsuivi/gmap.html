@@ -63,17 +63,14 @@ $(function() {
 							  "labelClass": "caption", 
 						   	  "icon": sprite2(what_icon)	
 						    });
-				   var content = "<form action ='{{village.url}}/map' method ='post'>"
-				   content +="{{village.message|safe}}"
-				   content +="<br/><input type ='submit'  value ='MARQUER LU' />"
-				   content +="</form>"
-				   marker.bindInfoWindow("<div style ='width:400px;'>"+content+"</div>");
+		
+				   marker.bindInfoWindow("<div style ='width:400px;'>{{ village.message|safe }}</div>");
 			           map.addOverlay(marker);
 			    {% endfor %}
         }
 });
 </script>
-<a href="{% url map %}" >{% trans "Refraichir la map" %}</a>
+<h2><a href="{% url map %}" >{% trans "Refraichir la map" %}</a></h2>
 <div id="map" style ='width:800px; height:500px;'>
     &nbsp;
 </div>

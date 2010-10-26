@@ -23,7 +23,6 @@
     {% for item  in data %}
         event_data[i] = 
             {"title":"{{ item.title }}" ,
-             "status_url" :"{{ item.url }}",
              "start":"{{ item.start }}",
             // "className":"message_readed",
              "current_message":"{{item.current_message|safe}}"}
@@ -38,10 +37,7 @@
    	 events:event_data,
      	 eventRender: function (event , el){
 		var content_ =""
-		content_+= "<form action ='" +event.status_url+ "/calendar' method ='post'>"
 		content_+= event.current_message
-		content_+="<br/><input type ='submit' value ='MARQUER LU'/>"
-		content_+="</form>" 
 		el.qtip({
 		content:content_,
 		show: {

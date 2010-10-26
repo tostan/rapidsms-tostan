@@ -5,7 +5,7 @@ from apps.rapidsuivi.models import *
 from apps.smsforum.models import *
 from apps.rapidsuivi.models import Relay as r
 from django.http import HttpResponse , HttpResponseRedirect
-
+from .forms import *
 
 """
 **Note**
@@ -24,8 +24,13 @@ MESSAGE_FOR_UI="""<ul>\
 <li>Contact :%(phone)s</li>\
 <li>Role :%(role)s</li>\
 <li>Date :%(date)s</li>\
+<li>--</li>\
 <li>Message:%(message)s</li>\
 <li>\
+<li>--</li>\
+<li><a href='%(update_status_url)s'>[MARQUER LE MESSAGE COMME LU]</a></li>\
+<li><a href='%(update_message_url)s'>[MODIFIER LE MESSAGE]</a></li>\
+<li>--</li>\
 <a href ='/rapidsuivi/export_village_message/%(village_pk)s'>\
 Exporter sous excel les messages de %(village_name)s\
 </a>\
@@ -132,8 +137,10 @@ def calendar_events (context):
         classes  =context["classes"]
         for cls in classes :
             values ={"title" :"CLASS"}
-            values ["url"] =\
-		"/update_message_status/%s"%cls.pk
+            #values ["url"] =\
+	    #	"/update_message_status/%s"%cls.pk
+            #values ["update_message"] =\
+	    #	"/update_message/%s/classe"%cls.pk
             values ["start"] = "%s"%cls.date
             values ['is_read']=cls.is_read
 	    values ["current_message"] =\
@@ -144,8 +151,10 @@ def calendar_events (context):
         cmcs =context["cmcs"]
         for cmc in cmcs :
             values ={"title" :"CMC"}
-            values ["url"] =\
-		"/update_message_status/%s"%cmc.pk
+            #values ["url"] =\
+	    #	"/update_message_status/%s"%cmc.pk
+	    #values ["update_message"]=\
+	    #	"/update_message/%s/cmc"%cmc.pk
             values ["start"] = "%s"%cmc.date
             values ["is_read"] =cmc.is_read 
             values ["current_message"]=\
@@ -158,8 +167,10 @@ def calendar_events (context):
 	radios = context["radios"]
 	for radio in radios:
 	    values = {"title": "RAD"}
-            values ["url"]=\
-		"/update_message_status/%s"%radio.pk
+            #values ["url"]=\
+	    #	"/update_message_status/%s"%radio.pk
+            #values["update_message"]=\
+	    #	"/update_message/%s/radio"%radio.pk
 	    values["start"] ="%s"%radio.date
 	    values["is_read"]=radio.is_read
 	    values["current_message"]=\
@@ -179,12 +190,24 @@ def map (req , template = "rapidsuivi/gmap.html"):
 	     icon = "red"
 	     # Le dernier message recu par le village ou bien 
 	     # le dernier message qui n'est pas encore ete lu
-	     cur_msg  =suivi_village.current_message ()
+	     cur_msg  =suivi_village.current_message_from ()
 	     if cur_msg:
 		if not cur_msg.is_read:
 			icon = 'green'
 		dict["message"] =MESSAGE_FOR_UI%message_ui_from_village(cur_msg)
-		dict["url"]     ="/update_message_status/%s"%cur_msg.pk
+		#dict["url"]     ="/update_message_status/%s"%cur_msg.pk
+		# Get the url to  update message 
+		# if message is instance of CMC  ==> url =/update_message/pk/cmc
+		# if message is inatance if Classe  ==> url = /update_message/pk/classe
+		#if isintance (cur_msg , Cmc):
+		#	dict["update_message"] =\
+		#	 "/update_message/%s/cmc"%cur_msg.pk
+		#if isinstance(cur_message , Class):
+		#	dict["update_message"]=\
+		#	 "/update_message/%s/classe"%cur_msg.pk
+		#if isinstance (cur_message ,Radio):
+		#	dict["update_message"]=\
+		#	 "/update_message/%s/radio"%cur_msg.pk
 	     else :
 		dict["message"]=EMPTY_VILLAGE_MESSAGE
 	     dict.update ({"gmap_latitude": suivi_village.village.location.latitude})
@@ -211,6 +234,8 @@ def message_ui_from_class(classe):
         dict["date"] = classe.date.strftime ("%d-%m-%Y %H:%M:%S")
 	dict["village_pk"] =classe.relay.village_suivi.pk
 	dict["village_name"]=classe.relay.village_suivi.village.name
+	dict["update_status_url"] = "update_message_status/%s"%classe.pk
+	dict['update_message_url']= "update_message/%s/classe"%classe.pk
 	return dict
 
 def message_ui_from_cmc(cmc):
@@ -226,12 +251,15 @@ def message_ui_from_cmc(cmc):
         dict["date"] = cmc.date.strftime ("%d-%m-%Y %H:%M:%S")
 	dict["village_pk"] =cmc.relay.village_suivi.pk
 	dict["village_name"]=cmc.relay.village_suivi.village.name
+	dict["update_status_url"] = "update_message_status/%s"%cmc.pk
+	dict['update_message_url']= "update_message/%s/cmc"%cmc.pk
+	
 	return dict
 
 def message_ui_from_radio(radio):
 	""" Return a dict of data  to fill  into MESSAGE_UI text """
 	dict ={}
-	dict["fisrt_and_last_name"]=\
+	dict["first_and_last_name"]=\
 		radio.relay.first_name + radio.relay.last_name
 	dict["phone"]=\
 		radio.relay.contact.phone_number()
@@ -240,7 +268,9 @@ def message_ui_from_radio(radio):
   	dict["message"]=radio.message
         dict["date"] = radio.date.strftime ("%d-%m-%Y %H:%M:%S")
 	dict["village_pk"] =radio.relay.village_suivi.pk
-	dict["village_name"]=radio.relay.village_suivi.village.name
+	dict["village_name"]=radio.relay.village_suivi.village.name	
+	dict["update_status_url"] = "update_message_status/%s"%radio.pk
+	dict['update_message_url']= "update_message/%s/radio"%radio.pk
 	return dict 
         
 def message_ui_from_village (current_village_message):
@@ -257,19 +287,9 @@ def message_ui_from_village (current_village_message):
 	if isinstance(current_village_message ,Radio):
 		return message_ui_from_radio(current_village_message)
         return None
-
-def message_read (req ,pk =None):
-	try:
-	   Cmc.objects.filter(pk =pk).update (is_read =True)
-	except Exception, e:
-		print "CE N'EST PAS UN CMC"
-	try:
-	   Class.objects.filter (pk=pk).update(is_read=True)
-	except Exception , e:
-	       print "CE N'EST PAS UNE CLASS"
-        return HttpResponseRedirect ("/map") 
+ 
     
-def update_message_status (req , message_pk =None ,from_template =None):
+def update_message_status (req , message_pk =None ):
 	"""Update message from calendar UI 
 	Note ***
 	From _template_ param tell us where the req come from 
@@ -297,13 +317,70 @@ def update_message_status (req , message_pk =None ,from_template =None):
 	# Goto To calendar index
 	#return  HttpResponse ("*".join(errors))
 	return HttpResponseRedirect (
-	 "/map" if  from_template =="map" 
-	 else "/calendar")
+	 "/calendar")
 		
      
-            
-                
+def update_message (req , message_pk ,message_instance) :
+	"""
+        message_instance allow us to use the Best Model Form
+	if message_instance =cmc ==> use CmcForm
+ 	if message_instance =radio ==>  use RadioForm
+	"""      
+        form  =None
+	template  ="rapidsuivi/update_message.html"
+	errors = []
+	context ={}
+        if req.method =="POST":
+		#Si  le message est un CMC
+		if message_instance =="cmc":
+		    ins = Cmc.objects.get (pk =int(message_pk))
+		    form  = CmcForm (
+			data =req.POST  , instance = ins
+			)
+		    if form.is_valid():
+			form.save()
+		    else : errors = form.errors
+		# If the given message is a  class
+		if message_instance =="classe":
+		     ins =Class.objects.get (pk =int (message_pk))
+		     form = ClassForm(data = req.POST , instance = ins)
+		     if form.is_valid():
+			form.save()
+		     else: errors = form.errors
+		#If the given message is radio type message
+		if message_instance =="radio":
+		     ins = Radio.objects.get (pk =int (message_pk))
+		     form = RadioForm (data = req.POST , instance = ins)
+		     if  form.is_valid ():
+		     	form.save()
+		     else : errors = form.errors
+		
+		if not len(errors):
+	        	return render_to_response(req ,
+				"rapidsuivi/success.html" ,
+				{"messages": ["Requete a ete execute avec succees"]})
+		else :
+			context ["errors"] =errors
+        form =None		 
+	if  message_instance =="cmc":
+		 ins = Cmc.objects.get (pk =int(message_pk))
+		 form = CmcForm (
+		 instance = ins)
+	if message_instance =="classe":	
+		ins  = Class.objects.get (pk =int (message_pk))
+		form =ClassForm(
+		instance = ins)
+	if message_instance =="radio":
+			
+		ins = Radio.objects.get(pk =int(message_pk))
+		form =RadioForm(
+		instance =ins)
+        context["form"] =form
+	return render_to_response (req ,
+		 template ,
+		 context)
+	
+
         
-         
             
             

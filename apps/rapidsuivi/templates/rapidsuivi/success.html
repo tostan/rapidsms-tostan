@@ -1,0 +1,23 @@
+{% extends  "layout.html" %}
+{% load i18n %}
+{% block content %}
+<div class="module">
+<h2>
+ {% for  message in messages %}
+   {{ message }} &nbsp;
+ {% endfor %}
+
+</h2>
+<ul>
+ <li><a href ='/map'>{% trans "Retourner sur la map"  %}</a></li>
+ <li><a href ="/calendar">{% trans "Retourner sur le Calendier" %}</a></li>
+</ul>
+</div>
+{% endblock %}
+~
+~
+~
+~
+~
+~
+

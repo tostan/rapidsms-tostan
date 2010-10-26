@@ -267,6 +267,45 @@ class SuiviVillage(models.Model):
     latitude     =models.CharField(max_length=20 , blank=True, null=True)
     longitude    =models.CharField(max_length=20,  blank=True, null=True)
     
+    def current_message_from(self):
+        """
+        I am trying to get the message send from village with an statuts _is_read=True
+        Basicaly Iam going to check if there a a CMC to read , if not
+        I 'am going toi check if there are a CLASS message to read  , if not
+        I'am going to check if there a a RADIO message to read ,
+        If not i'am going the return the last message received by the village
+        """
+        try:
+                return Cmc.objects.filter(relay__village_suivi=self , is_read=False)\
+                        .order_by("-date")[0]
+        except Exception ,e:
+                pass
+        try:
+                return Class.objects.filter (realay__village_suivi =self , is_read=False)\
+                        .order_by("-date")[0]
+        except Exception ,e:
+                pass
+        try:
+                return Radio.objects.filter(relay__village_suivi =self , is_read=False)\
+			.order_by("-date")[0]
+        except Exception , e:
+                pass
+
+	# Ok I dont have a choice return the last sms received  by village
+	try:
+		last_cmc =Cmc.objects.filter (relay__village_suivi =self)\
+			.order_by ("-date")[0]
+		last_cls =Class.objects.filter (relay__village_suivi= self)\
+			.order_by('-date')[0]
+		last_radio =Radio.objects.filter(relay__village_suivi =self)\
+			.oder_by ("-date")[0]
+		sorted([last_cmc , last_cls ,last_radio] ,key =lambda x:x.date)[-1]
+	except Exception , e:
+		return None
+
+
+
+
     def current_message (self):
 	"""Le plus rescent message non lu ou le plus rescent message lu """
 	cmc_to_read=Cmc.objects.filter (relay__village_suivi =self, is_read=False)

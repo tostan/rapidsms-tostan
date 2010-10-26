@@ -47,7 +47,9 @@ class Relay(models.Model):
               ("D" , "Delate"),
               ("C" , "Create"))
     contact               = models.ForeignKey (Contact ,related_name = "relay")
-    village_suivi         = models.ForeignKey("SuiviVillage" , related_name ="relay")
+    # The village is not forced to the relay  , 
+    # Exemple radio relay does not have village 
+    village_suivi         = models.ForeignKey("SuiviVillage" ,null =True , blank =True , related_name ="relay")
     title_id              = models.CharField(max_length=2 ,choices =  TITLE_TYPES)
     cordination_id       = models.CharField(max_length=2  ,choices =  COORDINATION_TYPES)
     project_id            = models.CharField(max_length=2 ,choices =  PROJECT_TYPES)

@@ -150,7 +150,16 @@ class App (rapidsms.app.App):
                     "last_name":relay.last_name,
                     "title":  relay.get_title_id_display() ,
                     "village":relay.village_suivi.village.name
+    }
+    def _get_register_radio_relay_args (self,**kwargs):
+        """ Get argument dict to fill to the register relay  success response """
+        relay   = kwargs.get("relay" , None)
+        return {
+                    "first_name":  relay.first_name,
+                    "last_name":relay.last_name,
+                    "title":  relay.get_title_id_display() ,
         }
+
     def _get_already_register_args (self,**kwargs):
         """Get arguemnt dict to fill to the already registered succes response """
         relay  = kwargs.get("relay" , None)
@@ -247,7 +256,7 @@ class App (rapidsms.app.App):
             args [5]: first_nameargs [6] :last_name
             """
             try:
-                rel =self.__register_relay(message ,*args , force =False)
+                rel =self.__register_relay(message ,*args)
                 print  "** AFTER ** register"
                 # Get the response to send to the relay 
                 text = _st (rel , "register-relay")%\
@@ -264,7 +273,7 @@ class App (rapidsms.app.App):
 		check_args =[args [1] ,args [2] ,args [3]]
 		if  self.__check_radio (*check_args):
 			rel =self.__register_relay (message , *args , radio=True)
-			text =_st(rel ,"register-radio")%\
+			text =_st(rel ,"register-radio-relay")%\
 			      self._get_register_radio_relay_args(relay=rel)
 			message.respond(text)
 			return True
@@ -295,9 +304,9 @@ class App (rapidsms.app.App):
             """
             params =["cordination_id" ,"project_id","latitude" ,"longitude","title_id", "first_name" ,"last_name"]
             dict_ = dict (zip (params ,args)) 
-            if "force"  in kwargs :
-                    dict_["force"] =kwargs.pop ("force")
-            
+	    #It the radio is set , I  add True to bypass checking village existe
+            if "radio"  in kwargs and kwargs ["radio"]:
+                    dict_["radio"] =bool(kwargs["radio"])
             dict_["message"] = message    
             dict_["contact"] = message.sender
             return  relay_from_message (**dict_)

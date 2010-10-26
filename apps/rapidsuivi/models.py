@@ -370,7 +370,7 @@ def relay_from_message (**kwargs):
         pass
     try:
         
-        kwargs.pop ("force")
+        kwargs.pop ("radio")
     except KeyError,err:
         pass
     try:

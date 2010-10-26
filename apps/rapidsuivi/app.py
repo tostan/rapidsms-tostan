@@ -247,7 +247,7 @@ class App (rapidsms.app.App):
         }
     
           
-    @kw("123 (\d+) (\d+) (\d+\.?\d+?) (\d+\.?\d+?) (\d+) (\S+) (\S+)$")
+    @kw("123 (\d+) (\d+) (\d+(?:\.)?(?:\d+)?) (\d+(?:\.)?(?:\d+)?) (\d+) (\S+) (\S+)$")
     def register (self ,message, *args, **kwargs):
             """
             Identification d'un relay.La latitude et la longitude doit correspondre a un village 

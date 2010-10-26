@@ -273,7 +273,7 @@ class App (rapidsms.app.App):
 		check_args =[args [1] ,args [2] ,args [3]]
 		if  self.__check_radio (*check_args):
 			rel =self.__register_relay (message , *args , radio=True)
-			text =_st(rel ,"register-radio-relay")%\
+			text =_st(rel ,"register-relay-radio")%\
 			      self._get_register_radio_relay_args(relay=rel)
 			message.respond(text)
 			return True

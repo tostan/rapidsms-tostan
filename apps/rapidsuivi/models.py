@@ -171,7 +171,7 @@ class Radio(NodeSet):
 
 
 
-	 LOCATION_TYPES=(("1" , "Live"),
+	LOCATION_TYPES=(("1" , "Live"),
                         ("2" , "En differe"))
         
         SHOW_TYPES =(("1" ,"Avec invite"),

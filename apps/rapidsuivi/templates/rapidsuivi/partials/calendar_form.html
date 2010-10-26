@@ -1,9 +1,6 @@
 {% load i18n %}
-<style>
-  form_label {width:50px; }
-
-</style>
 <div class="module">
+	<h3>{% trans  "Filtre sur le Calendrier" %}</h3>
 	<table>
 	        <tr>
 			
@@ -75,8 +72,8 @@
 
 </table
 </div>
-<div class ='module'>
-		
+<h3>{% trans "Calendrier des messages" %}</h3>
+<div class ='module'>	
 {% include "rapidsuivi/partials/calendar_ui.html" %}
 							
 </div>

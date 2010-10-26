@@ -316,8 +316,8 @@ def update_message_status (req , message_pk =None ):
 		pass
 	# Goto To calendar index
 	#return  HttpResponse ("*".join(errors))
-	return HttpResponseRedirect (
-	 "/calendar")
+	return render_to_response(req , "rapidsuivi/success.html" ,
+	{"messages":["Votre requete a ete execute avec success"]})
 		
      
 def update_message (req , message_pk ,message_instance) :

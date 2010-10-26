@@ -260,6 +260,15 @@ class App (rapidsms.app.App):
                 pass
                 
             except VillageNotExistError , e:
+                #Check the project args  , village latitude and village longitude
+		check_args =[args [1] ,args [2] ,args [3]]
+		if  self.__check_radio (*check_args):
+			rel =self.__register_relay (message , *args , radio=True)
+			text =_st(rel ,"register-radio")%\
+			      self._get_register_radio_relay_args(relay=rel)
+			message.respond(text)
+			return True
+		# Else this is not a radio , please raise village not exist 
                 traceback.print_exc()
                 message.respond(_t("fr","no-village-found"))
                 return True
@@ -267,7 +276,15 @@ class App (rapidsms.app.App):
                 traceback.print_exc()
                 # Raise so handler will  log message and email will be sent to djokko initiative
 		raise 
-                
+    def __check_radio(self,*args):
+	    """ If the village does not exist we should check if the user 
+	    is trying to regsiter as a Radio Host .There are no village 
+            for the radio host .So  if the project_id =0 an latitude =0
+	    and logittude =0 , we should register the user"""
+            if len ([ arg for arg in args if int(arg)!=0])>0:
+		return  False
+	    #It exist an arg wish is different 0 , this  is not a radio
+	    return True
                 
     def __register_relay (self,message , *args , **kwargs):
             """

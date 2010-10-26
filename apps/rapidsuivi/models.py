@@ -388,7 +388,7 @@ def relay_from_message (**kwargs):
 
 def vil_from_la_lo(latitude , longitude):
     print "**VILLAGES **"
-    print SuiviVillage.objects.all ()
+    #print SuiviVillage.objects.all ()
     try:
         # Nous recherons d'abord les coordonnees dans  location , 
         # Nous stockons les longitudes et latitudes  pour goole map

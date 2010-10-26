@@ -349,8 +349,8 @@ def relay_from_message (**kwargs):
     # because  radio has no village 
     if "radio" not in kwargs or not kwargs["radio"]:
     	vil= vil_from_la_lo(kwargs.get('latitude') ,kwargs.get('longitude'))
-    # Add village relay
-    kwargs ["village_suivi"] =vil
+        # Add village relay
+        kwargs ["village_suivi"] =vil
     rel = exists(Relay ,contact =kwargs.get ("message").sender , status = "C")
     # Si le relay existe , qu'est ce que nous devons faire 
     # mettre son etat  a delete ou bien  envoyer une erreur ,je ne sais a tostan de definir

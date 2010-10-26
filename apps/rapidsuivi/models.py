@@ -21,7 +21,9 @@ class Relay(models.Model):
                         ("7", "Matam"))
     
     # Le projet du relay
-    PROJECT_TYPES=( ("1", "UNICEF"), 
+    PROJECT_TYPES=( 
+		    ("0" ,"Radio"),
+		    ("1", "UNICEF"), 
                     ("2", "Nike Foundation"),
                     ("3" , "Rapidan"),
                     ("4" , "Blaustein"),
@@ -341,7 +343,10 @@ def relay_from_message (**kwargs):
     Si force ==False , si le relay existe deja alors on doir envoyer l'execption 
     que le relay exite deja
     """
-    vil= vil_from_la_lo(kwargs.get('latitude') ,kwargs.get('longitude'))
+    # If you give me a radio =True args  I will not consider the village
+    # because  radio has no village 
+    if "radio" not in kwargs or not kwargs["radio"]:
+    	vil= vil_from_la_lo(kwargs.get('latitude') ,kwargs.get('longitude'))
     # Add village relay
     kwargs ["village_suivi"] =vil
     rel = exists(Relay ,contact =kwargs.get ("message").sender , status = "C")

@@ -6,7 +6,9 @@ from apps.smsforum.models import *
 from apps.rapidsuivi.models import Relay as r
 from django.http import HttpResponse , HttpResponseRedirect
 from .forms import *
-
+import codecs
+import csv
+import cStringIO
 """
 **Note**
 The MESSAGE_FOR_UI will be displayed from calendar and  from map
@@ -380,6 +382,64 @@ def update_message (req , message_pk ,message_instance) :
 		 template ,
 		 context)
 	
+def export_message (req,village_pk):
+	"""Given a village I am going  to export all CMC , RADIO , AND CLASS
+	activity sent  from  the given village """
+	village =SuiviVillage.objects.get (pk = int (village_pk))
+        data =  [ o for o in Cmc.objects.filter (relay__village_suivi = village).all()]+\
+		[ o for o in Class.objects.filter (relay__village_suivi =village).all()]+\
+		[ o for o in Radio.objects.filter(relay__village_suivi =village).all()]
+
+	if not len(data):
+		response  = HttpResponse (mimetype ="application/vnd.ms-excel")
+		response ["Content-Disposition"]="attachment; filename =empty.xls"
+		return response
+	response  = HttpResponse (mimetype ="text/csv")
+	response ["Content-Disposition"]="attachment; filename =%s.xls"\
+		%village.village.name.replace(" " ,"_")
+	writer  = UnicodeWriter(response)
+	# I dont think if the is the best place to put this
+	# Rowena should check
+	fields = ["message", "relay" ,"date" , 'type_id']			
+        writer.writerow (fields)
+	for obj  in  data :
+		row =[]
+		for field  in fields :
+		        if field =="relay":
+				val = obj.relay.first_name + obj.relay.last_name
+			elif field =="type_id":
+			        if isinstance(obj,Cmc):
+				 	val = "CMC"
+				elif isinstance(obj, Class):
+					val ="CLASS"
+				else : val  = "RADIO"
+			# Certainly e message attribute
+			else :
+				val  = getattr (obj ,field)
+			row.append(val)
+		writer.writerow(row)
+        return response
+class UnicodeWriter(object):
+	""" A unicode Writer helper that allow us to write
+	any given encoding  , default is utf-8
+	"""
+	def __init__ (self,stream , dialect ="excel-tab" , encoding= "Utf-8",**kw):
+		self.queue = cStringIO.StringIO()
+		self.writer = csv.writer (self.queue ,dialect =dialect)
+		self.encoder  = codecs.getincrementalencoder (encoding)()
+		self.stream  =stream
+
+	def writerow(self, row):
+		self.writer.writerow([unicode (s).encode('utf-8') for s in row])
+		# Get data from queue 
+		data  = self.queue.getvalue ()
+		# Decode to unicode 
+		data  = data.decode ("Utf-8")
+		# Reencode  from given encoding 
+		self.encoder.encode (data)
+		# write into  stram
+		self.stream.write (data)
+		self.queue.truncate (0)
 
         
             

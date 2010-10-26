@@ -37,7 +37,7 @@ class Relay(models.Model):
                     ("16" , "Wallace Global Fund"))
                 
     # Type du Relay               )
-    TITLE_TYPES =(("1", "Facilitator"),
+    TITLE_TYPES =(("1", "Facilitateur"),
                    ("2", "CMC"),
                    ("3", "Radio Host")
                  )
@@ -93,27 +93,28 @@ class Cmc(NodeSet):
         les operations de transferts banquaires,  les mobilizations 
         les radios  communautaires.
         """
-        CMC_TYPES = (("1" ,"Meetings"), 
-                    ("2" ,"Account Operation"),
-                    ("3" ,"Social Mobilisation"),
+        CMC_TYPES = (("1" ,"Reunions"), 
+                    ("2" ,"Operation bancaire"),
+                    ("3" ,"Mobilisation sociale"),
                     ("4" ,"Radio"))
         
         #Village Location type
-        LOCATION_TYPES=(( "1" , "My Village"),
+        LOCATION_TYPES=(( "1" , "Mon village"),
                         ( "2" , "Village adopte"),
-                        ( "3" , "Other Village"))
+                        ( "3" , "Autre village"))
         
       
-        SUBJECT_TYPES =(("1" ,"Health"), 
+        SUBJECT_TYPES =(("1" ,"Sante"), 
                         ("2" ,"Environnement"),
                         ("3" ,"Education"),
-                        ("4" ,"Income Generating Activity"),
-                        ("5" ,"Youth protection"),
-                        ("6" ,"Social Activity"),
-                        ("7" ,"Conflit Resolution"),
+                        ("4" ,"Activite generatrice de revenus"),
+                        ("5" ,"Protection de l'enfance"),
+                        ("6" ,"Activite sociale"),
+                        ("7" ,"Resolution de confilts"),
                         ("8" ,"Microcredit"),
-                        ("9" ,"External RElation"),
-                        ("10" ,"Others"))
+                        ("9" ,"Relation externe"),
+                        ("10" ,"Autre"))
+
         ACTIVITY_TYPES =( ("1"  ,"Assainissement-Set Settal"),
                         ("2"  ,"Sensibilisation etat Civil"),
                         ("3"  , "Sensibilisation inscriptiondes enfants a l'ecole"),
@@ -123,7 +124,7 @@ class Cmc(NodeSet):
                         ("7" , "Vente produit divers"),
                         ("8"  , "Apui Structure de Sante"),
                         ("9"  , "Reception de delegation"),
-                        ("10" , "Other"))
+                        ("10" , "Autre"))
             
      
         # Metting 
@@ -156,21 +157,25 @@ class Cmc(NodeSet):
           
 class Radio(NodeSet):
 	"""The radio host activity , models to store the messages sent to RapidSuivi from radio Host"""
-        THEME_TYPES = ( ("1" , "Health")  , 
+        THEME_TYPES = ( ("1" , "Sante")  , 
                         ("2" , "Environnement"), 
                         ("3" , "Education") , 
-                        ("4" , "Income Generating Activity"),
-                        ("5" , "Youth protection"),
-                        ("6" , "Social Activity"),
-                        ("7" , "Conflict Resolution"),
+                        ("4" , "Activite generatrice de revenus"),
+                        ("5" , "Protection de l'enfance"),
+                        ("6" , "Activite sociale"),
+                        ("7" , "Resolution conflit"),
                         ("8" , "Microcredit"),
-                        ("9" , "External Relation"),
-                        ("10" ,"Other"))
-        LOCATION_TYPES=(("1" , "Live"),
-                        ("2" , "Tape Delayed"))
+                        ("9" , "Relation externe"),
+                        ("10" ,"Autre"))
+       
+
+
+
+	 LOCATION_TYPES=(("1" , "Live"),
+                        ("2" , "En differe"))
         
-        SHOW_TYPES =(("1" ,"With guests"),
-                     ("2", "Debate"), 
+        SHOW_TYPES =(("1" ,"Avec invite"),
+                     ("2", "Debat"), 
                      ("3", "Reportage"))
 	
 	theme_id      = models.CharField(max_length =2,null=True , blank =True ,choices =THEME_TYPES)

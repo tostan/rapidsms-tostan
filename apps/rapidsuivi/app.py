@@ -36,14 +36,8 @@ _G = {
 def _init_translators():
     path = os.path.join(os.path.dirname(__file__),"locale")
     for lang,name in _G['SUPPORTED_LANGS'].items():
-        trans = gettext.translation(
-                        'django',
-                        path,
-                        [lang,_G['DEFAULT_LANG']]
-                        )
-        _G['TRANSLATORS'].update( 
-                        {lang:trans}
-                         )
+        trans = gettext.translation('django',path,[lang,_G['DEFAULT_LANG']] )
+        _G['TRANSLATORS'].update( {lang:trans} )
 
 def _t(locale, text):
     """translate text with default language"""
@@ -115,9 +109,7 @@ class App (rapidsms.app.App):
                     # Regarde si le message est bien pour rapidsuivi 
                     # si c'est la cas alors le relay essaie de contacter rapidsuivi avec la mauvaise syntaxe
                     try:
-                        for key in ["cla"  ,"abs",
-                                "reu" ,"ms" ,
-                                "rad", "fin"]:
+                        for key in ["cla"  ,"abs","reu" ,"ms" , "rad", "fin"]:
                             if message.text.strip ().startswith (key):
                                 message.respond (_t("fr" , "help-message"))
                                 return True
@@ -137,7 +129,7 @@ class App (rapidsms.app.App):
                     # our app is now  safe
                     traceback.print_exc()
                     self.error (str(traceback.print_exc()))
-                    
+                    return True 
             else :
                 self.debug("App does not instantiate Keyworder as 'kw'") 
         except Exception, e:    

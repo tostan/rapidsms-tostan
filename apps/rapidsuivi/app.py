@@ -14,7 +14,6 @@ import traceback
 from rapidsms.message import Message
 # Mon numero envoie moi un message si il y'a une erreur car  je ne serai pas 
 # la ,une fois que le systeme sera installe
-alioune ="775526745"
 _G = { 
     'SUPPORTED_LANGS': {
         # 'deb':u'Debug',
@@ -102,7 +101,6 @@ class App (rapidsms.app.App):
         self.handled = False     
     
     def handle(self, message):
-        self.backend  =message.connection.backend 
         try:
             if hasattr(self, "kw"):
                 try:
@@ -138,11 +136,7 @@ class App (rapidsms.app.App):
                     # and send a sms to the user , so he will understant that he sent us a good message , but 
                     # our app is now  safe
                     traceback.print_exc()
-                    #self.error (str (e))
-                    #This is an error into the code of rapidsuivi
-                    message.respond (_t("fr","system-error"))
-                    #Envoie aussi a lioune Dia pour fixe
-                    message.forward (alioune , str (e)[:150])
+                    self.error (str(traceback.print_exc()))
                     
             else :
                 self.debug("App does not instantiate Keyworder as 'kw'") 
@@ -279,10 +273,8 @@ class App (rapidsms.app.App):
                 return True
             except Exception, e :
                 traceback.print_exc()
-                # Send a error message to the developper
-                message.respond(_t("fr","system-error"))
-                message.forward(alioune ,str (traceback.format_exc())[:160])
-                return True
+                # Raise so handler will  log message and email will be sent to djokko initiative
+		raise 
                 
                 
     def __register_relay (self,message , *args , **kwargs):
@@ -318,10 +310,8 @@ class App (rapidsms.app.App):
                  self._get_save_class_args (classe =cla)
         except Exception, e:
             traceback.print_exc()
-            # Error systeme
-            message.respond ("error-system")
-            return True 
-            self.error (str (traceback.format_exc ()))
+            #Raise  so email will be sent to the djokko developper  group
+            raise 
         else:
             message.respond (text)
             cla.message = text
@@ -356,14 +346,13 @@ class App (rapidsms.app.App):
         # Get the response with argument to send  to the relay
         try:
             text =_st (message.relay,"update-classe")%\
-                    self._get_update_class_args (abs_cla)
+                    self._get_update_class_args (classe =abs_cla)
        
         except Exception, e:
             traceback.print_exc()
-            # Error systeme
-            message.respond ("error-system")
-            self.error (str (traceback.format_exc ()))
-            return True
+            # Raise so email will be sent to the djokko group
+            raise  
+            
         else:
             message.respond (text)
             abs_cla.message=text
@@ -387,10 +376,8 @@ class App (rapidsms.app.App):
                  self._get_save_reunion_args (cmc =cmc)
         except Exception, e:
             traceback.print_exc()
-            # Error systeme
-            message.respond ("error-system") 
-            self.error (str (traceback.format_exc ()))
-            return True
+            # Raise so email will be sent to the djokko developper group 
+            raise 
         else:
             message.respond (text)  
             cmc.message  = text
@@ -412,10 +399,8 @@ class App (rapidsms.app.App):
                   self._get_save_finance_args (cmc =cmc)
         except Exception, e:
             traceback.print_exc()
-            # Error systeme
-            message.respond ("error-system")
-            self.error (str (traceback.format_exc ()))
-            return True
+            #Raise so email will be sent to the djokko developper group
+	    raise
         else:
             message.respond (text)
             cmc.message =text
@@ -439,10 +424,7 @@ class App (rapidsms.app.App):
                  self._get_save_mobilization_args(cmc=cmc)
         except Exception, e:
             traceback.print_exc()
-            # Error systeme
-            message.respond ("error-system") 
-            self.error (str (traceback.format_exc ()))
-            return True
+      	    raise                     
         else :
              message.respond (text)
              cmc.message =text
@@ -462,11 +444,8 @@ class App (rapidsms.app.App):
                     self._get_save_radio_args(radio= radio)
         except Exception, e:
             traceback.print_exc()
-            # Error systeme
-            message.respond ("error-system") 
-            self.error (str (traceback.format_exc ()))
-            return True
-        else :
+            raise
+	else :
             message.respond (text)
             cmc.message =msg
             cmc.save ()

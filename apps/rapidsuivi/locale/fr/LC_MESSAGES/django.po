@@ -187,6 +187,12 @@ msgstr "Merci %(first_name)s %(last_name)s.Vous etes bien inscrit a RapidSuivi e
 "tant que %(title)s de %(village)s.En cas de probleme,merci de contacter " 
 "votre Superviseur"
 
+
+msgid "register-relay-radio"
+msgstr "Merci %(first_name)s %(last_name)s.Vous etes bien inscrit a RapidSuivi en "
+"tant que %(title)s.En cas de probleme,merci de contacter "
+"votre Superviseur"
+
 msgid "save-classe"
 msgstr "Merci %(first_name)s %(last_name)s .Vous avez fini la sceance %(session)s "
 "du %(title)s avec les %(cohort)s de %(village)s .Presents : %(women)s femmes ,%(men)s hommes ,%(girls)s filles et %(boys)s garcons"

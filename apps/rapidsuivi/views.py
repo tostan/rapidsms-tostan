@@ -212,6 +212,7 @@ def map (req , template = "rapidsuivi/gmap.html"):
 		#	 "/update_message/%s/radio"%cur_msg.pk
 	     else :
 		dict["message"]=EMPTY_VILLAGE_MESSAGE
+	     dict["name"] = suivi_village.village.name
 	     dict.update ({"gmap_latitude": suivi_village.village.location.latitude})
              dict.update ({"gmap_longitude":suivi_village.village.location.longitude})
 	     # Quel icon pour goolemap (rouge  ou vert 

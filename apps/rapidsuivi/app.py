@@ -261,7 +261,7 @@ class App (rapidsms.app.App):
                 # Get the response to send to the relay 
                 text = _st (rel , "register-relay")%\
                         self._get_register_relay_args (relay=rel)
-                message.respond (text)
+                message.respond (text[:159])
                 return True
             except RelayExistError , e:
                 traceback.print_exc()
@@ -275,7 +275,7 @@ class App (rapidsms.app.App):
 			rel =self.__register_relay (message , *args , radio=True)
 			text =_st(rel ,"register-relay-radio")%\
 			      self._get_register_radio_relay_args(relay=rel)
-			message.respond(text)
+			message.respond(text[:159])
 			return True
 		# Else this is not a radio , please raise village not exist 
                 traceback.print_exc()
@@ -331,7 +331,7 @@ class App (rapidsms.app.App):
             #Raise  so email will be sent to the djokko developper  group
             raise 
         else:
-            message.respond (text)
+            message.respond (text[:159])
             cla.message = text
             cla.save ()
             return True
@@ -372,7 +372,7 @@ class App (rapidsms.app.App):
             raise  
             
         else:
-            message.respond (text)
+            message.respond (text[:159])
             abs_cla.message=text
             abs_cla.save ()
             return True 
@@ -397,7 +397,7 @@ class App (rapidsms.app.App):
             # Raise so email will be sent to the djokko developper group 
             raise 
         else:
-            message.respond (text)  
+            message.respond (text[:159])  
             cmc.message  = text
             cmc.save()
             return True 
@@ -420,7 +420,7 @@ class App (rapidsms.app.App):
             #Raise so email will be sent to the djokko developper group
 	    raise
         else:
-            message.respond (text)
+            message.respond (text[:159])
             cmc.message =text
             cmc.save ()
             return True
@@ -444,7 +444,7 @@ class App (rapidsms.app.App):
             traceback.print_exc()
       	    raise                     
         else :
-             message.respond (text)
+             message.respond (text[:159])
              cmc.message =text
              cmc.save ()
              return True 
@@ -464,7 +464,7 @@ class App (rapidsms.app.App):
             traceback.print_exc()
             raise
 	else :
-            message.respond (text)
+            message.respond (text[:159])
             cmc.message =msg
             cmc.save ()
             return True

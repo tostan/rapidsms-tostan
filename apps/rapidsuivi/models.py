@@ -99,7 +99,7 @@ class Cmc(NodeSet):
         """
         CMC_TYPES = (("1" ,"Reunions"), 
                     ("2" ,"Operation bancaire"),
-                    ("3" ,"Mobilisation sociale"),
+                    ("3" ,"Mobilisation sociale"))
                     #("4" ,"Radio"))
         
         #Village Location type
@@ -163,10 +163,10 @@ class Cmc(NodeSet):
                         ",N INVITES:" + str(self.num_guests) +\
                         ",SUBJECT: " +str(self.get_subject_id_display() if self.subject_id  else  "")+\
 			",ACTIVITE:" str(self.get_activity_id_display()  if self.activity_id else "")
--- INSERT --    if self.type_id =="2":  
+	         if self.type_id =="2":  
 	        	str= "BALANCE COM:"+str ( self.balance_com) +\
 			",BALANCE BANQUE:" +str(self.balance_bank)+\
-		if self.type_id =="3":
+		 if self.type_id =="3":
 			str ="N ATTENDUS:" +str (self.nb_attendees) +\
 			",N VILLAGES:" +str (self.nb_villages) +\
 			", LOCATION:" +str(self.get_location_id_display() if self.location_id else "")

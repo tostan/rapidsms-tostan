@@ -1,4 +1,7 @@
+
 # Create your webui views here.
+from django.utils.translation  import ugettext  as _ 
+from django.core.urlresolvers import reverse
 from rapidsms.webui.utils import render_to_response
 from django.contrib.auth.decorators import login_required
 from apps.rapidsuivi.models import *
@@ -20,6 +23,10 @@ Le MESSAGE_FOR_UI est utilise pour etre affiche dans la amp et dans le calendrie
 Don't forget to use {{ var|safe }} into your template 
 because django does auto-scape for every views .
 Also don't forget to do _\_ to avoid unterminated line from JQUERY
+** Note**
+Because to MESSAGE_FOR_UI work like an html page  displayed from 
+map and calendar I need to flag which page the Widget MESSAGE_FOR_UI
+is displayed. So I keep a flag named *from_page* into the classe.
 """
 MESSAGE_FOR_UI="""<ul>\
 <li>Message envoye par :%(first_and_last_name)s</li>\
@@ -30,8 +37,8 @@ MESSAGE_FOR_UI="""<ul>\
 <li>Message:%(message)s</li>\
 <li>\
 <li>--</li>\
-<li><a href='%(update_status_url)s'>[MARQUER LE MESSAGE COMME LU]</a></li>\
-<li><a href='%(update_message_url)s'>[MODIFIER LE MESSAGE]</a></li>\
+<li><a href='/rapidsuivi/update_message_status/%(from_page)s/%(message_pk)s'>[MARQUER LE MESSAGE COMME LU]</a></li>\
+<li><a href='/rapidsuivi/update_message/%(from_page)s/%(message_pk)s/%(message_instance)s'>[MODIFIER LE MESSAGE]</a></li>\
 <li>--</li>\
 <a href ='/rapidsuivi/export_village_message/%(village_pk)s'>\
 Exporter sous excel les messages de %(village_name)s\
@@ -121,7 +128,7 @@ def calendar_form (context):
 		dict ([
 		      ("1" , "CMC" ) , 
 		      ("2" , "CLASS") ,
-		      ("3" ,"RAD")])
+		      ("3" ,"RADIO")])
      
 def calendar_events (context):
     """
@@ -138,29 +145,27 @@ def calendar_events (context):
     if "classes" in context :
         classes  =context["classes"]
         for cls in classes :
-            values ={"title" :"CLASS"}
-            #values ["url"] =\
-	    #	"/update_message_status/%s"%cls.pk
-            #values ["update_message"] =\
-	    #	"/update_message/%s/classe"%cls.pk
+            values ={"title" :"CLASSE"}
             values ["start"] = "%s"%cls.date
             values ['is_read']=cls.is_read
+	    # We are into the calendar , so get the messag_ui  params and add
+	    # the from page as calendar {"from_page" :"calendar"}
+	    msg_ui_params= message_ui_from_class(cls)
+	    msg_ui_params.update ({"from_page":"calendar"})
 	    values ["current_message"] =\
-		MESSAGE_FOR_UI%message_ui_from_class(cls)
+		MESSAGE_FOR_UI%msg_ui_params
             calendar_event.append (values)
     # Get cmc/CGC for the calendar UI
     if "cmcs" in context:
         cmcs =context["cmcs"]
         for cmc in cmcs :
             values ={"title" :"CMC"}
-            #values ["url"] =\
-	    #	"/update_message_status/%s"%cmc.pk
-	    #values ["update_message"]=\
-	    #	"/update_message/%s/cmc"%cmc.pk
             values ["start"] = "%s"%cmc.date
-            values ["is_read"] =cmc.is_read 
+            values ["is_read"] =cmc.is_read
+	    msg_ui_params = message_ui_from_cmc(cmc) 
+	    msg_ui_params.update ({"from_page" :"calendar"})
             values ["current_message"]=\
-		MESSAGE_FOR_UI%message_ui_from_cmc(cmc)
+		MESSAGE_FOR_UI%msg_ui_params
             calendar_event.append (values)
 
 
@@ -168,15 +173,13 @@ def calendar_events (context):
     if "radios" in context:
 	radios = context["radios"]
 	for radio in radios:
-	    values = {"title": "RAD"}
-            #values ["url"]=\
-	    #	"/update_message_status/%s"%radio.pk
-            #values["update_message"]=\
-	    #	"/update_message/%s/radio"%radio.pk
+	    values = {"title": "RADIO"}
 	    values["start"] ="%s"%radio.date
 	    values["is_read"]=radio.is_read
+	    msg_ui_params =message_ui_from_radio(radio)
+	    msg_ui_params.update({"from_page":"calendar"})
 	    values["current_message"]=\
-		MESSAGE_FOR_UI%message_ui_from_radio(radio)
+		MESSAGE_FOR_UI%msg_ui_params
 	    calendar_event.append(values)
 
     if len (calendar_event):
@@ -196,20 +199,12 @@ def map (req , template = "rapidsuivi/gmap.html"):
 	     if cur_msg:
 		if not cur_msg.is_read:
 			icon = 'green'
-		dict["message"] =MESSAGE_FOR_UI%message_ui_from_village(cur_msg)
-		#dict["url"]     ="/update_message_status/%s"%cur_msg.pk
-		# Get the url to  update message 
-		# if message is instance of CMC  ==> url =/update_message/pk/cmc
-		# if message is inatance if Classe  ==> url = /update_message/pk/classe
-		#if isintance (cur_msg , Cmc):
-		#	dict["update_message"] =\
-		#	 "/update_message/%s/cmc"%cur_msg.pk
-		#if isinstance(cur_message , Class):
-		#	dict["update_message"]=\
-		#	 "/update_message/%s/classe"%cur_msg.pk
-		#if isinstance (cur_message ,Radio):
-		#	dict["update_message"]=\
-		#	 "/update_message/%s/radio"%cur_msg.pk
+		# The message from classse can be a message from cmc , or classe  or radio
+		# depends of the current message received  by the village 
+		msg_ui_from_vil =message_ui_from_village  (cur_msg)
+		# Add page param
+		msg_ui_from_vil.update({"from_page":"map"})
+		dict["message"] =MESSAGE_FOR_UI%msg_ui_from_vil
 	     else :
 		dict["message"]=EMPTY_VILLAGE_MESSAGE
 	     dict["name"] = suivi_village.village.name
@@ -233,12 +228,12 @@ def message_ui_from_class(classe):
 		classe.relay.contact.phone_number()
 	dict["role"]=\
 		classe.relay.get_title_id_display()
-	dict["message"] =classe.message 
+	dict["message"] =classe.__str__() 
         dict["date"] = classe.date.strftime ("%d-%m-%Y %H:%M:%S")
 	dict["village_pk"] =classe.relay.village_suivi.pk
 	dict["village_name"]=classe.relay.village_suivi.village.name
-	dict["update_status_url"] = "update_message_status/%s"%classe.pk
-	dict['update_message_url']= "update_message/%s/classe"%classe.pk
+	dict["message_pk"] = str(classe.pk)
+	dict["message_instance"] = "classe"
 	return dict
 
 def message_ui_from_cmc(cmc):
@@ -250,13 +245,12 @@ def message_ui_from_cmc(cmc):
 		cmc.relay.contact.phone_number()
 	dict["role"]=\
 		cmc.relay.get_title_id_display()
-	dict["message"] = cmc.message
+	dict["message"] = cmc.__str__()
         dict["date"] = cmc.date.strftime ("%d-%m-%Y %H:%M:%S")
 	dict["village_pk"] =cmc.relay.village_suivi.pk
 	dict["village_name"]=cmc.relay.village_suivi.village.name
-	dict["update_status_url"] = "update_message_status/%s"%cmc.pk
-	dict['update_message_url']= "update_message/%s/cmc"%cmc.pk
-	
+	dict["message_pk"] =str(cmc.pk)
+        dict["message_instance"] ="cmc"	
 	return dict
 
 def message_ui_from_radio(radio):
@@ -268,12 +262,12 @@ def message_ui_from_radio(radio):
 		radio.relay.contact.phone_number()
         dict["role"]=\
 		radio.relay.get_title_id_display()
-  	dict["message"]=radio.message
+  	dict["message"]=radio.__str__()
         dict["date"] = radio.date.strftime ("%d-%m-%Y %H:%M:%S")
 	dict["village_pk"] =radio.relay.village_suivi.pk
 	dict["village_name"]=radio.relay.village_suivi.village.name	
-	dict["update_status_url"] = "update_message_status/%s"%radio.pk
-	dict['update_message_url']= "update_message/%s/radio"%radio.pk
+	dict["message_pk"] = str(radio.pk)
+        dict["message_instance"] = "radio"
 	return dict 
         
 def message_ui_from_village (current_village_message):
@@ -292,7 +286,7 @@ def message_ui_from_village (current_village_message):
         return None
  
     
-def update_message_status (req , message_pk =None ):
+def update_message_status (req ,from_page , message_pk ):
 	"""Update message from calendar UI 
 	Note ***
 	From _template_ param tell us where the req come from 
@@ -319,11 +313,10 @@ def update_message_status (req , message_pk =None ):
 		pass
 	# Goto To calendar index
 	#return  HttpResponse ("*".join(errors))
-	return render_to_response(req , "rapidsuivi/success.html" ,
-	{"messages":["Votre requete a ete execute avec success"]})
+	return HttpResponseRedirect(reverse("map") if  from_page =="map" else reverse ("calendar"))
 		
      
-def update_message (req , message_pk ,message_instance) :
+def update_message (req , from_page ,message_pk ,message_instance) :
 	"""
         message_instance allow us to use the Best Model Form
 	if message_instance =cmc ==> use CmcForm
@@ -359,9 +352,7 @@ def update_message (req , message_pk ,message_instance) :
 		     else : errors = form.errors
 		
 		if not len(errors):
-	        	return render_to_response(req ,
-				"rapidsuivi/success.html" ,
-				{"messages": ["Requete a ete execute avec succees"]})
+	        	return HttpResponseRedirect(reverse("map") if from_page =="map" else reverse("calendar"))
 		else :
 			context ["errors"] =errors
         form =None		 
@@ -401,11 +392,15 @@ def export_message (req,village_pk):
 	writer  = UnicodeWriter(response)
 	# I dont think if the is the best place to put this
 	# Rowena should check
-	fields = ["message", "relay" ,"date" , 'type_id']			
-        writer.writerow (fields)
+	fields = {"message" : _("Message Recu par Tostan"), 
+		  "relay": _("Le Relay") ,
+		  "date" :_("Date  de Reception"),
+		  "type_id":_("Type du message")
+	}			
+        writer.writerow (fields.values ())
 	for obj  in  data :
 		row =[]
-		for field  in fields :
+		for field  in fields.keys() :
 		        if field =="relay":
 				val = obj.relay.first_name + obj.relay.last_name
 			elif field =="type_id":

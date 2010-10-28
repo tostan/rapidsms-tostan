@@ -100,7 +100,7 @@ class Cmc(NodeSet):
         CMC_TYPES = (("1" ,"Reunions"), 
                     ("2" ,"Operation bancaire"),
                     ("3" ,"Mobilisation sociale"),
-                    ("4" ,"Radio"))
+                    #("4" ,"Radio"))
         
         #Village Location type
         LOCATION_TYPES=(( "1" , "Mon village"),
@@ -146,17 +146,32 @@ class Cmc(NodeSet):
         num_attendees = models.PositiveIntegerField (default =0)
         num_villages  = models.PositiveIntegerField (default =0)
 
-	location_id   = models.CharField(max_length =2,null=True ,blank =True,choices = LOCATION_TYPES)
-        #Radio
-        #show_location_id = models.CharField(max_length =2,null =True ,blank =True ,choices  = SHOW_LOCATION_TYPES)
-        #show_type_id    = models.CharField(max_length  =2,null =True ,blank =True ,choices = SHOW_TYPES)
-        
+	location_id   = models.CharField(max_length =2,null=True ,blank =True,choices = LOCATION_TYPES)          
         #Relay
         relay     = models.ForeignKey ("Relay" , related_name ="cmcs")
         date = models.DateTimeField (default =datetime.datetime.now())
         is_read = models.BooleanField (default =False)
         message = models.CharField (max_length = 260, null =True , blank =True) 
-        def __unicode__(self):
+        
+
+	def __str__(self):
+                 """Diplay data into the web ui  for  map and calendar with qtip """
+                 # If meeting 
+		 if self.type_id ="1":
+			str  = "TYPE :" + str(if self.get_type_id_display() if self.type_id  else "")  +\
+                        ",N MEMBRES:" + str(self.num_members)+\
+                        ",N INVITES:" + str(self.num_guests) +\
+                        ",SUBJECT: " +str(self.get_subject_id_display() if self.subject_id  else  "")+\
+			",ACTIVITE:" str(self.get_activity_id_display()  if self.activity_id else "")
+-- INSERT --    if self.type_id =="2":  
+	        	str= "BALANCE COM:"+str ( self.balance_com) +\
+			",BALANCE BANQUE:" +str(self.balance_bank)+\
+		if self.type_id =="3":
+			str ="N ATTENDUS:" +str (self.nb_attendees) +\
+			",N VILLAGES:" +str (self.nb_villages) +\
+			", LOCATION:" +str(self.get_location_id_display() if self.location_id else "")
+
+	def __unicode__(self):
                 return  u"CMC[(relay, %s)]"%(self.relay) 
           
 class Radio(NodeSet):
@@ -185,11 +200,18 @@ class Radio(NodeSet):
 	theme_id      = models.CharField(max_length =2,null=True , blank =True ,choices =THEME_TYPES)
         location_id = models.CharField(max_length =2,null =True ,blank =True ,choices  = LOCATION_TYPES)
         type_id    = models.CharField(max_length  =2,null =True ,blank =True ,choices = SHOW_TYPES)
-        relay     = models.ForeignKey ("Relay" , related_name ="radios")
+        
+	relay     = models.ForeignKey ("Relay" , related_name ="radios")
         date = models.DateTimeField (default =datetime.datetime.now())
         is_read = models.BooleanField (default =False)
         message = models.CharField (max_length = 260, null =True , blank =True) 
         
+
+        def __str__(self):
+		str = "THEME:" +str (self.get_theme_id_display ()  if self.theme else "")+\
+		      ",LOCATION :" +str(self.get_location_id_display() if self.location_id else "")+\
+		      ",TYPE:"+str (self.get_type_id_display() if self.type_id else  "")
+		 
 	def __unicode__(self):
 		return u"Radio[(theme,%s),(location_id, %s),(type_id,%s)]"%\
 		(self.get_theme_id_display() , self.get_location_id_display() , self.get_type_id_display())

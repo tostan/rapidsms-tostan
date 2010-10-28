@@ -158,8 +158,8 @@ class Cmc(NodeSet):
                  """Diplay data into the web ui  for  map and calendar with qtip """
                  # If meeting 
 	 	 str_ =""
+		 str_  = "TYPE :" + str(self.get_type_id_display() if self.type_id  else "")  +\
 		 if self.type_id =="1":
-			str_  = "TYPE :" + str(self.get_type_id_display() if self.type_id  else "")  +\
                         ",MEMBRES:" + str(self.num_members)+\
                         ",INVITES:" + str(self.num_guests) +\
                         ",SUJECT: " +str(self.get_subject_id_display() if self.subject_id  else  "")+\
@@ -168,7 +168,7 @@ class Cmc(NodeSet):
 	        	str_= "BALANCE COM:"+str ( self.balance_com) +\
 			",BALANCE BANQUE:" +str(self.balance_bank)
 		 if self.type_id =="3":
-			str_ ="ATTENDUS:" +str (self.num_attendees) +\
+			str_ =",ATTENDUS:" +str (self.num_attendees) +\
 			",VILLAGES:" +str (self.num_villages) +\
 			",LOCATION:" +str(self.get_location_id_display() if self.location_id else "")
 		 return str_

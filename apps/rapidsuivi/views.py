@@ -187,8 +187,42 @@ def calendar_events (context):
     
             
 def map (req , template = "rapidsuivi/gmap.html"):
-        context  = {}
-        villages =  SuiviVillage.objects.all ()
+	"""
+	I dont think if this is a good idea to filter the village and regions using the relay 
+	I will check later .But Because for this moment there is no link with village an regionnal
+	coordination  bu between the relay and  the regionnal coordination and  between the 
+	relay and the village.
+	"""
+	# I a using here the calendar form function again here because it contain all 
+	# data to fill  form , regionnals coordinations  , villages list ......
+	context ={}
+	calendar_form(context)
+	village_set =False
+        
+	if req.method =="POST" and "filter" in  req.POST and req.POST["filter"]:
+		# The user is tryin to  filter  the map
+		village_set =True
+		all_relays  = Relay.objects.all()
+		relay_filtres ={}
+                if "cordination" in req.POST:
+			if req.POST.get ("cordination")  not in ("" , "all"):
+                  	  relay_filtres["cordination_id"] = req.POST["cordination"]
+ 	                context["cordination_selected"] =req.POST["cordination"]
+
+
+	        if "village" in req.POST:
+         	       if req.POST.get ("village") not in ("" , "all"):
+                	    relay_filtres["village_suivi__village"] =\
+                            Village.objects.get (pk =req.POST["village"])
+              	       context["village_selected"]= req.POST["village"]
+		if len (relay_filtres):
+		  all_relays  = all_relays.filter(**relay_filtres)	
+		if all_relays.count()>0:
+			villages  =SuiviVillage.objects.filter (pk__in =[ v.pk for  v in  [r.village_suivi  for r in all_relays if r.village_suivi ]])
+		else : villages =[]
+
+	if  not village_set:
+		villages =  SuiviVillage.objects.all ()
         gmap_data  =[]
         for suivi_village in villages :
              dict ={}

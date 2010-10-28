@@ -10,7 +10,7 @@
 <script src="/static/rapidsuivi/js/gmap/labeledmarker.js" type="text/javascript"></script>
 {% endblock %}
 {% block content %}
-
+<div class ='module'>
 <script type="text/javascript">
 $(function() {
         var gm = google.maps;
@@ -70,8 +70,66 @@ $(function() {
         }
 });
 </script>
-<h2><a href="{% url map %}" >{% trans "Refraichir la map" %}</a></h2>
+
+ <h3>{% trans  "Filtre sur le Calendrier" %}</h3>
+        <table>
+                <tr>
+
+                              <td>
+                                <form  name = ''  method ="POST">
+                                        <ul>
+                                        <li> {% trans "Cordinations" %}
+                                        <select name='cordination'>
+                                                                <option value=''>--</option>
+                                                                <option value='all'>all</option>
+                                                                {% for item in cordination_options.items   %}
+                                                                   <option  value ='{{ item.0 }}'
+                                                                    {% ifequal cordination_selected item.0  %} selected {% endifequal %}>
+                                                                        {{ item.1 }}
+                                                                    </option>
+                                                                {% endfor %}
+                                                </select>
+                                        </li>
+                                         <li> {% trans "Villages" %}
+                                                <select name='village'>
+                                                                        <option value=''>--</option>
+                                                                        <option value='all'>all</option>
+                                                                        {% for sv in village_options %}
+                                                                           <option  value ='{{ sv.village__pk }}'
+                                                                           {% ifequal village_selected sv.village__pk %} selected {% endifequal %}>
+                                                                                {{ sv.village__name }}
+                                                                           </option>
+                                                                        {% endfor %}
+                                                </select>	
+					 </li>
+
+					 <li>
+                                                <input  type ="submit"  name="filter"  value="{% trans 'Filtre village' %}"/>
+
+                                          </li>
+                                        </ul>
+                                        <form>
+                                        </td>
+                                        <td>
+                                        <ul>
+                                                <li>Survole sur les evenements pour visualiser les messages</li>
+                                                <li>Cliquer sur les evenements pour les marquer comm lus (Rouge ,lu)(Blue , a lire)</li>
+                                        </ul>
+
+	
+					</td>
+					</tr>
+  
+
+</table>
+
+<br/><a href="{% url map %}" >{% trans "Refraichir la map" %}</a></h2>
 <div id="map" style ='width:800px; height:500px;'>
     &nbsp;
 </div>
+
+</div>
 {% endblock %}
+
+
+

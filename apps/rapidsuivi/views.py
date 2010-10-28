@@ -219,8 +219,9 @@ def map (req , template = "rapidsuivi/gmap.html"):
 		  all_relays  = all_relays.filter(**relay_filtres)	
 		if all_relays.count()>0:
 			villages  =SuiviVillage.objects.filter (pk__in =[ v.pk for  v in  [r.village_suivi  for r in all_relays if r.village_suivi ]])
-		else : villages =[]
-
+		else : 
+			villages =[]
+		        village_set =False
 	if  not village_set:
 		villages =  SuiviVillage.objects.all ()
         gmap_data  =[]

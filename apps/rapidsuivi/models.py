@@ -160,16 +160,16 @@ class Cmc(NodeSet):
 	 	 str_ =""
 		 if self.type_id =="1":
 			str_  = "TYPE :" + str(self.get_type_id_display() if self.type_id  else "")  +\
-                        ",N MEMBRES:" + str(self.num_members)+\
-                        ",N INVITES:" + str(self.num_guests) +\
-                        ",SUBJECT: " +str(self.get_subject_id_display() if self.subject_id  else  "")+\
+                        ",MEMBRES:" + str(self.num_members)+\
+                        ",INVITES:" + str(self.num_guests) +\
+                        ",SUJECT: " +str(self.get_subject_id_display() if self.subject_id  else  "")+\
 			",ACTIVITE:" +str(self.get_activity_id_display()  if self.activity_id else "")
 	         if self.type_id =="2":  
 	        	str_= "BALANCE COM:"+str ( self.balance_com) +\
 			",BALANCE BANQUE:" +str(self.balance_bank)
 		 if self.type_id =="3":
-			str_ ="N ATTENDUS:" +str (self.num_attendees) +\
-			",N VILLAGES:" +str (self.num_villages) +\
+			str_ ="ATTENDUS:" +str (self.num_attendees) +\
+			",VILLAGES:" +str (self.num_villages) +\
 			",LOCATION:" +str(self.get_location_id_display() if self.location_id else "")
 		 return str_
 
@@ -250,12 +250,12 @@ class Class(NodeSet):
 	def __str__(self):
 		str_ =""
                 str_ ="COHORT:"+ str ( self.get_cohort_id_display () if self.cohort_id else "")+\
-                      ",TITLE :"+ str(self.get_title_id_display() if self.title_id else "")+\
-                      ",N SESSION:"+str(self.num_session)+\
-		      ",N WOMEN:"+str(self.num_women)+\
-		      ",N GIRLS:"+str(self.num_girls)+\
-                      ",N MEN:"+str(self.num_men)+\
-		      ",N BOYS:"+str(self.num_boys)
+                      ",TITRE :"+ str(self.get_title_id_display() if self.title_id else "")+\
+                      ",SESSION:"+str(self.num_session)+\
+		      ",FEMMES:"+str(self.num_women)+\
+		      ",FILLES:"+str(self.num_girls)+\
+                      ",HOMMES:"+str(self.num_men)+\
+		      ",GARCONS:"+str(self.num_boys)
         	return str_
 
 	def __unicode__(self):

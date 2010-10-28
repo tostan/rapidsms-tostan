@@ -12,7 +12,7 @@ import re
 from apps.rapidsuivi.exceptions import *
 class Relay(models.Model):
     # Le code du regional coordication
-    COORDINATION_TYPES =(("1", "Kalolack"),
+    COORDINATION_TYPES =(("1", "Kaolack"),
                         ("2", "Thies"),
                         ("3", "Mbour"),
                         ("4" , "TambaCounda"),
@@ -168,9 +168,9 @@ class Cmc(NodeSet):
 	        	str_= "BALANCE COM:"+str ( self.balance_com) +\
 			",BALANCE BANQUE:" +str(self.balance_bank)
 		 if self.type_id =="3":
-			str_ ="N ATTENDUS:" +str (self.nb_attendees) +\
-			",N VILLAGES:" +str (self.nb_villages) +\
-			", LOCATION:" +str(self.get_location_id_display() if self.location_id else "")
+			str_ ="N ATTENDUS:" +str (self.num_attendees) +\
+			",N VILLAGES:" +str (self.num_villages) +\
+			",LOCATION:" +str(self.get_location_id_display() if self.location_id else "")
 		 return str_
 
 	def __unicode__(self):
@@ -210,7 +210,7 @@ class Radio(NodeSet):
         
 
         def __str__(self):
-		str_ = "THEME:" +str (self.get_theme_id_display ()  if self.theme else "")+\
+		str_ = "THEME:" +str (self.get_theme_id_display ()  if self.theme_id else "")+\
 		      ",LOCATION :" +str(self.get_location_id_display() if self.location_id else "")+\
 		      ",TYPE:"+str (self.get_type_id_display() if self.type_id else  "")
 		return str_ 
@@ -246,7 +246,19 @@ class Class(NodeSet):
         date         = models.DateTimeField(default = datetime.datetime.now ())
         is_read      = models.BooleanField (default =False)
         message      = models.CharField (max_length=260, blank=True ,null =True)
-        def __unicode__(self):
+	
+	def __str__(self):
+		str_ =""
+                str_ ="COHORT:"+ str ( self.get_cohort_id_display () if self.cohort_id else "")+\
+                      ",TITLE :"+ str(self.get_title_id_display() if self.title_id else "")+\
+                      ",N SESSION:"+str(self.num_session)+\
+		      ",N WOMEN:"+str(self.num_women)+\
+		      ",N GIRLS:"+str(self.num_girls)+\
+                      ",N MEN:"+str(self.num_men)+\
+		      ",N BOYS:"+str(self.num_boys)
+        	return str_
+
+	def __unicode__(self):
                 return u"Class[(cohort_id,%s),(cohort_id_display,%s)]"%(
                                 self.cohort_id  , 
                                 self.get_cohort_id_display ()) 

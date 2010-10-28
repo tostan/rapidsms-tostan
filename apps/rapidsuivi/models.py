@@ -157,19 +157,21 @@ class Cmc(NodeSet):
 	def __str__(self):
                  """Diplay data into the web ui  for  map and calendar with qtip """
                  # If meeting 
-		 if self.type_id ="1":
-			str  = "TYPE :" + str(if self.get_type_id_display() if self.type_id  else "")  +\
+	 	 str_ =""
+		 if self.type_id =="1":
+			str_  = "TYPE :" + str(self.get_type_id_display() if self.type_id  else "")  +\
                         ",N MEMBRES:" + str(self.num_members)+\
                         ",N INVITES:" + str(self.num_guests) +\
                         ",SUBJECT: " +str(self.get_subject_id_display() if self.subject_id  else  "")+\
-			",ACTIVITE:" str(self.get_activity_id_display()  if self.activity_id else "")
+			",ACTIVITE:" +str(self.get_activity_id_display()  if self.activity_id else "")
 	         if self.type_id =="2":  
-	        	str= "BALANCE COM:"+str ( self.balance_com) +\
-			",BALANCE BANQUE:" +str(self.balance_bank)+\
+	        	str_= "BALANCE COM:"+str ( self.balance_com) +\
+			",BALANCE BANQUE:" +str(self.balance_bank)
 		 if self.type_id =="3":
-			str ="N ATTENDUS:" +str (self.nb_attendees) +\
+			str_ ="N ATTENDUS:" +str (self.nb_attendees) +\
 			",N VILLAGES:" +str (self.nb_villages) +\
 			", LOCATION:" +str(self.get_location_id_display() if self.location_id else "")
+		 return str_
 
 	def __unicode__(self):
                 return  u"CMC[(relay, %s)]"%(self.relay) 
@@ -208,10 +210,12 @@ class Radio(NodeSet):
         
 
         def __str__(self):
-		str = "THEME:" +str (self.get_theme_id_display ()  if self.theme else "")+\
+		str_ = "THEME:" +str (self.get_theme_id_display ()  if self.theme else "")+\
 		      ",LOCATION :" +str(self.get_location_id_display() if self.location_id else "")+\
 		      ",TYPE:"+str (self.get_type_id_display() if self.type_id else  "")
-		 
+		return str_ 
+
+
 	def __unicode__(self):
 		return u"Radio[(theme,%s),(location_id, %s),(type_id,%s)]"%\
 		(self.get_theme_id_display() , self.get_location_id_display() , self.get_type_id_display())

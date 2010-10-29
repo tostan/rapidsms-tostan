@@ -106,11 +106,11 @@ class Cmc(NodeSet):
         
         #Village Location type
         LOCATION_TYPES=(( "1" , "Mon village"),
-                        ( "2" , "Village adopté"),
+                        ( "2" , "Village adopte"),
                         ( "3" , "Autre village"))
         
       
-        SUBJECT_TYPES =(("1" ,"Santé"), 
+        SUBJECT_TYPES =(("1" ,"Sante"), 
                         ("2" ,"Environnement"),
                         ("3" ,"Education"),
                         ("4" ,"AGR"),# Activite generatrice de revenus
@@ -180,12 +180,12 @@ class Cmc(NodeSet):
           
 class Radio(NodeSet):
 	"""The radio host activity , models to store the messages sent to RapidSuivi from radio Host"""
-        THEME_TYPES = ( ("1" , "Santé")  , 
+        THEME_TYPES = ( ("1" , "Sante")  , 
                         ("2" , "Environnement"), 
                         ("3" , "Education") , 
                         ("4" , "AGR"),#Activite generatrice derevenus
                         ("5" , "Protection de l'enfance"),
-                        ("6" , "Activité sociale"),
+                        ("6" , "Activite sociale"),
                         ("7" , "Resolution conflit"),
                         ("8" , "Microcredit"),
                         ("9" , "Relation externe"),
@@ -195,9 +195,9 @@ class Radio(NodeSet):
 
 
 	LOCATION_TYPES=(("1" , "Live"),
-                        ("2" , "En differé"))
+                        ("2" , "En differe"))
         
-        SHOW_TYPES =(("1" ,"Avec invité"),
+        SHOW_TYPES =(("1" ,"Avec invite"),
                      ("2", "Debat"), 
                      ("3", "Reportage"))
 	

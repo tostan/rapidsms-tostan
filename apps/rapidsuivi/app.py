@@ -465,7 +465,7 @@ class App (rapidsms.app.App):
             raise
 	else :
             message.respond (text[:159])
-            cmc.message =msg
+            cmc.message =text
             cmc.save ()
             return True
 

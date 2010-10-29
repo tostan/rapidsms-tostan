@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# vim ai: ts=4 sts =4 et  sw=4  encoding=utf-8
 from django.db import models
 from apps.nodegraph.models import NodeSet
 from locations.models import Location
@@ -104,14 +106,14 @@ class Cmc(NodeSet):
         
         #Village Location type
         LOCATION_TYPES=(( "1" , "Mon village"),
-                        ( "2" , "Village adopte"),
+                        ( "2" , "Village adopté"),
                         ( "3" , "Autre village"))
         
       
         SUBJECT_TYPES =(("1" ,"Sante"), 
                         ("2" ,"Environnement"),
                         ("3" ,"Education"),
-                        ("4" ,"Activite generatrice de revenus"),
+                        ("4" ,"AGR"),# Activite generatrice de revenus
                         ("5" ,"Protection de l'enfance"),
                         ("6" ,"Activite sociale"),
                         ("7" ,"Resolution de confilts"),
@@ -181,9 +183,9 @@ class Radio(NodeSet):
         THEME_TYPES = ( ("1" , "Sante")  , 
                         ("2" , "Environnement"), 
                         ("3" , "Education") , 
-                        ("4" , "Activite generatrice de revenus"),
+                        ("4" , "AGR"),#Activite generatrice derevenus
                         ("5" , "Protection de l'enfance"),
-                        ("6" , "Activite sociale"),
+                        ("6" , "Activité sociale"),
                         ("7" , "Resolution conflit"),
                         ("8" , "Microcredit"),
                         ("9" , "Relation externe"),
@@ -193,9 +195,9 @@ class Radio(NodeSet):
 
 
 	LOCATION_TYPES=(("1" , "Live"),
-                        ("2" , "En differe"))
+                        ("2" , "En differé"))
         
-        SHOW_TYPES =(("1" ,"Avec invite"),
+        SHOW_TYPES =(("1" ,"Avec invité"),
                      ("2", "Debat"), 
                      ("3", "Reportage"))
 	
@@ -227,8 +229,8 @@ class Class(NodeSet):
         Les rapports d'activites sur les classes , nous essayons ici 
         d'avoir des rapports sur les activites de la classes.
         """
-        COHORT_TYPES  =(("1", "adult"),
-                        ("2" ,"adolescent"))			
+        COHORT_TYPES  =(("1", "adultes"),
+                        ("2" ,"adolescents"))			
         
         TITLE_TYPES = (("1", "Kobi1"),
                        ("2" ,"Kobi2"),

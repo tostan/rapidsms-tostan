@@ -110,7 +110,7 @@ class Cmc(NodeSet):
                         ( "3" , "Autre village"))
         
       
-        SUBJECT_TYPES =(("1" ,"Sante"), 
+        SUBJECT_TYPES =(("1" ,"Santé"), 
                         ("2" ,"Environnement"),
                         ("3" ,"Education"),
                         ("4" ,"AGR"),# Activite generatrice de revenus
@@ -180,7 +180,7 @@ class Cmc(NodeSet):
           
 class Radio(NodeSet):
 	"""The radio host activity , models to store the messages sent to RapidSuivi from radio Host"""
-        THEME_TYPES = ( ("1" , "Sante")  , 
+        THEME_TYPES = ( ("1" , "Santé")  , 
                         ("2" , "Environnement"), 
                         ("3" , "Education") , 
                         ("4" , "AGR"),#Activite generatrice derevenus

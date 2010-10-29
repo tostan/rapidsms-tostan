@@ -199,7 +199,7 @@ msgstr "Merci %(first_name)s %(last_name)s .Durant le %(title)s ,%(women)s "
 
 msgid "save-reunion"
 msgstr "Merci %(first_name)s %(last_name)s (CGC de %(village)s ) " 
-"%(members)s membres et %(guests)s invités  ont  discuté  de  %(subject)s .Prochaine activité  : %(activity)s"
+"%(members)s membres et %(guests)s invités  ont  discuté  de  %(subject)s .Prochaine activivité  : %(activity)s"
 
 msgid "save-finance"
 msgstr "Merci %(first_name)s %(last_name)s (CGC de %(village)s ) dispose apres "
@@ -210,7 +210,7 @@ msgstr "Merci %(first_name)s %(last_name)s.Votre emission d'aujourd'hui avait "
 "pour theme %(theme)s .Il s'agissait d'un %(showtype)s en %(showlocation)s"
 
 msgid "save-mobilization"
-msgstr "Merci %(first_name)s %(last_name)s (CGC de %(village)s ) a organise"
+msgstr "Merci %(first_name)s %(last_name)s (CGC de %(village)s ) a organisé"
 " dans un %(location)s de %(village)s un %(theme)s avec %(attendees)s personnes de %(villages)s villages"
 
 msgid  "relay-exist"

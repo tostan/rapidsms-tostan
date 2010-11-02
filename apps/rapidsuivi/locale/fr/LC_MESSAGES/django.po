@@ -45,9 +45,6 @@ msgstr "Radio"
 msgid "My Village"
 msgstr "Mon Village"
 
-#: models.py:85
-msgid "Village adopte"
-msgstr "Village Adopté"
 
 #: models.py:86
 msgid "Other Village"
@@ -92,22 +89,6 @@ msgstr "Activite generatrice de revevus"
 msgid "Youth protection"
 msgstr "Protection jeunesse"
 
-#: models.py:103 models.py:127
-msgid "Social Activity"
-msgstr "Activite socilale"
-
-#: models.py:104
-msgid "Conflit Resolution"
-msgstr "Resolution de conflit"
-
-#: models.py:105 models.py:129
-msgid "Microcredit"
-msgstr "Microcredit"
-
-#: models.py:106
-msgid "External RElation"
-msgstr "Relations externes"
-
 #: models.py:107
 msgid "Others"
 msgstr "Autres"
@@ -120,29 +101,9 @@ msgstr "Assainissement-Set Settal"
 msgid "Sensibilisation etat Civil"
 msgstr "Sensibilisation etat Civil"
 
-#: models.py:112
-msgid "Sensibilisation inscription des enfants a l'ecole"
-msgstr "Sensibilisation inscription des enfants a l'ecole"
-
-#: models.py:113 models.py:114
-msgid "Sensibilisation Paludisme"
-msgstr "Sensibilisation Paludisme"
-
-#: models.py:115
-msgid "Sensibilisation sur la sante de la femme et de la fille"
-msgstr "Sensibilisation sur la sante de la femme et de la fille"
-
 #: models.py:116
 msgid "Vente produit divers"
 msgstr "Vente produit divers"
-
-#: models.py:117
-msgid "Apui Structure de Sante"
-msgstr "Apui Structure de Sante"
-
-#: models.py:118
-msgid "Reception de delegation"
-msgstr "Reception de delegation"
 
 #: models.py:119 models.py:131
 msgid "Other"
@@ -179,6 +140,50 @@ msgstr "Awade1"
 #: models.py:188
 msgid "Awade2"
 msgstr "Awade2"
+
+
+# ********RADIO************
+
+msgid "Sante"
+msgstr "Santé"
+msgid  "Activite sociale"
+msgstr "Activité sociale"
+msgid  "Microcredit"
+msgstr "Microcrédit"
+
+
+msgid "En differe"
+msgstr "En differé"
+
+msgid "Avec invite"
+msgstr "Avec invité"
+
+
+
+
+#******************
+#******CMC*******
+
+msgid "Village adopte"
+msgstr "Village adopté"
+
+
+msgid "Protection de l'enfance"
+msgstr "Protéction de l'enfance"
+
+
+msgid "Sensibilisation sur la sante de la femme et de la fille"
+msgstr "Sensibilisation sur la santé de la femme et de la fille"
+
+msgid "Apui Structure de Sante"
+msgstr "Apui Structure de Santé"
+
+
+msgid "Reception de delegation"
+msgstr "Récéption de delegation"
+
+
+#***********************
 
 msgid "register-relay"
 msgstr "Merci %(first_name)s %(last_name)s.Vous etes bien inscrit àRapidSuivi en tant que %(title)s de %(village)s."

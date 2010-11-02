@@ -202,23 +202,23 @@ class App (rapidsms.app.App):
         """ Get argument to fill the reunion add success response"""
         cmc  = kwargs.get("cmc",None)
         return {
-                    "first_name":cmc.relay.first_name ,
-                    "last_name":cmc.relay.last_name ,
-                    "members":cmc.num_members ,
-                    "guests":cmc.num_guests ,
-                    "activity":cmc.get_activity_id_display(),
-                    "village":cmc.relay.village_suivi.village.name,
-                    "subject":cmc.get_subject_id_display()
+                    "first_name":  cmc.relay.first_name ,
+                    "last_name":   cmc.relay.last_name ,
+                    "members":     cmc.num_members ,
+                    "guests":      cmc.num_guests ,
+                    "activity":    _t("fr",cmc.get_activity_id_display()),
+                    "village":     cmc.relay.village_suivi.village.name,
+                    "subject":     _t("fr",cmc.get_subject_id_display())
          }
     def _get_save_finance_args (self ,**kwargs):
         """ Get the arguement dict to fill the save finance response """
         cmc  = kwargs.get ("cmc" ,None)
         return {
-                    "first_name":cmc.relay.first_name ,
-                    "last_name":cmc.relay.last_name ,
-                    "village":cmc.relay.village_suivi.village.name,
-                    "balance_com": cmc.balance_com ,
-                    "balance_bank":cmc.balance_bank
+                    "first_name":   cmc.relay.first_name ,
+                    "last_name":    cmc.relay.last_name ,
+                    "village":      cmc.relay.village_suivi.village.name,
+                    "balance_com":  cmc.balance_com ,
+                    "balance_bank": cmc.balance_bank
          }
     def _get_save_mobilization_args (self,**kwargs):
         """ Get the dict arguement response to fill into the save moblilization success response """
@@ -227,23 +227,21 @@ class App (rapidsms.app.App):
                     "first_name":   cmc.relay.first_name ,
                     "last_name":    cmc.relay.last_name, 
                     "attendees":    cmc.num_attendees ,
-                    "village" :   cmc.relay.village_suivi.village.name,
-                    "location":     cmc.get_location_id_display() ,
-                    # Ce qui serai mieu c'est de remplacer dans locale/django.po le theme par activity car
-		    # pour la mobilization le theme en fait c'est l'activity
-		    "theme":        cmc.get_activity_id_display() ,
+                    "village" :     cmc.relay.village_suivi.village.name,
+                    "location":     _t("fr",cmc.get_location_id_display()) ,
+		    "theme":        _t("fr",cmc.get_activity_id_display()),
                     "villages":     cmc.num_villages ,
-                    "attendees":cmc.num_attendees
+                    "attendees":    cmc.num_attendees
         }
     def _get_save_radio_args (self ,**kwargs):
         """Get args to fill the save radio succes response """
         radio  = kwargs.pop ("radio")
         return {
-                    "first_name": radio.relay.first_name ,
-                    "last_name":  radio.relay.last_name,
-                    "showtype" :  radio.get_type_id_display(),
-                    "theme":      radio.get_theme_id_display() ,
-                    "showlocation": radio.get_location_id_display()
+                    "first_name":    radio.relay.first_name ,
+                    "last_name":     radio.relay.last_name,
+                    "showtype" :     _t("fr",radio.get_type_id_display()),
+                    "theme":         _t("fr",radio.get_theme_id_display()),
+                    "showlocation":  _t("fr",radio.get_location_id_display())
         }
     
           

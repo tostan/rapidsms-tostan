@@ -209,8 +209,7 @@ class Radio(NodeSet):
         date = models.DateTimeField (default =datetime.datetime.now())
         is_read = models.BooleanField (default =False)
         message = models.CharField (max_length = 260, null =True , blank =True) 
-        
-
+        	
         def __str__(self):
 		str_ = "THEME:" +str (self.get_theme_id_display ()  if self.theme_id else "")+\
 		      ",LOCATION :" +str(self.get_location_id_display() if self.location_id else "")+\

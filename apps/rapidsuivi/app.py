@@ -147,17 +147,17 @@ class App (rapidsms.app.App):
         relay   = kwargs.get("relay" , None)    
         return {
                     "first_name":  relay.first_name,
-                    "last_name":relay.last_name,
-                    "title":  relay.get_title_id_display() ,
-                    "village":relay.village_suivi.village.name
+                    "last_name":   relay.last_name,
+                    "title":       relay.get_title_id_display() ,
+                    "village":     relay.village_suivi.village.name
     }
     def _get_register_radio_relay_args (self,**kwargs):
         """ Get argument dict to fill to the register relay  success response """
         relay   = kwargs.get("relay" , None)
         return {
                     "first_name":  relay.first_name,
-                    "last_name":relay.last_name,
-                    "title":  relay.get_title_id_display() ,
+                    "last_name":   relay.last_name,
+                    "title":       relay.get_title_id_display() ,
         }
 
     def _get_already_register_args (self,**kwargs):
@@ -165,37 +165,37 @@ class App (rapidsms.app.App):
         relay  = kwargs.get("relay" , None)
         return{
                     "first_name":  relay.first_name,
-                    "last_name":relay.last_name,
-                    "title": relay.get_title_id_display() ,
-                    "village": relay.village_suivi.village.name
+                    "last_name":   relay.last_name,
+                    "title":       relay.get_title_id_display() ,
+                    "village":     relay.village_suivi.village.name
         }
     def _get_save_class_args (self,**kwargs):
         """ Get the  arguments dict to  fill save class sucess response """
         cla = kwargs.get("classe",None)
         return { 
                     "first_name": cla.relay.first_name ,
-                    "last_name": cla.relay.last_name, 
-                    "session": cla.num_session ,
-                    "title" :cla.get_title_id_display(),
-                    "cohort" : cla.get_cohort_id_display(),
-                    "village": cla.relay.village_suivi.village.name, 
-                    "women": cla.num_women ,
-                    "men":cla.num_men  ,
-                    "girls":cla.num_girls ,
-                    "boys" : cla.num_boys
+                    "last_name":  cla.relay.last_name, 
+                    "session":    cla.num_session ,
+                    "title" :     cla.get_title_id_display(),
+                    "cohort" :    cla.get_cohort_id_display(),
+                    "village":    cla.relay.village_suivi.village.name, 
+                    "women":      cla.num_women ,
+                    "men":        cla.num_men  ,
+                    "girls":      cla.num_girls ,
+                    "boys" :      cla.num_boys
         }
          
     def _get_update_class_args (self,**kwargs):
         """Get arguement to fill into the response arg for success update """
         abs_cla  =kwargs.get("classe",None)
         return    {
-                    "first_name":abs_cla.relay.first_name, 
-                    "last_name":abs_cla.relay.last_name ,
-                    "women" : abs_cla.num_women_dropped ,
-                    "men": abs_cla.num_men_dropped ,      
-                    "girls": abs_cla.num_girls_dropped ,
-                    "boys": abs_cla.num_boys_dropped ,
-                    "title": abs_cla.get_title_id_display()
+                    "first_name":  abs_cla.relay.first_name, 
+                    "last_name":   abs_cla.relay.last_name ,
+                    "women" :      abs_cla.num_women_dropped ,
+                    "men":         abs_cla.num_men_dropped ,      
+                    "girls":       abs_cla.num_girls_dropped ,
+                    "boys":        abs_cla.num_boys_dropped ,
+                    "title":       abs_cla.get_title_id_display()
          }     
     
     def _get_save_reunion_args (self,**kwargs):

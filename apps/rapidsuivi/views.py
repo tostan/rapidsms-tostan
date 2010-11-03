@@ -79,7 +79,6 @@ def calendar(req, template="rapidsuivi/calendar.html"):
         # Truncate the relay list with the given args dict 
         if all.count ()>0:
             all =all.filter (**relay_args)
-        return  HttpResponse ("".join([ unicode (r)  for r in all ]))	
 	# Get the actor [cmc , class , or radio ] , please dont select village if you need radio host
         if "actor" in req.POST and  req.POST.get("actor") not in ["", "all"]:
                    actor  =req.POST["actor"]

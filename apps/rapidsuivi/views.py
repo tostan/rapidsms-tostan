@@ -88,10 +88,14 @@ def calendar(req, template="rapidsuivi/calendar.html"):
 		   if  actor   =="3":
 		       context["radios"] = Radio.objects.filter(relay__in =all) 
 			                   
-                        
-   	else :
-             context  ["cmcs"]   =Cmc.objects.all ()
+        else :
+		
+             context  ["cmcs"]   =Cmc.objects.all ()	
+             context  ["classes"]=Class.objects.all()
+	     context  ["radios"] =Radio.objects.all()
+    else :
              context  ["classes"]=Class.objects.all ()
+             context  ["cmcs"]   =Cmc.objects.all ()
 	     context  ["radios"] =Radio.objects.all()
     # Now We have a liste of cmcs  , relays , and  radios we can go to 
     # go to  format data  for calendar UI by providing dict data to fill

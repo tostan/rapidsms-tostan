@@ -83,9 +83,9 @@ def calendar(req, template="rapidsuivi/calendar.html"):
                    actor  =req.POST["actor"]
                    if actor     =="1" :
                        context["cmcs"]   =Cmc.objects.filter (relay__in =all)
-                   elif  actor  =="2" :
+                   if  actor  =="2" :
                        context["classes"]=Class.objects.filter(relay__in =all)
-		   else actor   =="3":
+		   if  actor   =="3":
 		       context["radios"] = Radio.objects.filter(relay__in =all) 
 			                   
                         

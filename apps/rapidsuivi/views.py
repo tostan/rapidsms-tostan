@@ -89,7 +89,7 @@ def calendar(req, template="rapidsuivi/calendar.html"):
 		       context["radios"] = Radio.objects.filter(relay__in =all) 
 			                   
                         
-   	 else :
+   	else :
              context  ["cmcs"]   =Cmc.objects.all ()
              context  ["classes"]=Class.objects.all ()
 	     context  ["radios"] =Radio.objects.all()

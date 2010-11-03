@@ -89,9 +89,9 @@ def calendar(req, template="rapidsuivi/calendar.html"):
 		   if  actor   =="3":
 		       context["radios"] = Radio.objects.filter(relay__in =all) 		                   
         else :
-             context  ["cmcs"]   =Cmc.objects.all ()	
-             context  ["classes"]=Class.objects.all()
-	     context  ["radios"] =Radio.objects.all()
+             context  ["cmcs"]   =Cmc.objects.all (relay__in  =all)	
+             context  ["classes"]=Class.objects.all(relay__in =all)
+	     context  ["radios"] =Radio.objects.all(relay__in =all)
     else :
              context  ["classes"]=Class.objects.all ()
              context  ["cmcs"]   =Cmc.objects.all ()

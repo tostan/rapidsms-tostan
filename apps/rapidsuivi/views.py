@@ -331,7 +331,7 @@ def update_message (req , from_page ,message_pk ,message_instance) :
         if req.method =="POST":
 		#Si  le message est un CMC
 		if message_instance =="cmc":
-		    form  = CmcForm (data =req.POST  , instance =Cmc.objects.get (pk =int (message_pk) )
+		    form  = CmcForm (data =req.POST  , instance =Cmc.objects.get (pk =int (message_pk)))
 		    if form.is_valid():
 			form.save()
 		    else : errors = form.errors

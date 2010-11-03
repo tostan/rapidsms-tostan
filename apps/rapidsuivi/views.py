@@ -60,7 +60,7 @@ def calendar(req, template="rapidsuivi/calendar.html"):
     context =dict()
     _get_calendar_form (context)
     all= Relay.objects.all ()
-    relay_args ==dict()
+    relay_args =dict()
     if req.method =="POST":
         if "cordination" in  req.POST and req.POST["cordination"] not in ["" ,"all"] :
                     relay_args["cordination_id"] = req.POST["cordination"]
@@ -106,18 +106,12 @@ def calendar(req, template="rapidsuivi/calendar.html"):
 	
 def _get_calendar_form (context):
      """ Get the data for creating  form """
-     context ["cordination_options"] =\
-	dict (r.COORDINATION_TYPES)
-     context ["project_options"]     =\
-	dict(r.PROJECT_TYPES)
-     context ["village_options"]     =\
-	SuiviVillage.objects.values ("village__pk" , "village__name")
-     context ["actor_options"]       =\
-		dict ([
-		      ("1" , "CMC" ) , 
-		      ("2" , "CLASS") ,
-		      ("3" ,"RADIO")])
-     
+     context ["cordination_options"] =dict (r.COORDINATION_TYPES)
+     context ["project_options"]     =dict(r.PROJECT_TYPES)
+     context ["village_options"]     =SuiviVillage.objects.values ("village__pk" , "village__name")
+     context ["actor_options"]       =dict([("1" , "CMC" ) ,   ("2" , "CLASS") ,("3" ,"RADIO")])
+    
+ 
 def _get_calendar_events (context):
     """
     Parceque  , jFullCalendar attends dans son attributs events le format suivant 
@@ -140,8 +134,7 @@ def _get_calendar_events (context):
 	    # the from page as calendar {"from_page" :"calendar"}
 	    msg_ui_params= message_ui_from_class(cls)
 	    msg_ui_params.update ({"from_page":"calendar"})
-	    values ["current_message"] =\
-		MESSAGE_FOR_UI%msg_ui_params
+	    values ["current_message"] =MESSAGE_FOR_UI%msg_ui_params
             calendar_event.append (values)
     # Get cmc/CGC for the calendar UI
     if "cmcs" in context:
@@ -152,8 +145,7 @@ def _get_calendar_events (context):
             values ["is_read"] =cmc.is_read
 	    msg_ui_params = message_ui_from_cmc(cmc) 
 	    msg_ui_params.update ({"from_page" :"calendar"})
-            values ["current_message"]=\
-		MESSAGE_FOR_UI%msg_ui_params
+            values ["current_message"]=	MESSAGE_FOR_UI%msg_ui_params
             calendar_event.append (values)
 
 
@@ -166,8 +158,7 @@ def _get_calendar_events (context):
 	    values["is_read"]=radio.is_read
 	    msg_ui_params =message_ui_from_radio(radio)
 	    msg_ui_params.update({"from_page":"calendar"})
-	    values["current_message"]=\
-		MESSAGE_FOR_UI%msg_ui_params
+	    values["current_message"]=MESSAGE_FOR_UI%msg_ui_params
 	    calendar_event.append(values)
 
     if len (calendar_event):

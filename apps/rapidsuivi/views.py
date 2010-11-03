@@ -32,6 +32,8 @@ MESSAGE_FOR_UI="""<ul>\
 <li>Message envoye par :%(first_and_last_name)s</li>\
 <li>Contact :%(phone)s</li>\
 <li>Role :%(role)s</li>\
+<li>Cordination Contact : %(cordination)s</li>\
+<li>Village Contact : %(village_name)s</li>\
 <li>Date :%(date)s</li>\
 <li>--</li>\
 <li>Message:%(message)s</li>\
@@ -55,6 +57,7 @@ en provenance de ce village</li>\
 """
 
 
+
 @login_required
 def calendar(req, template="rapidsuivi/calendar.html"):
     context =dict()
@@ -65,7 +68,6 @@ def calendar(req, template="rapidsuivi/calendar.html"):
         if "cordination" in  req.POST and req.POST["cordination"] not in ["" ,"all"] :
                     relay_args["cordination_id"] = req.POST["cordination"]
                     context["cordination_selected"] =req.POST["cordination"]
-                
         if "project" in req.POST and req.POST["project"] not in ["" ,"all"]:
                     relay_args["project_id"] =req.POST["project"]
               	    context["project_selected"] = req.POST["project"]
@@ -77,7 +79,7 @@ def calendar(req, template="rapidsuivi/calendar.html"):
         # Truncate the relay list with the given args dict 
         if all.count ()>0:
             all =all.filter (**relay_args)
-        
+        return  HttpResponse ("".join([ unicode (r)  for r in all ]))	
 	# Get the actor [cmc , class , or radio ] , please dont select village if you need radio host
         if "actor" in req.POST and  req.POST.get("actor") not in ["", "all"]:
                    actor  =req.POST["actor"]
@@ -86,10 +88,8 @@ def calendar(req, template="rapidsuivi/calendar.html"):
                    if  actor  =="2" :
                        context["classes"]=Class.objects.filter(relay__in =all)
 		   if  actor   =="3":
-		       context["radios"] = Radio.objects.filter(relay__in =all) 
-			                   
+		       context["radios"] = Radio.objects.filter(relay__in =all) 		                   
         else :
-		
              context  ["cmcs"]   =Cmc.objects.all ()	
              context  ["classes"]=Class.objects.all()
 	     context  ["radios"] =Radio.objects.all()
@@ -151,8 +151,6 @@ def _get_calendar_events (context):
 	    msg_ui_params.update ({"from_page" :"calendar"})
             values ["current_message"]=	MESSAGE_FOR_UI%msg_ui_params
             calendar_event.append (values)
-
-
     # Get Radio Messages for the calendar UI
     if "radios" in context:
 	radios = context["radios"]
@@ -164,7 +162,6 @@ def _get_calendar_events (context):
 	    msg_ui_params.update({"from_page":"calendar"})
 	    values["current_message"]=MESSAGE_FOR_UI%msg_ui_params
 	    calendar_event.append(values)
-
     if len (calendar_event):
         context ["data"]  = calendar_event 
     
@@ -182,7 +179,6 @@ def map (req , template = "rapidsuivi/gmap.html"):
 	# Get the form to filter  the map
 	get_calendar_form(context)
 	villages =list()
-        
 	if req.method =="POST" and "filter" in  req.POST and req.POST["filter"]:
 		# The user is tryin to  filter  the map
 		village_set =True
@@ -191,11 +187,8 @@ def map (req , template = "rapidsuivi/gmap.html"):
                 if "cordination" in req.POST and  req.POST.get ("cordination")  not in ["" , "all"]:
                   	  relay_args["cordination_id"] = req.POST["cordination"]
  	                  context["cordination_selected"] =req.POST["cordination"]
-
-
 	        if "village" in req.POST  and  req.POST.get ("village") not in ["" , "all"]:
-                	    relay_args["village_suivi__village"] =\
-                            Village.objects.get (pk =req.POST["village"])
+                	    relay_args["village_suivi__village"] =Village.objects.get (pk =req.POST["village"])
               	       	    context["village_selected"]= req.POST["village"]
 		if all.count ()>0:
 		  all = all.filter(**relay_args)	
@@ -236,54 +229,48 @@ def map (req , template = "rapidsuivi/gmap.html"):
 
 def message_ui_from_class(classe):
 	"""Return un dict of data to fill into the MESSAGE_FOR_UI text"""
-	dict = {}
-	dict["first_and_last_name"] =\
-		classe.relay.first_name + classe.relay.last_name
-	dict["phone"]=\
-		classe.relay.contact.phone_number()
-	dict["role"]=\
-		classe.relay.get_title_id_display()
-	dict["message"] =classe.__str__() 
-        dict["date"] = classe.date.strftime ("%d-%m-%Y %H:%M:%S")
-	dict["village_pk"] =classe.relay.village_suivi.pk
-	dict["village_name"]=classe.relay.village_suivi.village.name
-	dict["message_pk"] = str(classe.pk)
-	dict["message_instance"] = "classe"
-	return dict
+	kw  = dict ()
+	kw["first_and_last_name"] =classe.relay.first_name + classe.relay.last_name
+	kw["phone"]=classe.relay.contact.phone_number()
+	kw["role"]=classe.relay.get_title_id_display()
+	kw["message"] =classe.__str__() 
+        kw["date"] = classe.date.strftime ("%d-%m-%Y %H:%M:%S")
+	kw["village_pk"] =classe.relay.village_suivi.pk
+	kw["village_name"]=classe.relay.village_suivi.village.name
+ 	kw["message_pk"] = str(classe.pk)
+	kw["cordination"] = classe.relay.get_cordination_id_display()
+	kw["message_instance"] = "classe"
+	return kw
 
 def message_ui_from_cmc(cmc):
 	"""Return a dict of data to fill into the MESSAGE_FOR_UI text"""
-	dict ={}
-	dict["first_and_last_name"]=\
-		cmc.relay.first_name + cmc.relay.last_name
-	dict["phone"]=\
-		cmc.relay.contact.phone_number()
-	dict["role"]=\
-		cmc.relay.get_title_id_display()
-	dict["message"] = cmc.__str__()
-        dict["date"] = cmc.date.strftime ("%d-%m-%Y %H:%M:%S")
-	dict["village_pk"] =cmc.relay.village_suivi.pk
-	dict["village_name"]=cmc.relay.village_suivi.village.name
-	dict["message_pk"] =str(cmc.pk)
-        dict["message_instance"] ="cmc"	
-	return dict
+	kw=dict ()
+	kw["first_and_last_name"]=cmc.relay.first_name + cmc.relay.last_name
+	kw["phone"]=cmc.relay.contact.phone_number()
+	kw["role"] =cmc.relay.get_title_id_display()
+	kw["message"] = cmc.__str__()
+        kw["date"] = cmc.date.strftime ("%d-%m-%Y %H:%M:%S")
+	kw["village_pk"] =cmc.relay.village_suivi.pk
+	kw["village_name"]=cmc.relay.village_suivi.village.name
+	kw["message_pk"] =str(cmc.pk)
+	kw["cordination"] = cmc.relay.get_cordination_id_display()
+        kw["message_instance"] ="cmc"	
+	return kw
 
 def message_ui_from_radio(radio):
 	""" Return a dict of data  to fill  into MESSAGE_UI text """
-	dict ={}
-	dict["first_and_last_name"]=\
-		radio.relay.first_name + radio.relay.last_name
-	dict["phone"]=\
-		radio.relay.contact.phone_number()
-        dict["role"]=\
-		radio.relay.get_title_id_display()
-  	dict["message"]=radio.__str__()
-        dict["date"] = radio.date.strftime ("%d-%m-%Y %H:%M:%S")
-	dict["village_pk"] =radio.relay.village_suivi.pk
-	dict["village_name"]=radio.relay.village_suivi.village.name	
-	dict["message_pk"] = str(radio.pk)
-        dict["message_instance"] = "radio"
-	return dict 
+	kw=dict()
+	kw["first_and_last_name"]=radio.relay.first_name + radio.relay.last_name
+	kw["phone"]=radio.relay.contact.phone_number()
+        kw["role"]=radio.relay.get_title_id_display()
+  	kw["message"]=radio.__str__()
+        kw["date"] = radio.date.strftime ("%d-%m-%Y %H:%M:%S")
+	kw["village_pk"] =radio.relay.village_suivi.pk
+	kw["village_name"]=radio.relay.village_suivi.village.name	
+	kw["message_pk"] = str(radio.pk)
+	kw["cordination"] = ""
+        kw["message_instance"] = "radio"
+	return kw 
         
 def message_ui_from_village (current_village_message):
 	"""Return a dict of data to fill into the MESSAGE_FOR_UI text
@@ -344,50 +331,35 @@ def update_message (req , from_page ,message_pk ,message_instance) :
         if req.method =="POST":
 		#Si  le message est un CMC
 		if message_instance =="cmc":
-		    ins = Cmc.objects.get (pk =int(message_pk))
-		    form  = CmcForm (
-			data =req.POST  , instance = ins
-			)
+		    form  = CmcForm (data =req.POST  , instance =Cmc.objects.get (pk =int (message_pk) )
 		    if form.is_valid():
 			form.save()
 		    else : errors = form.errors
 		# If the given message is a  class
 		if message_instance =="classe":
-		     ins =Class.objects.get (pk =int (message_pk))
-		     form = ClassForm(data = req.POST , instance = ins)
+		     form = ClassForm(data = req.POST , instance = Class.objects.get (pk =int (message_pk)))
 		     if form.is_valid():
 			form.save()
 		     else: errors = form.errors
 		#If the given message is radio type message
 		if message_instance =="radio":
-		     ins = Radio.objects.get (pk =int (message_pk))
-		     form = RadioForm (data = req.POST , instance = ins)
+		     form = RadioForm (data = req.POST , instance = Radio.objects.get(pk = int (message_pk)))
 		     if  form.is_valid ():
 		     	form.save()
-		     else : errors = form.errors
-		
+		     else : errors = form.errors	
 		if not len(errors):
 	        	return HttpResponseRedirect(reverse("map") if from_page =="map" else reverse("calendar"))
 		else :
 			context ["errors"] =errors
         form =None		 
 	if  message_instance =="cmc":
-		 ins = Cmc.objects.get (pk =int(message_pk))
-		 form = CmcForm (
-		 instance = ins)
+		 form = CmcForm ( instance = Cmc.objects.get (pk =int(message_pk)))
 	if message_instance =="classe":	
-		ins  = Class.objects.get (pk =int (message_pk))
-		form =ClassForm(
-		instance = ins)
-	if message_instance =="radio":
-			
-		ins = Radio.objects.get(pk =int(message_pk))
-		form =RadioForm(
-		instance =ins)
+		form =ClassForm(instance  = Class.objects.get (pk =int (message_pk)))
+	if message_instance =="radio":	
+		form =RadioForm(instance = Radio.objects.get(pk =int(message_pk)))
         context["form"] =form
-	return render_to_response (req ,
-		 template ,
-		 context)
+	return render_to_response (req , template ,context)
 	
 def export_message (req,village_pk):
 	"""Given a village I am going  to export all CMC , RADIO , AND CLASS
@@ -407,10 +379,8 @@ def export_message (req,village_pk):
 	writer  = UnicodeWriter(response)
 	# I dont think if the is the best place to put this
 	# Rowena should check
-	fields = {"message" : _("Message Recu par Tostan"), 
-		  "relay": _("Le Relay") ,
-		  "date" :_("Date  de Reception"),
-		  "type_id":_("Type du message")
+	fields = {"message" : _("Message Recu par Tostan"),   "relay": _("Le Relay") ,
+		  "date" :_("Date  de Reception"), 	      "type_id":_("Type du message")
 	}			
         writer.writerow (fields.values ())
 	for obj  in  data :

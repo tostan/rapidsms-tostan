@@ -352,7 +352,7 @@ class SuiviVillage(models.Model):
 
 
 	if len (last_3)>0:
-		return last_3.sort(lambda x ,y: cmp(x.date ,y.date))
+		last_3.sort(lambda x ,y: cmp(x.date ,y.date))
 		return last_3[-1]
 	return None
 

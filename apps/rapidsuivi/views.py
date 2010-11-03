@@ -57,53 +57,39 @@ en provenance de ce village</li>\
 
 @login_required
 def calendar(req, template="rapidsuivi/calendar.html"):
-    context ={}
-    calendar_form (context)
-    all_relays  = Relay.objects.all ()
-    relay_filtres  = {}
+    context =dict()
+    _get_calendar_form (context)
+    all= Relay.objects.all ()
+    relay_args ==dict()
     if req.method =="POST":
-        if "cordination" in  req.POST :
-                if req.POST.get ("cordination")  not in ("" , "all"):
-                    relay_filtres["cordination_id"] = req.POST["cordination"]
-                context["cordination_selected"] =req.POST["cordination"]
+        if "cordination" in  req.POST and req.POST["cordination"] not in ["" ,"all"] :
+                    relay_args["cordination_id"] = req.POST["cordination"]
+                    context["cordination_selected"] =req.POST["cordination"]
                 
-        if "project" in req.POST:
-                if req.POST.get("project") not in ("" , "all"):
-                    relay_filtres["project_id"] =req.POST["project"]
-                context["project_selected"] = req.POST["project"]
-        
-        if "village" in req.POST:
-                if req.POST.get ("village") not in ("" , "all"):
-                    relay_filtres["village_suivi__village"] =\
+        if "project" in req.POST and req.POST["project"] not in ["" ,"all"]:
+                    relay_args["project_id"] =req.POST["project"]
+              	    context["project_selected"] = req.POST["project"]
+        # Ne selectionne pas les villages pour les host radios  car ils n'ont pas de villages
+        if "village" in req.POST and req.POST["village"]  not  in ["", "all"]:
+                    relay_args["village_suivi__village"] =\
 			 Village.objects.get (pk =req.POST["village"])
-                context["village_selected"]= req.POST["village"]
-                   
-        if len (relay_filtres)>0:
-            all_relays =all_relays.filter (**relay_filtres)
+                    context["village_selected"]= req.POST["village"]
+        # Truncate the relay list with the given args dict 
+        if all.count ()>0:
+            all =all.filter (**relay_args)
         
-        if "actor" in req.POST:
-             if req.POST.get("actor") not in ("", "all"):
-                   cmc_or_class_or_radio =req.POST["actor"]
-                   if cmc_or_class_or_radio =="1" :
-                       context["cmcs"]  =\
-		       Cmc.objects.filter (relay__in =all_relays)
-                   if cmc_or_class_or_radio =="2" :
-                       context["classes"]=\
-		       Class.objects.filter(relay__in=all_relays)
-		   if cmc_or_class_or_radio =="3":
-		       context["radios"]=\
-		       Radio.objects.filter(relay__in =all_relays) 
+	# Get the actor [cmc , class , or radio ] , please dont select village if you need radio host
+        if "actor" in req.POST and  req.POST.get("actor") not in ["", "all"]:
+                   actor  =req.POST["actor"]
+                   if actor     =="1" :
+                       context["cmcs"]   =Cmc.objects.filter (relay__in =all)
+                   elif  actor  =="2" :
+                       context["classes"]=Class.objects.filter(relay__in =all)
+		   else actor   =="3":
+		       context["radios"] = Radio.objects.filter(relay__in =all) 
 			                   
-             else:
-                      context["cmcs"]    =\
-				Cmc.objects.filter (relay__in=all_relays)
-                      context["classes"] =\
-				Class.objects.filter (relay__in =all_relays)
-		      context["radios"]  =\
-				Radio.objects.filter()
-             context["actor_selected"] =req.POST["actor"]
                         
-    else :
+   	 else :
              context  ["cmcs"]   =Cmc.objects.all ()
              context  ["classes"]=Class.objects.all ()
 	     context  ["radios"] =Radio.objects.all()
@@ -114,10 +100,12 @@ def calendar(req, template="rapidsuivi/calendar.html"):
     # ***date for caledar event 
     # ***is_read to  determine  class css  for  the calendar event 
     # So if message is already readed the callendar is **RED** else the calendar is *GREEN*
-    calendar_events (context)
+    # Get calendar event to display into  the map
+    _get_calendar_events (context)
     return render_to_response (req ,template, context)
 	
-def calendar_form (context):
+def _get_calendar_form (context):
+     """ Get the data for creating  form """
      context ["cordination_options"] =\
 	dict (r.COORDINATION_TYPES)
      context ["project_options"]     =\
@@ -130,7 +118,7 @@ def calendar_form (context):
 		      ("2" , "CLASS") ,
 		      ("3" ,"RADIO")])
      
-def calendar_events (context):
+def _get_calendar_events (context):
     """
     Parceque  , jFullCalendar attends dans son attributs events le format suivant 
     events =[     
@@ -195,35 +183,31 @@ def map (req , template = "rapidsuivi/gmap.html"):
 	"""
 	# I a using here the calendar form function again here because it contain all 
 	# data to fill  form , regionnals coordinations  , villages list ......
-	context ={}
-	calendar_form(context)
-	village_set =False
+	context =dict()
+	# Get the form to filter  the map
+	get_calendar_form(context)
+	villages =list()
         
 	if req.method =="POST" and "filter" in  req.POST and req.POST["filter"]:
 		# The user is tryin to  filter  the map
 		village_set =True
-		all_relays  = Relay.objects.all()
-		relay_filtres ={}
-                if "cordination" in req.POST:
-			if req.POST.get ("cordination")  not in ("" , "all"):
-                  	  relay_filtres["cordination_id"] = req.POST["cordination"]
- 	                context["cordination_selected"] =req.POST["cordination"]
+		all= Relay.objects.all()
+		relay_args=dict()
+                if "cordination" in req.POST and  req.POST.get ("cordination")  not in ["" , "all"]:
+                  	  relay_args["cordination_id"] = req.POST["cordination"]
+ 	                  context["cordination_selected"] =req.POST["cordination"]
 
 
-	        if "village" in req.POST:
-         	       if req.POST.get ("village") not in ("" , "all"):
-                	    relay_filtres["village_suivi__village"] =\
+	        if "village" in req.POST  and  req.POST.get ("village") not in ["" , "all"]:
+                	    relay_args["village_suivi__village"] =\
                             Village.objects.get (pk =req.POST["village"])
-              	       context["village_selected"]= req.POST["village"]
-		if len (relay_filtres):
-		  all_relays  = all_relays.filter(**relay_filtres)	
-		if all_relays.count()>0:
-			villages  =SuiviVillage.objects.filter (pk__in =[ v.pk for  v in  [r.village_suivi  for r in all_relays if r.village_suivi ]])
-		else : 
-			villages =[]
-		        village_set =False
-	if  not village_set:
-		villages =  SuiviVillage.objects.all ()
+              	       	     context["village_selected"]= req.POST["village"]
+		if all.count ()>0:
+		  all = all.filter(**relay_args)	
+		if all.count()>0:
+			villages  =SuiviVillage.objects.filter (pk__in =[ v.pk for  v in  [r.village_suivi  for r in all_relays if r.village_suivi])
+	
+	if not  len (villages):	villages =  SuiviVillage.objects.all ()
         gmap_data  =[]
         for suivi_village in villages :
              dict ={}

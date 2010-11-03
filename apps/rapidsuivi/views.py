@@ -199,7 +199,7 @@ def map (req , template = "rapidsuivi/gmap.html"):
 	if not  len (villages):	villages =  SuiviVillage.objects.all ()
         gmap_data  =[]
         for suivi_village in villages :
-             dict ={}
+             values ={}
 	     icon = "red"
 	     # Le dernier message recu par le village ou bien 
 	     # le dernier message qui n'est pas encore ete lu
@@ -212,15 +212,15 @@ def map (req , template = "rapidsuivi/gmap.html"):
 		msg_ui_from_vil =message_ui_from_village  (cur_msg)
 		# Add page param
 		msg_ui_from_vil.update({"from_page":"map"})
-		dict["message"] =MESSAGE_FOR_UI%msg_ui_from_vil
+		values["message"] =MESSAGE_FOR_UI%msg_ui_from_vil
 	     else :
-		dict["message"]=EMPTY_VILLAGE_MESSAGE
-	     dict["name"] = suivi_village.village.name
-	     dict.update ({"gmap_latitude": suivi_village.village.location.latitude})
-             dict.update ({"gmap_longitude":suivi_village.village.location.longitude})
+		values["message"]=EMPTY_VILLAGE_MESSAGE
+	     values["name"] = suivi_village.village.name
+	     values.update ({"gmap_latitude": suivi_village.village.location.latitude})
+             values.update ({"gmap_longitude":suivi_village.village.location.longitude})
 	     # Quel icon pour goolemap (rouge  ou vert 
-	     dict["icon"]=icon
-	     gmap_data.append (dict)
+	     values["icon"]=icon
+	     gmap_data.append (values)
 
         #return HttpResponse (gmap_data)
         context ["villages"]  =gmap_data

@@ -201,7 +201,7 @@ def map (req , template = "rapidsuivi/gmap.html"):
 	        if "village" in req.POST  and  req.POST.get ("village") not in ["" , "all"]:
                 	    relay_args["village_suivi__village"] =\
                             Village.objects.get (pk =req.POST["village"])
-              	       	     context["village_selected"]= req.POST["village"]
+              	       	    context["village_selected"]= req.POST["village"]
 		if all.count ()>0:
 		  all = all.filter(**relay_args)	
 		if all.count()>0:

@@ -323,33 +323,38 @@ class SuiviVillage(models.Model):
         I'am going to check if there a a RADIO message to read ,
         If not i'am going the return the last message received by the village
         """
-        try:
-                return Cmc.objects.filter(relay__village_suivi=self , is_read=False)\
-                        .order_by("-date")[0]
-        except Exception ,e:
-                pass
-        try:
-                return Class.objects.filter (realay__village_suivi =self , is_read=False)\
-                        .order_by("-date")[0]
-        except Exception ,e:
-                pass
-        try:
-                return Radio.objects.filter(relay__village_suivi =self , is_read=False)\
-			.order_by("-date")[0]
-        except Exception , e:
-                pass
-
+        all = Cmc.objects.filter(relay__village_suivi=self , is_read=False)
+        if all.count ()>0:
+	      return  all.order_by("-date")[0]
+        all =Class.objects.filter (relay__village_suivi =self , is_read=False)
+        if all.count ()>0:     
+	     return  all.order_by("-date")[0]
+        all =Radio.objects.filter(relay__village_suivi =self , is_read=False)
+	if all.count ()>0:		
+	     return  all.order_by("-date")[0] 
 	# Ok I dont have a choice return the last sms received  by village
+	last_3= []
 	try:
-		last_cmc =Cmc.objects.filter (relay__village_suivi =self)\
-			.order_by ("-date")[0]
-		last_cls =Class.objects.filter (relay__village_suivi= self)\
-			.order_by('-date')[0]
-		last_radio =Radio.objects.filter(relay__village_suivi =self)\
-			.oder_by ("-date")[0]
-		sorted([last_cmc , last_cls ,last_radio] ,key =lambda x:x.date)[-1]
-	except Exception , e:
-		return None
+		if Radio.objects.latest("date"):
+			last_3.append (Radio.objects.latest("date"))
+	except  Radio.DoesNotExist :
+		pass
+	try:
+		if Cmc.objects.latest("date"):
+			last_3.append( Cmc.objects.latest("date"))
+	except Cmc.DoesNotExist :
+		pass
+	try:
+		if  Class.objects.latest ("date"):
+			last_3.append (Class.objects.latest("date"))
+	except Class.DoesNotExist :
+		pass
+
+
+	if len (last_3)>0:
+		return last_3.sort(lambda x ,y: cmp(x.date ,y.date))
+		return last_3[-1]
+	return None
 
 
 

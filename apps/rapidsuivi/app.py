@@ -267,16 +267,18 @@ class App (rapidsms.app.App):
                 pass
                 
             except VillageNotExistError , e:
-                #Check the project args  , village latitude and village longitude
-		check_args =[args [1] ,args [2] ,args [3]]
-		if  self.__check_radio (*check_args):
-			rel =self.__register_relay (message , *args , radio=True)
-			text =_st(rel ,"register-relay-radio")%\
-			      self._get_register_radio_relay_args(relay=rel)
-			message.respond(text[:159])
-			return True
+                try:
+			#Check the project args  , village latitude and village longitude
+			check_args =[args [1] ,args [2] ,args [3]]
+			if  self.__check_radio (*check_args):
+				rel =self.__register_relay (message , *args , radio=True)
+				text =_st(rel ,"register-relay-radio")%\
+			      	self._get_register_radio_relay_args(relay=rel)
+				message.respond(text[:159])
+				return True
 		# Else this is not a radio , please raise village not exist 
-                traceback.print_exc()
+                except Exception :
+			pass
                 message.respond(_t("fr","no-village-found"))
                 return True
             except Exception, e :

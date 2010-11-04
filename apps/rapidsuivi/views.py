@@ -28,7 +28,7 @@ Because to MESSAGE_FOR_UI work like an html page  displayed from
 map and calendar I need to flag which page the Widget MESSAGE_FOR_UI
 is displayed. So I keep a flag named *from_page* into the classe.
 """
-MESSAGE_FOR_UI="""<ul>\
+GOOGLE_QTIP_WIDGET="""<ul>\
 <li>Message envoye par :%(first_and_last_name)s</li>\
 <li>Contact :%(phone)s</li>\
 <li>Role :%(role)s</li>\
@@ -39,8 +39,15 @@ MESSAGE_FOR_UI="""<ul>\
 <li>Message:%(message)s</li>\
 <li>\
 <li>--</li>\
-<li><a href='/rapidsuivi/update_message_status/%(from_page)s/%(message_pk)s'>[MARQUER LE MESSAGE COMME LU]</a></li>\
-<li><a href='/rapidsuivi/update_message/%(from_page)s/%(message_pk)s/%(message_instance)s'>[MODIFIER LE MESSAGE]</a></li>\
+<li>\
+<a href='/rapidsuivi/update_message_status/%(from_page)s/%(message_pk)s'>\
+[MARQUER LE MESSAGE COMME LU]</a>
+</li>\
+<li>\
+<a href='/rapidsuivi/update_message/%(from_page)s/%(message_pk)s/%(message_instance)s'>\
+[MODIFIER LE MESSAGE]\
+</a>\
+</li>\
 <li>--</li>\
 <a href ='/rapidsuivi/export_village_message/%(village_pk)s'>\
 Exporter sous excel les messages de %(village_name)s\
@@ -61,41 +68,46 @@ en provenance de ce village</li>\
 @login_required
 def calendar(req, template="rapidsuivi/calendar.html"):
     context =dict()
-    _get_calendar_form (context)
     all= Relay.objects.all ()
     relay_args =dict()
     if req.method =="POST":
-        if "cordination" in  req.POST and req.POST["cordination"] not in ["" ,"all"] :
-                    relay_args["cordination_id"] = req.POST["cordination"]
-                    context["cordination_selected"] =req.POST["cordination"]
-        if "project" in req.POST and req.POST["project"] not in ["" ,"all"]:
-                    relay_args["project_id"] =req.POST["project"]
-              	    context["project_selected"] = req.POST["project"]
+        p =req.POST
+	if ("cordination" in p  and p.get("cordination") not in ["" ,"all"]):
+                    relay_args.update({"cordination_id" :p.get("cordination")})
+                    context.update({"cordination_selected": p.get("cordination")})
+        if ("project" in p  and p.get("project") not in ["" ,"all"]):
+                    relay_args.update({"project_id" :p.get("project")})
+              	    context.update({"project_selected" :p.get("project")})
         # Ne selectionne pas les villages pour les host radios  car ils n'ont pas de villages
-        if "village" in req.POST and req.POST["village"]  not  in ["", "all"]:
-                    relay_args["village_suivi__village"] =\
-			 Village.objects.get (pk =req.POST["village"])
-                    context["village_selected"]= req.POST["village"]
+        if ("village" in p  and p.get("village") not  in ["", "all"]):
+                    relay_args.update({"village_suivi__village" :\
+			 	   Village.objects.get (pk =p.get("village"))})
+                    context.update({"village_selected": p.get("village")})
         # Truncate the relay list with the given args dict 
         if all.count ()>0:
             all =all.filter (**relay_args)
 	# Get the actor [cmc , class , or radio ] , please dont select village if you need radio host
-        if "actor" in req.POST and  req.POST.get("actor") not in ["", "all"]:
+        if ("actor" in p  and  p.get("actor") not in ["", "all"]):
                    actor  =req.POST["actor"]
                    if actor     =="1" :
-                       context["cmcs"]   =Cmc.objects.filter (relay__in =all)
-                   if  actor  =="2" :
-                       context["classes"]=Class.objects.filter(relay__in =all)
-		   if  actor   =="3":
-		       context["radios"] = Radio.objects.filter(relay__in =all) 		                   
+                       context.update ({
+			"cmcs":Cmc.objects.filter (relay__in =all)
+			})
+                   elif  actor  =="2" :
+                       context.update({
+			"classes":Class.objects.filter(relay__in =all)
+			})
+		   elif  actor   =="3":
+		       context.update({
+			"radios" :Radio.objects.filter(relay__in =all) 		     
+		       })
+		   else : pass              
         else :
-             context  ["cmcs"]   =Cmc.objects.filter(relay__in  =all)	
-             context  ["classes"]=Class.objects.filter(relay__in =all)
-	     context  ["radios"] =Radio.objects.filter(relay__in =all)
+	     for k , v  in {"cmc" : Cmc , "classes": Class , "radios":Radio}.items():
+             	context.update({k  :v.objects.filter(relay__in  =all)})
     else :
-             context  ["classes"]=Class.objects.all ()
-             context  ["cmcs"]   =Cmc.objects.all ()
-	     context  ["radios"] =Radio.objects.all()
+	     for k , v  in {"cmc" : Cmc , "classes": Class , "radios":Radio}.items():
+             	context.update({k  :v.objects.all()})
     # Now We have a liste of cmcs  , relays , and  radios we can go to 
     # go to  format data  for calendar UI by providing dict data to fill
     # for exemple into  MESSAGE_FOR_UI , 
@@ -104,18 +116,77 @@ def calendar(req, template="rapidsuivi/calendar.html"):
     # ***is_read to  determine  class css  for  the calendar event 
     # So if message is already readed the callendar is **RED** else the calendar is *GREEN*
     # Get calendar event to display into  the map
-    _get_calendar_events (context)
+    
+    context.update(_get_form_data())
+    context.update ( _get_qtip_data(context))
     return render_to_response (req ,template, context)
 	
-def _get_calendar_form (context):
+def _get_form_data ():
      """ Get the data for creating  form """
-     context ["cordination_options"] =dict (r.COORDINATION_TYPES)
-     context ["project_options"]     =dict(r.PROJECT_TYPES)
-     context ["village_options"]     =SuiviVillage.objects.values ("village__pk" , "village__name")
-     context ["actor_options"]       =dict([("1" , "CMC" ) ,   ("2" , "CLASS") ,("3" ,"RADIO")])
-    
+     return  {
+	"cordination_options": dict (r.COORDINATION_TYPES),\
+        "project_options":     dict(r.PROJECT_TYPES),\
+        "village_options":     SuiviVillage.objects.values ("village__pk" , "village__name"),\
+    	"actor_options":       dict([("1" , "CMC" ) ,   ("2" , "CLASS") ,("3" ,"RADIO")])
+    }
  
-def _get_calendar_events (context):
+def _get_qtip_data_object(obj,from_page =None):
+	qtip_data = {}
+	if isinstance (obj , Class):
+		_title  ="CLASSE"
+		type = "classe"
+	elif isinstance(obj, Cmc):
+		_title ="CMC"
+		type ="cmc"
+	elif isinstance (obj , Radio):
+		_title ="RADIO"
+		type ="radio"
+	else :
+		_title =""
+		type  =""
+	
+	if hasattr (obj ,relay):
+		relay = obj.relay
+		qtip_data.update({"title":_title})
+		qtip_data.update({"start": obj.date})
+		qtip_data.update({"is_read": obj.is_read})	
+	   	qtip_data.update({
+		"first_and_last_name" :relay.first_name + relay.last_name
+		})
+        	qtip_data.update({
+		"phone" :relay.contact.phone_number()
+		})
+        	qtip_data.update({
+		"role" :relay.get_title_id_display()
+		})
+        	qtip_data.update(
+		{"message":obj.__str__()}
+		)
+        	qtip_data.update(
+		{"date": obj.date.strftime ("%d-%m-%Y %H:%M:%S")}
+		)
+        	qtip_data.update(
+		{"village_pk"  : relay.village_suivi.pk}
+        	)
+		qtip_data.update(
+		{"village_name": relay.village_suivi.village.name}
+		)
+        	qtip_data.update(
+		{"message_pk" : str(obj.pk)}
+		)
+        	qtip_data.update(
+		 {"cordination" :relay.get_cordination_id_display()})
+        	qtip_data.update(
+		{"message_instance" : type})
+		qtip_data.update({"from_page" : from_page})
+        	google_qtip_widget_data = GOOGLE_QTIP_WIDGET%qtip_data
+		qtip_data.update(
+		{"current_message" :google_qtip_widget_data})
+		return qtip_data
+
+
+	
+def _get_qtip_data(context):
     """
     Parceque  , jFullCalendar attends dans son attributs events le format suivant 
     events =[     
@@ -125,9 +196,31 @@ def _get_calendar_events (context):
     ]
     Cette methode parcours les classes et cmcs pour retouner le bon format
     """
-    calendar_event =[]
+    data=[]
+
+    if "classes" in context:
+	if len(context.get("classes")):
+		classes = context.get("classes")
+		for classe in classes:
+			d=_get_qtip_data_object(classe)
+			data.append (d)
+    if "cmcs" in context :
+	if len(context.get("cmcs")):
+		cmcs = context.get ("cmcs")
+		for cmc in cmcs:
+			d =_get_qtip_data_object(cmc)
+			data.append (d)
+    if "radios" in context:
+	if len (context.get ("radios")):
+		radios = context.get ("radios")
+		for  radio in radios:
+			d= _get_qtip_data_object(radio)
+			data.append(d)
+    if  len (context):
+    	context["data"] =data
+		
     # Get classes for the calendar UI
-    if "classes" in context :
+    """if "classes" in context :
         classes  =context["classes"]
         for cls in classes :
             values ={"title" :"CLASSE"}
@@ -163,8 +256,30 @@ def _get_calendar_events (context):
 	    calendar_event.append(values)
     if len (calendar_event):
         context ["data"]  = calendar_event 
-    
-            
+     """     
+
+def _get_gmap_data_object(village):
+	current_message  = village.current_message_from()
+	data = {}
+	if current_messsage:
+		if current_message.is_read :
+			_icon ="green"
+		else :
+			_icon ="red"	
+		data ={}
+		qtip_data =_get_qtip_data_object(current_message ,'map')
+		data.update({"message":qtip_data["current_message"] })
+		
+	else:
+		_icon ="red"
+		data["message"] =EMPTY_VILLAGE_MESSAGE
+		
+	data["icon"] = _icon
+	data["gmap_latitude"] = village.village.location.latitude
+	data["gmap_longitude"]= village.village.location.longitude
+	data["name"]          = village.village.name
+	return data	
+ 
 def map (req , template = "rapidsuivi/gmap.html"):
 	"""
 	I dont think if this is a good idea to filter the village and regions using the relay 
@@ -176,19 +291,20 @@ def map (req , template = "rapidsuivi/gmap.html"):
 	# data to fill  form , regionnals coordinations  , villages list ......
 	context =dict()
 	# Get the form to filter  the map
-	_get_calendar_form(context)
+	_get_form(context)
 	villages =list()
-	if req.method =="POST" and "filter" in  req.POST and req.POST["filter"]:
+	if req.method =="POST" :
 		# The user is tryin to  filter  the map
 		village_set =True
 		all= Relay.objects.all()
 		relay_args=dict()
-                if "cordination" in req.POST and  req.POST.get ("cordination")  not in ["" , "all"]:
-                  	  relay_args["cordination_id"] = req.POST["cordination"]
- 	                  context["cordination_selected"] =req.POST["cordination"]
-	        if "village" in req.POST  and  req.POST.get ("village") not in ["" , "all"]:
-                	    relay_args["village_suivi__village"] =Village.objects.get (pk =req.POST["village"])
-              	       	    context["village_selected"]= req.POST["village"]
+		p = req.POST
+                if ("cordination" in p and  p.get ("cordination")  not in ["" , "all"]):
+                  	  relay_args["cordination_id"] = p.get("cordination")
+ 	                  context["cordination_selected"] =p.get("cordination")
+	        if ("village" in p  and  p.get ("village") not in ["" , "all"]):
+                	  relay_args["village_suivi__village"] =Village.objects.get (pk =p.get("village"))
+              	       	  context["village_selected"]=p.get("village")
 		if all.count ()>0:
 		  all = all.filter(**relay_args)	
 		if all.count()>0:
@@ -198,7 +314,7 @@ def map (req , template = "rapidsuivi/gmap.html"):
 	if not  len (villages):	villages =  SuiviVillage.objects.all ()
         gmap_data  =[]
         for suivi_village in villages :
-             values ={}
+             """ values ={}
 	     icon = "red"
 	     # Le dernier message recu par le village ou bien 
 	     # le dernier message qui n'est pas encore ete lu
@@ -219,15 +335,16 @@ def map (req , template = "rapidsuivi/gmap.html"):
              values.update ({"gmap_longitude":suivi_village.village.location.longitude})
 	     # Quel icon pour goolemap (rouge  ou vert 
 	     values["icon"]=icon
-	     gmap_data.append (values)
+	     """
+             gmap_data.append (_gmap_data_object(suivi_village))
+	      
 
         #return HttpResponse (gmap_data)
         context ["villages"]  =gmap_data
         return render_to_response (req , template , context)
 
 
-def message_ui_from_class(classe):
-	"""Return un dict of data to fill into the MESSAGE_FOR_UI text"""
+"""def message_ui_from_class(classe):
 	kw  = dict ()
 	kw["first_and_last_name"] =classe.relay.first_name + classe.relay.last_name
 	kw["phone"]=classe.relay.contact.phone_number()
@@ -242,7 +359,6 @@ def message_ui_from_class(classe):
 	return kw
 
 def message_ui_from_cmc(cmc):
-	"""Return a dict of data to fill into the MESSAGE_FOR_UI text"""
 	kw=dict ()
 	kw["first_and_last_name"]=cmc.relay.first_name + cmc.relay.last_name
 	kw["phone"]=cmc.relay.contact.phone_number()
@@ -257,7 +373,6 @@ def message_ui_from_cmc(cmc):
 	return kw
 
 def message_ui_from_radio(radio):
-	""" Return a dict of data  to fill  into MESSAGE_UI text """
 	kw=dict()
 	kw["first_and_last_name"]=radio.relay.first_name + radio.relay.last_name
 	kw["phone"]=radio.relay.contact.phone_number()
@@ -270,14 +385,25 @@ def message_ui_from_radio(radio):
 	kw["cordination"] = ""
         kw["message_instance"] = "radio"
 	return kw 
-        
+      kw  = dict ()
+        kw["first_and_last_name"] =classe.relay.first_name + classe.relay.last_name
+        kw["phone"]=classe.relay.contact.phone_number()
+        kw["role"]=classe.relay.get_title_id_display()
+        kw["message"] =classe.__str__()
+        kw["date"] = classe.date.strftime ("%d-%m-%Y %H:%M:%S")
+        kw["village_pk"] =classe.relay.village_suivi.pk
+        kw["village_name"]=classe.relay.village_suivi.village.name
+        kw["message_pk"] = str(classe.pk)
+        kw["cordination"] = classe.relay.get_cordination_id_display()
+        kw["message_instance"] = "classe"
+        return kw     
 def message_ui_from_village (current_village_message):
-	"""Return a dict of data to fill into the MESSAGE_FOR_UI text
+
  	In Fact this is the current message  from  village 
 	Either the latest message not  yet readed from village
 	Either the latest message received by the village 
 	Also the message can be CMC , CLASS , OR RADIO
-	"""
+
 	if isinstance (current_village_message , Cmc):
 		return message_ui_from_cmc(current_village_message)
         if isinstance (current_village_message,Class):
@@ -286,7 +412,7 @@ def message_ui_from_village (current_village_message):
 		return message_ui_from_radio(current_village_message)
         return None
  
-    
+   """
 def update_message_status (req ,from_page , message_pk ):
 	"""Update message from calendar UI 
 	Note ***

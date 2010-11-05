@@ -260,8 +260,9 @@ def map (req , template = "rapidsuivi/gmap.html"):
 	# data to fill  form , regionnals coordinations  , villages list ......
 	context =dict()
 	# Get the form to filter  the map
-	_get_form_data(context)
+	context.update(_get_form_data())
 	villages =list()
+	gmap_datas =list()
 	if req.method =="POST" :
 		# The user is tryin to  filter  the map
 		village_set =True
@@ -279,12 +280,11 @@ def map (req , template = "rapidsuivi/gmap.html"):
 		if all.count()>0:
 			villages  =SuiviVillage.objects.filter\
 			(pk__in =[ v.pk for  v in  [r.village_suivi  for r in all  if r.village_suivi]])	
-	if not  len (villages):	villages =  SuiviVillage.objects.all ()
-        gmap_datas  =[]
+	if not  len (villages):	
+		villages =  SuiviVillage.objects.all ()
         for suivi_village in villages :
 	     gmap_data  = _get_gmap_data (suivi_village)
              gmap_datas.append (gmap_data)
-	     return gmap_datas   
         context ["villages"]  =gmap_data
         return render_to_response (req , template , context)
 

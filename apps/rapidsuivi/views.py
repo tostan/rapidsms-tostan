@@ -225,17 +225,11 @@ def _get_qtip_data(context):
 def _get_gmap_data_object(village):
 	current_message  = village.current_message_from()
 	data = {}
+	_icon ="red"
 	if current_messsage:
 		if current_message.is_read :
 			_icon ="green"
-		else :
-			_icon ="red"	
-		data ={}
-		#qtip_data =_get_qtip_data_object(current_message ,'map')
-		#data.update({"message":qtip_data["current_message"] })
-	else:
-		_icon ="red"
-		data["message"] =EMPTY_VILLAGE_MESSAGE
+	data["message"] =EMPTY_VILLAGE_MESSAGE
 	data["icon"] = _icon
 	data["gmap_latitude"] = village.village.location.latitude
 	data["gmap_longitude"]= village.village.location.longitude
@@ -247,7 +241,9 @@ def _get_gmap_data(village):
 	gmap_data_object = _get_gmap_data_object(village)
 	if village._get_current_message():
 		qtip_data_object =_get_qtip_data_object(village._get_current_message()) 
-	
+                #Replace the message empty from  by the current_message from qtip_data
+		if "message" in gmap_data_object:
+			gmap_data_object.update({"message": qtip_data_object.get("current_message")})	
 	if qtip_data_object:
 		 data.update (qtip_data_object)
 	data.update (gmap_data_object)
@@ -264,7 +260,7 @@ def map (req , template = "rapidsuivi/gmap.html"):
 	# data to fill  form , regionnals coordinations  , villages list ......
 	context =dict()
 	# Get the form to filter  the map
-	_get_form(context)
+	_get_form_data(context)
 	villages =list()
 	if req.method =="POST" :
 		# The user is tryin to  filter  the map
@@ -282,33 +278,10 @@ def map (req , template = "rapidsuivi/gmap.html"):
 		  all = all.filter(**relay_args)	
 		if all.count()>0:
 			villages  =SuiviVillage.objects.filter\
-			(pk__in =[ v.pk for  v in  [r.village_suivi  for r in all  if r.village_suivi]])
-	
+			(pk__in =[ v.pk for  v in  [r.village_suivi  for r in all  if r.village_suivi]])	
 	if not  len (villages):	villages =  SuiviVillage.objects.all ()
         gmap_datas  =[]
         for suivi_village in villages :
-             """ values ={}
-	     icon = "red"
-	     # Le dernier message recu par le village ou bien 
-	     # le dernier message qui n'est pas encore ete lu
-	     cur_msg  =suivi_village.current_message_from ()
-	     if cur_msg:
-		if not cur_msg.is_read:
-			icon = 'green'
-		# The message from classse can be a message from cmc , or classe  or radio
-		# depends of the current message received  by the village 
-		msg_ui_from_vil =message_ui_from_village  (cur_msg)
-		# Add page param
-		msg_ui_from_vil.update({"from_page":"map"})
-		values["message"] =MESSAGE_FOR_UI%msg_ui_from_vil
-	     else :
-		values["message"]=EMPTY_VILLAGE_MESSAGE
-	     values["name"] = suivi_village.village.name
-	     values.update ({"gmap_latitude": suivi_village.village.location.latitude})
-             values.update ({"gmap_longitude":suivi_village.village.location.longitude})
-	     # Quel icon pour goolemap (rouge  ou vert 
-	     values["icon"]=icon
-	     """
 	     gmap_data  = _get_gmap_data (suivi_village)
              gmap_datas.append (gmap_data)
 	     return gmap_datas   

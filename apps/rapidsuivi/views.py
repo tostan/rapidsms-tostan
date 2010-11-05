@@ -41,7 +41,7 @@ GOOGLE_QTIP_WIDGET="""<ul>\
 <li>--</li>\
 <li>\
 <a href='/rapidsuivi/update_message_status/%(from_page)s/%(message_pk)s'>\
-[MARQUER LE MESSAGE COMME LU]</a>
+[MARQUER LE MESSAGE COMME LU]</a>\
 </li>\
 <li>\
 <a href='/rapidsuivi/update_message/%(from_page)s/%(message_pk)s/%(message_instance)s'>\
@@ -103,10 +103,10 @@ def calendar(req, template="rapidsuivi/calendar.html"):
 		       })
 		   else : pass              
         else :
-	     for k , v  in {"cmc" : Cmc , "classes": Class , "radios":Radio}.items():
+	     for k , v  in {"cmcs" : Cmc , "classes": Class , "radios":Radio}.items():
              	context.update({k  :v.objects.filter(relay__in  =all)})
     else :
-	     for k , v  in {"cmc" : Cmc , "classes": Class , "radios":Radio}.items():
+	     for k , v  in {"cmcs" : Cmc , "classes": Class , "radios":Radio}.items():
              	context.update({k  :v.objects.all()})
     # Now We have a liste of cmcs  , relays , and  radios we can go to 
     # go to  format data  for calendar UI by providing dict data to fill
@@ -145,7 +145,7 @@ def _get_qtip_data_object(obj,from_page =None):
 		_title =""
 		type  =""
 	
-	if hasattr (obj ,relay):
+	if hasattr (obj ,"relay"):
 		relay = obj.relay
 		qtip_data.update({"title":_title})
 		qtip_data.update({"start": obj.date})
@@ -168,9 +168,13 @@ def _get_qtip_data_object(obj,from_page =None):
         	qtip_data.update(
 		{"village_pk"  : relay.village_suivi.pk}
         	)
-		qtip_data.update(
-		{"village_name": relay.village_suivi.village.name}
-		)
+		# The radio host does not have village
+		if not isinstance (obj ,Radio):
+			qtip_data.update(
+			{"village_name": relay.village_suivi.village.name}
+			)
+		else :
+			qtip_data.update({"village_name":"Radio host"})
         	qtip_data.update(
 		{"message_pk" : str(obj.pk)}
 		)
@@ -196,68 +200,28 @@ def _get_qtip_data(context):
     ]
     Cette methode parcours les classes et cmcs pour retouner le bon format
     """
-    data=[]
+    data={"data": []}
 
     if "classes" in context:
 	if len(context.get("classes")):
 		classes = context.get("classes")
 		for classe in classes:
 			d=_get_qtip_data_object(classe)
-			data.append (d)
+			data["data"].append (d)
     if "cmcs" in context :
 	if len(context.get("cmcs")):
 		cmcs = context.get ("cmcs")
 		for cmc in cmcs:
 			d =_get_qtip_data_object(cmc)
-			data.append (d)
+			data["data"].append (d)
     if "radios" in context:
 	if len (context.get ("radios")):
 		radios = context.get ("radios")
 		for  radio in radios:
 			d= _get_qtip_data_object(radio)
-			data.append(d)
-    if  len (context):
-    	context["data"] =data
+			data["data"].append(d)
+    return data
 		
-    # Get classes for the calendar UI
-    """if "classes" in context :
-        classes  =context["classes"]
-        for cls in classes :
-            values ={"title" :"CLASSE"}
-            values ["start"] = "%s"%cls.date
-            values ['is_read']=cls.is_read
-	    # We are into the calendar , so get the messag_ui  params and add
-	    # the from page as calendar {"from_page" :"calendar"}
-	    msg_ui_params= message_ui_from_class(cls)
-	    msg_ui_params.update ({"from_page":"calendar"})
-	    values ["current_message"] =MESSAGE_FOR_UI%msg_ui_params
-            calendar_event.append (values)
-    # Get cmc/CGC for the calendar UI
-    if "cmcs" in context:
-        cmcs =context["cmcs"]
-        for cmc in cmcs :
-            values ={"title" :"CMC"}
-            values ["start"] = "%s"%cmc.date
-            values ["is_read"] =cmc.is_read
-	    msg_ui_params = message_ui_from_cmc(cmc) 
-	    msg_ui_params.update ({"from_page" :"calendar"})
-            values ["current_message"]=	MESSAGE_FOR_UI%msg_ui_params
-            calendar_event.append (values)
-    # Get Radio Messages for the calendar UI
-    if "radios" in context:
-	radios = context["radios"]
-	for radio in radios:
-	    values = {"title": "RADIO"}
-	    values["start"] ="%s"%radio.date
-	    values["is_read"]=radio.is_read
-	    msg_ui_params =message_ui_from_radio(radio)
-	    msg_ui_params.update({"from_page":"calendar"})
-	    values["current_message"]=MESSAGE_FOR_UI%msg_ui_params
-	    calendar_event.append(values)
-    if len (calendar_event):
-        context ["data"]  = calendar_event 
-     """     
-
 def _get_gmap_data_object(village):
 	current_message  = village.current_message_from()
 	data = {}
@@ -267,19 +231,28 @@ def _get_gmap_data_object(village):
 		else :
 			_icon ="red"	
 		data ={}
-		qtip_data =_get_qtip_data_object(current_message ,'map')
-		data.update({"message":qtip_data["current_message"] })
-		
+		#qtip_data =_get_qtip_data_object(current_message ,'map')
+		#data.update({"message":qtip_data["current_message"] })
 	else:
 		_icon ="red"
 		data["message"] =EMPTY_VILLAGE_MESSAGE
-		
 	data["icon"] = _icon
 	data["gmap_latitude"] = village.village.location.latitude
 	data["gmap_longitude"]= village.village.location.longitude
 	data["name"]          = village.village.name
 	return data	
  
+def _get_gmap_data(village):
+	data  ={}
+	gmap_data_object = _get_gmap_data_object(village)
+	if village._get_current_message():
+		qtip_data_object =_get_qtip_data_object(village._get_current_message()) 
+	
+	if qtip_data_object:
+		 data.update (qtip_data_object)
+	data.update (gmap_data_object)
+	return data
+
 def map (req , template = "rapidsuivi/gmap.html"):
 	"""
 	I dont think if this is a good idea to filter the village and regions using the relay 
@@ -312,7 +285,7 @@ def map (req , template = "rapidsuivi/gmap.html"):
 			(pk__in =[ v.pk for  v in  [r.village_suivi  for r in all  if r.village_suivi]])
 	
 	if not  len (villages):	villages =  SuiviVillage.objects.all ()
-        gmap_data  =[]
+        gmap_datas  =[]
         for suivi_village in villages :
              """ values ={}
 	     icon = "red"
@@ -336,83 +309,12 @@ def map (req , template = "rapidsuivi/gmap.html"):
 	     # Quel icon pour goolemap (rouge  ou vert 
 	     values["icon"]=icon
 	     """
-             gmap_data.append (_gmap_data_object(suivi_village))
-	      
-
-        #return HttpResponse (gmap_data)
+	     gmap_data  = _get_gmap_data (suivi_village)
+             gmap_datas.append (gmap_data)
+	     return gmap_datas   
         context ["villages"]  =gmap_data
         return render_to_response (req , template , context)
 
-
-"""def message_ui_from_class(classe):
-	kw  = dict ()
-	kw["first_and_last_name"] =classe.relay.first_name + classe.relay.last_name
-	kw["phone"]=classe.relay.contact.phone_number()
-	kw["role"]=classe.relay.get_title_id_display()
-	kw["message"] =classe.__str__() 
-        kw["date"] = classe.date.strftime ("%d-%m-%Y %H:%M:%S")
-	kw["village_pk"] =classe.relay.village_suivi.pk
-	kw["village_name"]=classe.relay.village_suivi.village.name
- 	kw["message_pk"] = str(classe.pk)
-	kw["cordination"] = classe.relay.get_cordination_id_display()
-	kw["message_instance"] = "classe"
-	return kw
-
-def message_ui_from_cmc(cmc):
-	kw=dict ()
-	kw["first_and_last_name"]=cmc.relay.first_name + cmc.relay.last_name
-	kw["phone"]=cmc.relay.contact.phone_number()
-	kw["role"] =cmc.relay.get_title_id_display()
-	kw["message"] = cmc.__str__()
-        kw["date"] = cmc.date.strftime ("%d-%m-%Y %H:%M:%S")
-	kw["village_pk"] =cmc.relay.village_suivi.pk
-	kw["village_name"]=cmc.relay.village_suivi.village.name
-	kw["message_pk"] =str(cmc.pk)
-	kw["cordination"] = cmc.relay.get_cordination_id_display()
-        kw["message_instance"] ="cmc"	
-	return kw
-
-def message_ui_from_radio(radio):
-	kw=dict()
-	kw["first_and_last_name"]=radio.relay.first_name + radio.relay.last_name
-	kw["phone"]=radio.relay.contact.phone_number()
-        kw["role"]=radio.relay.get_title_id_display()
-  	kw["message"]=radio.__str__()
-        kw["date"] = radio.date.strftime ("%d-%m-%Y %H:%M:%S")
-	kw["village_pk"] =radio.relay.village_suivi.pk
-	kw["village_name"]=radio.relay.village_suivi.village.name	
-	kw["message_pk"] = str(radio.pk)
-	kw["cordination"] = ""
-        kw["message_instance"] = "radio"
-	return kw 
-      kw  = dict ()
-        kw["first_and_last_name"] =classe.relay.first_name + classe.relay.last_name
-        kw["phone"]=classe.relay.contact.phone_number()
-        kw["role"]=classe.relay.get_title_id_display()
-        kw["message"] =classe.__str__()
-        kw["date"] = classe.date.strftime ("%d-%m-%Y %H:%M:%S")
-        kw["village_pk"] =classe.relay.village_suivi.pk
-        kw["village_name"]=classe.relay.village_suivi.village.name
-        kw["message_pk"] = str(classe.pk)
-        kw["cordination"] = classe.relay.get_cordination_id_display()
-        kw["message_instance"] = "classe"
-        return kw     
-def message_ui_from_village (current_village_message):
-
- 	In Fact this is the current message  from  village 
-	Either the latest message not  yet readed from village
-	Either the latest message received by the village 
-	Also the message can be CMC , CLASS , OR RADIO
-
-	if isinstance (current_village_message , Cmc):
-		return message_ui_from_cmc(current_village_message)
-        if isinstance (current_village_message,Class):
-		return message_ui_from_class(current_village_message)
-	if isinstance(current_village_message ,Radio):
-		return message_ui_from_radio(current_village_message)
-        return None
- 
-   """
 def update_message_status (req ,from_page , message_pk ):
 	"""Update message from calendar UI 
 	Note ***

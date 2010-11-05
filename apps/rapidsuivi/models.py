@@ -315,7 +315,7 @@ class SuiviVillage(models.Model):
     latitude     =models.CharField(max_length=20 , blank=True, null=True)
     longitude    =models.CharField(max_length=20,  blank=True, null=True)
     
-    def current_message_from(self):
+    def _get_current_message(self):
         """
         I am trying to get the message send from village with an statuts _is_read=True
         Basicaly Iam going to check if there a a CMC to read , if not
@@ -355,10 +355,7 @@ class SuiviVillage(models.Model):
 		last_3.sort(lambda x ,y: cmp(x.date ,y.date))
 		return last_3[-1]
 	return None
-
-
-
-
+	
     def current_message (self):
 	"""Le plus rescent message non lu ou le plus rescent message lu """
 	cmc_to_read=Cmc.objects.filter (relay__village_suivi =self, is_read=False)

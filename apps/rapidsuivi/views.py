@@ -223,10 +223,10 @@ def _get_qtip_data(context):
     return data
 		
 def _get_gmap_data_object(village):
-	current_message  = village.current_message_from()
+	current_message  = village._get_current_message()
 	data = {}
 	_icon ="red"
-	if current_messsage:
+	if current_message:
 		if current_message.is_read :
 			_icon ="green"
 	data["message"] =EMPTY_VILLAGE_MESSAGE

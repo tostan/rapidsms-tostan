@@ -334,7 +334,7 @@ class SuiviVillage(models.Model):
                          not_read.append(item)
 
                 if len(not_read):
-                     not_read.sort (lambda x :x.date)
+                     not_read.sort (key=lambda x :x.date)
                      return not_read
                 else : return None
         rs = _current_message ()

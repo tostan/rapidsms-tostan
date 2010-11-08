@@ -71,21 +71,21 @@ def calendar(req, template="rapidsuivi/calendar.html"):
     if req.method =="POST":
             def handle_form (post):
                     rel_params  = dict()
-                    coordination =post.get("cordination" ,None)
-                    project  =post.get("cordination" ,None)
+                    cordination =post.get("cordination" ,None)
+                    project  =post.get("project" ,None)
                     village  = post.get("village" ,None)
                     
-                    if coordination  is not None and coordination not in ["" ,"all"]:
-                        rel_params.update({"cordination_id" :coord })
-                        context.update({"cordination_selected":coord})
+                    if cordination  is not None and cordination not in ["" ,"all"]:
+                        rel_params.update({"cordination_id" :cordination })
+                        context.update({"cordination_selected":cordination})
 
                     if project  is not None and  project not in ["" ,"all"]:
-                       rel_params.update({"project_id" :proj})
-                       context.update({"project_selected" :proj})
+                       rel_params.update({"project_id" :project})
+                       context.update({"project_selected" :project})
                        
                     if village is not None and  village not in ["", "all"]:
                         rel_params.update(
-                            {"village_suivi__village" :  Village.objects.get (pk = villagesuivi ) })
+                            {"village_suivi__village" :  Village.objects.get (pk = village) })
                         context.update({"village_selected": village })
 
 
@@ -94,41 +94,34 @@ def calendar(req, template="rapidsuivi/calendar.html"):
             rel_params  = handle_form (req.POST)
             if all.count ()>0:
                 all =all.filter (**rel_params)
-                if all.count ()>0:
-                    radios.filter(relay__in =all)
-                    cmcs.filter(relay__in =all)
-                    classes.filter(relay__in =all)
+		if all.count ()>0:
+                   radios =radios.filter(relay__in =all)
+                   cmcs   =cmcs.filter(relay__in =all)
+                   classes=classes.filter(relay__in =all)
                     
             def handle_form_actors(post) :
                 actor  = post.get ("actor" ,None)
                 if actor is not None  and actor not  in ["", "all"]:
-                               if actor    =="1" :
-                                        radios  =None
-                                        classes =None
-                               elif actor  =="2" :
-                                       radios  =None
-                                       cmcs    =None
-                               elif  actor =="3":
-                                        classes =None
-                                        cmcs    =None
-                               else :
-                                    #Impossible
-                                    pass
-            handle_form_actors (req.POST)
-            if cmcs :    
-                    datas.append (objects_to_qtip (cmcs))
-            if classes:
-                    datas.append (objects_to_qtip (classes))
-            if radios:
-                    datas.append (objects_to_qtip (radios))
-            
+                   return int(actor)
+		else :
+		   return None
+            actor  =handle_form_actors (req.POST)
+            if actor ==1:    
+                    datas.extend (objects_to_qtip (cmcs))
+            elif actor==2:
+                    datas.extend (objects_to_qtip (classes))
+            elif actor==3 :
+                    datas.extend (objects_to_qtip (radios))
+            else :
+		for k in [cmcs ,classes , radios]:
+			datas.extend(objects_to_qtip(k))
+	    
     else :
-                 datas.append (objects_to_qtip ("cmcs"))
-                 datas.append (objects_to_qtip ("classes"))
-                 datas.append (objects_to_qtip ("radios"))
+		for  k in [cmcs ,classes ,radios]:
+                       datas.extend(objects_to_qtip (k))
             
     # Get the form and the qtip data for calendar
-    
+    # return HttpResponse (datas)
     context.update(_get_form_data())
     context.update ( {"data": datas})
     
@@ -172,7 +165,7 @@ def object_to_qtip(obj, from_page =None):
                 qtip_data.update({"title":
                                   _title})
                 qtip_data.update({"start":
-                                  obj.date})
+                                  obj.date.strftime("%Y-%m-%d")})
                 qtip_data.update({"is_read":
                                   obj.is_read})
                 qtip_data.update({"first_and_last_name" :

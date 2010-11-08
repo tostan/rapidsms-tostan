@@ -269,7 +269,7 @@ class App (rapidsms.app.App):
             except VillageNotExistError , e:
                 try:
 			#Check the project args  , village latitude and village longitude
-			check_args =[args [1] ,args [2] ,args [3]]
+			check_args =[args [1] ,args [2] ,args [3] ,args[4]]
 			if  self.__check_radio (*check_args):
 				rel =self.__register_relay (message , *args , radio=True)
 				text =_st(rel ,"register-relay-radio")%\
@@ -290,10 +290,13 @@ class App (rapidsms.app.App):
 	    is trying to regsiter as a Radio Host .There are no village 
             for the radio host .So  if the project_id =0 an latitude =0
 	    and logittude =0 , we should register the user"""
-            if len ([ arg for arg in args if int(arg)!=0])>0:
+            if len ([ arg for arg in args[:-1] if int(arg)!=0])>0:
 		return  False
-	    #It exist an arg wish is different 0 , this  is not a radio
-	    return True
+	    else :
+                if int(args[-1])==3:
+                    #Ok projec_id = 0 latitude =0 , longitude =  0 ,  and title_id =3  ok we have a radio host
+                    return True
+            return False
                 
     def __register_relay (self,message , *args , **kwargs):
             """

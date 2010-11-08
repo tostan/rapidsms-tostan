@@ -221,7 +221,7 @@ msgstr "Merci %(first_name)s %(last_name)s (CGC de %(village)s ) a organisé"
 msgid  "relay-exist"
 msgstr "Desole , mais ce relay existe"
 
-msgid  "village-not-found"
+msgid  "no-village-found"
 msgstr "Desole, mais je ne peux pas trouver ce village,etes vous sure des coordonnees"
 msgid "identification-requise"
 msgstr "Identifiez vous s'il vous plait."

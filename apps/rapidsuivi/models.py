@@ -83,14 +83,7 @@ class Relay(models.Model):
             return None 
 
     def __unicode__(self): 
-        return """"Relay[(phone ,%s)(cordination,%s)(projet,%s)(fisrt_name,%s)(last_name,%s)(village,%s)]"""%(
-                self.contact.phone_number ,
-                self.get_cordination_id_display (), 
-                self.get_project_id_display (), 
-                self.first_name , 
-                self.last_name ,
-                self.village_suivi
-                )  
+        return "%s%s"%(self.first_name , self.last_name)  
                 
                       
 class Cmc(NodeSet):
@@ -155,28 +148,40 @@ class Cmc(NodeSet):
         is_read = models.BooleanField (default =False)
         message = models.CharField (max_length = 260, null =True , blank =True) 
         
+        @property
+	def meeting_string (self):
+		return "Type->%s ,Membres->%s , Invites->%s ,Sujet ->%s,Activites->%s"%(
+	        self.get_type_id_display() if self.type_id  else "",
+		self.num_members , 
+		self.num_guests,
+	        self.get_subject_id_display() if self.subject_id else "",
+		self.get_activity_id_display() if self.activity_id else ""
+		) 
 
+	@property
+	def account_string(self):
+		return "Type -> %s,Balance commerciale->%s , Balance banque->%s"%(	
+	        self.get_type_id_display() if self.type_id  else "",
+		self.balance_com , self.balance_bank
+		)
+	@property
+	def mobilization_string(self):
+		return "Type ->%s,Attendus->%s,Villages->%s,Location->%s"%(
+	        self.get_type_id_display() if self.type_id  else "",
+		self.num_attendees ,
+		self.num_villages,
+		self.get_location_id_display() if self.location_id else ""
+		)
 	def __str__(self):
                  """Diplay data into the web ui  for  map and calendar with qtip """
-                 # If meeting 
-	 	 str_ =""
-		 str_  = "TYPE :" + str(self.get_type_id_display() if self.type_id  else "")  
-		 if self.type_id =="1":
-                        str_+=",MEMBRES:" + str(self.num_members)+\
-                        ",INVITES:" + str(self.num_guests) +\
-                        ",SUJECT: " +str(self.get_subject_id_display() if self.subject_id  else  "")+\
-			",ACTIVITE:" +str(self.get_activity_id_display()  if self.activity_id else "")
-	         if self.type_id =="2":  
-	        	str_+= "BALANCE COM:"+str ( self.balance_com) +\
-			",BALANCE BANQUE:" +str(self.balance_bank)
+		 if self.type_id =="1":  
+	         	return self.meeting_string
+		 if self.type_id =="2":
+		 	return self.account_string
 		 if self.type_id =="3":
-			str_ +=",ATTENDUS:" +str (self.num_attendees) +\
-			",VILLAGES:" +str (self.num_villages) +\
-			",LOCATION:" +str(self.get_location_id_display() if self.location_id else "")
-		 return str_
-
+			return self.mobilization_string
 	def __unicode__(self):
-                return  u"CMC[(relay, %s)]"%(self.relay) 
+                return   u"%s"%self.type_id
           
 class Radio(NodeSet):
 	"""The radio host activity , models to store the messages sent to RapidSuivi from radio Host"""
@@ -211,15 +216,13 @@ class Radio(NodeSet):
         message = models.CharField (max_length = 260, null =True , blank =True) 
         	
         def __str__(self):
-		str_ = "THEME:" +str (self.get_theme_id_display ()  if self.theme_id else "")+\
-		      ",LOCATION :" +str(self.get_location_id_display() if self.location_id else "")+\
-		      ",TYPE:"+str (self.get_type_id_display() if self.type_id else  "")
-		return str_ 
-
-
+		 return "Theme->%s Location ->%s ,Types ->%s " %(
+                 self.get_theme_id_display ()  if self.theme_id else "" ,
+		 self.get_location_id_display() if self.location_id else "" ,
+		 self.get_type_id_display() if self.type_id else  ""
+	    )
 	def __unicode__(self):
-		return u"Radio[(theme,%s),(location_id, %s),(type_id,%s)]"%\
-		(self.get_theme_id_display() , self.get_location_id_display() , self.get_type_id_display())
+		return  u"%s"%self.theme_id
  
 	
          
@@ -249,20 +252,19 @@ class Class(NodeSet):
         message      = models.CharField (max_length=260, blank=True ,null =True)
 	
 	def __str__(self):
-		str_ =""
-                str_ ="COHORT:"+ str ( self.get_cohort_id_display () if self.cohort_id else "")+\
-                      ",TITRE :"+ str(self.get_title_id_display() if self.title_id else "")+\
-                      ",SESSION:"+str(self.num_session)+\
-		      ",FEMMES:"+str(self.num_women)+\
-		      ",FILLES:"+str(self.num_girls)+\
-                      ",HOMMES:"+str(self.num_men)+\
-		      ",GARCONS:"+str(self.num_boys)
-        	return str_
-
+		
+               return  "Cohort->%s , Titre ->%s ,Session->%s ,Femmes->%s ,Filles->%s Hommes->%s, Grcons ->%s"%(
+                      self.get_cohort_id_display () if self.cohort_id else "" ,
+                      self.get_title_id_display() if self.title_id else "" ,
+                      self.num_session ,
+		      self.num_women,
+		      self.num_girls,
+                      self.num_men,
+		      self.num_boys)
+    
 	def __unicode__(self):
-                return u"Class[(cohort_id,%s),(cohort_id_display,%s)]"%(
-                                self.cohort_id  , 
-                                self.get_cohort_id_display ()) 
+                return u"%s"%self.cohort_id
+                                
 class  ClassAbs(NodeSet):
         """ 
         This classe exite only to allow reporting classe absences .Before each begining classe
@@ -314,8 +316,9 @@ class SuiviVillage(models.Model):
     # et le decimal places
     latitude     =models.CharField(max_length=20 , blank=True, null=True)
     longitude    =models.CharField(max_length=20,  blank=True, null=True)
-    
-    def _get_current_message(self):
+
+
+    def current_message(self):
         """
         I am trying to get the message send from village with an statuts _is_read=True
         Basicaly Iam going to check if there a a CMC to read , if not
@@ -323,59 +326,25 @@ class SuiviVillage(models.Model):
         I'am going to check if there a a RADIO message to read ,
         If not i'am going the return the last message received by the village
         """
-        all = Cmc.objects.filter(relay__village_suivi=self , is_read=False)
-        if all.count ()>0:
-	      return  all.order_by("-date")[0]
-        all =Class.objects.filter (relay__village_suivi =self , is_read=False)
-        if all.count ()>0:     
-	     return  all.order_by("-date")[0]
-        all =Radio.objects.filter(relay__village_suivi =self , is_read=False)
-	if all.count ()>0:		
-	     return  all.order_by("-date")[0] 
-	# Ok I dont have a choice return the last sms received  by village
-	last_3= []
-	try:
-		if Radio.objects.latest("date"):
-			last_3.append (Radio.objects.latest("date"))
-	except  Radio.DoesNotExist :
-		pass
-	try:
-		if Cmc.objects.latest("date"):
-			last_3.append( Cmc.objects.latest("date"))
-	except Cmc.DoesNotExist :
-		pass
-	try:
-		if  Class.objects.latest ("date"):
-			last_3.append (Class.objects.latest("date"))
-	except Class.DoesNotExist :
-		pass
+        def _current_message (is_read =False):
+                not_read = []
+                for  klass in [Cmc, Radio , Class]:
+                    if klass.objects.filter(relay__village_suivi=self , is_read=is_read).count ()>0:
+                         item  =klass.objects.filter(relay__village_suivi=self , is_read=is_read).order_by("-date")[0]
+                         not_read.append(item)
 
-
-	if len (last_3)>0:
-		last_3.sort(lambda x ,y: cmp(x.date ,y.date))
-		return last_3[-1]
-	return None
-	
-    def current_message (self):
-	"""Le plus rescent message non lu ou le plus rescent message lu """
-	cmc_to_read=Cmc.objects.filter (relay__village_suivi =self, is_read=False)
-	if cmc_to_read.count ()==0:
-		class_to_read =Class.objects.filter (relay__village_suivi=self, is_read=False)
-		if class_to_read.count()>0:
-			return class_to_read.order_by("-date") [0]
-		else :
-		     cmc_readed = Cmc.objects.filter (relay__village_suivi=self)
-		     if cmc_readed.count ()==0:
-			   class_readed =Class.objects.filter (relay__village_suivi=self)
-			   if class_readed.count()>0:
-				return class_readed.order_by("-date")[0]
-			   else :return None 
-		     else :
-			        return cmc_readed.order_by("-date")[0]
-	else : return  cmc_to_read .order_by("-date")[0]
+                if len(not_read):
+                     not_read.sort (lambda x :x.date)
+                     return not_read
+                else : return None
+        rs = _current_message ()
+        if not  rs:
+             rs  = _current_message(True)
+             return rs[-1]
+        return None
     
     def __unicode__(self):
-        return u"SuiviVilllage [(village_pk,%s),(village__name,%s)]"%(self.pk ,self.village.name)
+        return u"%s"%(self.village.name)
 
 
 def relay_from_message (**kwargs):

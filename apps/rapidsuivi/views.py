@@ -219,7 +219,7 @@ def  object_to_gmap_qtip(village):
         Return the gmap data for each village
         {"icon" :(red'green) , "gmap_latitude": "12.75555" ,"gmap_longitude": "-15.7777555" , "name":"name of the village"}
         '''
-        current_message = village.current_message_from()
+        current_message = village.current_message()
         data = dict()
         _icon ="red"
         if current_messsage:
@@ -293,7 +293,7 @@ def map (req , template = "rapidsuivi/gmap.html"):
                 villages = SuiviVillage.objects.all ()
                 
         for suivi_village in villages :
-                gmap_data = _get_gmap_data (suivi_village)
+                gmap_data =object_to_gmap_qtip_with_qtip(suivi_village)
                 gmap_datas.append (gmap_data)
                 
         return render_to_response (req , template ,

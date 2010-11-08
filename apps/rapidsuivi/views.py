@@ -27,12 +27,12 @@ GOOGLE_QTIP_WIDGET="""<ul>\
 <li>\
 <li>--</li>\
 <li>\
-<a href='/rapidsuivi/update_message_status/%(from_page)s/%(message_pk)s'>\
-[MARQUER LE MESSAGE COMME LU]</a>\
+<a href='/rapidsuivi/update_message_status/%(from_page)s/%(message_instance)s/%(message_pk)s'>\
+Marquer le message comme lu</a>\
 </li>\
 <li>\
-<a href='/rapidsuivi/update_message/%(from_page)s/%(message_pk)s/%(message_instance)s'>\
-[MODIFIER LE MESSAGE]\
+<a href='/rapidsuivi/update_message/%(from_page)s/%(message_instance)s/%(message_pk)s'>\
+Modifier Le Message\
 </a>\
 </li>\
 <li>--</li>\
@@ -209,7 +209,9 @@ def objects_to_qtip(objects):
     '''
     objets_qtip=[]
     for object in objects:
-                object_qtip=object_to_qtip(object)
+                # This function is used into the calendar ui  so  set the
+                # from_page to cal
+                object_qtip=object_to_qtip(object ,"cal")
                 objets_qtip.append(object_qtip)
     return objets_qtip
  
@@ -222,8 +224,8 @@ def  object_to_gmap_qtip(village):
         current_message = village.current_message()
         data = dict()
         _icon ="red"
-        if current_messsage:
-            if current_message.is_read :
+        if current_message:
+            if not current_message.is_read :
                _icon ="green"
         data.update({"message":
                      EMPTY_VILLAGE_MESSAGE})
@@ -243,12 +245,12 @@ def object_to_gmap_qtip_with_qtip(village):
         """
         data ={}
         object_gmap_qtip= object_to_gmap_qtip(village)
-        if village._get_current_message():
-                        object_qtip =object_to_qtip(village._get_current_message())
-                        #Replace the message empty from by the current_message from qtip_data
-                        if "message" in gmap_data_object:
-                            object_gmap_qtip.update({"message":
-                                                     object_qtip.get("current_message")})
+        object_qtip =None
+        if village.current_message():
+                        #This function is used into the map  so set from page to map
+                        object_qtip =object_to_qtip(village.current_message() ,'map')
+                        object_gmap_qtip.update({"message":
+                                                object_qtip.get("current_message")})
         if object_qtip:
             data.update (object_qtip)
         data.update (object_gmap_qtip)
@@ -266,15 +268,15 @@ def map (req , template = "rapidsuivi/gmap.html"):
                         # Get the village et cordination selected  by the user
                         rel_params=dict()
                         coordination =  post.get ("cordination")
-                        villagesuivi =  post.get ("village")
+                        village =  post.get ("village")
                         
-                        if coord and   coord  not in ["" , "all"]:
+                        if coordination and   coordination  not in ["" , "all"]:
                                rel_params.update({"cordination_id" :
                                                   coordination })
                                context.update({"cordination_selected" :
                                                coordination})
                                
-                        if village and villagesuivi not in ["" , "all"]:
+                        if village and village not in ["" , "all"]:
                                rel_params.update({"village_suivi__village" :
                                                   Village.objects.get (pk =village)})
                                context.update({"village_selected" :
@@ -295,17 +297,18 @@ def map (req , template = "rapidsuivi/gmap.html"):
         for suivi_village in villages :
                 gmap_data =object_to_gmap_qtip_with_qtip(suivi_village)
                 gmap_datas.append (gmap_data)
-                
-        return render_to_response (req , template ,
-                                   {"villages" : gmap_data})
 
-def update_message_status (req ,from_page , message_pk , message_instance ):
+        context.update ( {"villages" : gmap_datas})
+        return render_to_response (req , template ,
+                                   context)
+
+def update_message_status (req ,from_page , type ,message_pk):
         '''Update message from calendar UI
         Note ***
         From _template_ param tell us where the req come from
         Either from calendar ui ,or from map ui .We need to know for redirection
         '''
-        def update_message(pk , type):
+        def update(pk , type):
                 # Update the message with pk and type 
                 if type =='classe':
                     Class.objects.filter(pk=message_pk)\
@@ -316,12 +319,12 @@ def update_message_status (req ,from_page , message_pk , message_instance ):
                 elif type =='radio':
                     Radio.objects.filter(pk =message_pk)\
                                  .update(is_read=True)
-        update_message (message_pk , message_instance)
+        update(message_pk , type)
         return HttpResponseRedirect(reverse("map") if from_page =="map" \
                                     else reverse ("calendar"))
 
      
-def update_message (req , from_page ,message_pk ,message_instance) :
+def update_message (req , from_page ,type ,message_pk) :
         '''
         message_instance allow us to use the Best Model Form
         if message_instance =cmc ==> use CmcForm
@@ -331,35 +334,30 @@ def update_message (req , from_page ,message_pk ,message_instance) :
         template ="rapidsuivi/update_message.html"
         errors = []
         context ={}
-        if req.method =="POST":
-            
-            def _get_message (pk , type):
-                # Get message with pk and type
-                if  type =='cmc':
-                    return  Cmc.objects.get(pk = int (pk))
-                elif  type =='classe':
-                    return  Class.objects.get(pk = int (pk))
-                elif  type =='radio':
-                    return  Radio.objects.get(pk = int (pk))
-
-            def _get_message_form (type , pk  , data ):
+        def _get_message_form (type , data ={} ,pk=None  ):
                 # Get message with pk , data , and type
                 if  type =='cmc':
-                    CmcForm ( data = data )
+                    return CmcForm ( data = data  ,
+                              instance  = Cmc.objects.get(pk =int(pk)))
                 if  type =='classe':
-                    ClassForm ( data = data)
+                    return ClassForm ( data = data ,
+                                instance = Class.objects.get(pk =int(pk)))
                 if  type =='radio':
-                    RadioForm ( data = data)
-                
-            type  =message_instance
-            pk  = message_pk
-            form =_get_message_form (type , data =req.POST)
+                    return RadioForm ( data = data ,
+                                instance = Radio.objects.get(pk =int(pk)))
+                    
+        if req.method =="POST":
+            form =_get_message_form (type ,
+                                     data =req.POST ,
+                                     pk = message_pk)
             if form.is_valid ():
                 form.save()
                 return HttpResponseRedirect(reverse("map") if from_page =="map" \
                                             else reverse("calendar"))
         else :
-               form = _get_message_form (type ,data =None , pk =pk)
+               form = _get_message_form (type ,
+                                         data =None ,
+                                         pk  =message_pk)
         return render_to_response (req , template ,{"form" :form})
 
 def export_message (req,village_pk):
@@ -375,7 +373,7 @@ def export_message (req,village_pk):
                           (relay__village_suivi =village).all()]+\
                      [ o for o in Radio.objects.filter\
                           (relay__village_suivi =village).all()]
-
+               return all
 
                
             all_cmc_radio_class = _get_all_cmc_radio_class_from_village (village)

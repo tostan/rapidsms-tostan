@@ -336,11 +336,15 @@ class SuiviVillage(models.Model):
                 if len(not_read):
                      not_read.sort (key=lambda x :x.date)
                      return not_read
-                else : return None
+                else :
+                    return not_read
         rs = _current_message ()
-        if not  rs:
-             rs  = _current_message(True)
-             return rs[-1]
+        if len(rs):
+            return rs [-1]
+        else:
+            rs  = _current_message(True)
+            if len(rs):
+                 return rs[-1]
         return None
     
     def __unicode__(self):

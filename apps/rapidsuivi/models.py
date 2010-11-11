@@ -59,7 +59,7 @@ class Relay(models.Model):
     first_name            = models.CharField (max_length = 200, null =True , blank =True)
     last_name             = models.CharField (max_length =200 , null =True , blank =True)
     status                = models.CharField(max_length =1 ,default ="C" )
-    
+    create_at             = models.DateTimeField (auto_now_add =True)    
     def send_to (self, text):
         """
         EN: Send a response to the relay
@@ -144,7 +144,7 @@ class Cmc(NodeSet):
 	location_id   = models.CharField(max_length =2,null=True ,blank =True,choices = LOCATION_TYPES)          
         #Relay
         relay     = models.ForeignKey ("Relay" , related_name ="cmcs")
-        date = models.DateTimeField (default =datetime.datetime.now())
+        date = models.DateTimeField (auto_now_add= True)
         is_read = models.BooleanField (default =False)
         message = models.CharField (max_length = 260, null =True , blank =True) 
         
@@ -211,7 +211,7 @@ class Radio(NodeSet):
         type_id    = models.CharField(max_length  =2,null =True ,blank =True ,choices = SHOW_TYPES)
         
 	relay     = models.ForeignKey ("Relay" , related_name ="radios")
-        date = models.DateTimeField (default =datetime.datetime.now())
+        date = models.DateTimeField (auto_now_add =True)
         is_read = models.BooleanField (default =False)
         message = models.CharField (max_length = 260, null =True , blank =True) 
         	
@@ -247,7 +247,7 @@ class Class(NodeSet):
         num_girls    = models.PositiveIntegerField(default =0)
         num_boys     = models.PositiveIntegerField(default =0)
         relay        = models.ForeignKey ("Relay" , related_name="classes")
-        date         = models.DateTimeField(default = datetime.datetime.now ())
+        date         = models.DateTimeField(auto_now_add =True)
         is_read      = models.BooleanField (default =False)
         message      = models.CharField (max_length=260, blank=True ,null =True)
 	
@@ -283,7 +283,7 @@ class  ClassAbs(NodeSet):
         num_men_dropped   =models.IntegerField (default =0)
         num_girls_dropped =models.IntegerField (default =0)
         num_boys_dropped  =models.IntegerField (default =0)
-        date              =models.DateTimeField(default =datetime.datetime.now ())
+        date              =models.DateTimeField(auto_now_add =True)
              
         def __unicode__(self):
             return u"AbsClass[(women,%s) , (men , %s)]"%(
@@ -304,7 +304,7 @@ class SuiviVillage(models.Model):
     communaute_rurale =models.CharField (max_length=160, null =True , blank =True)
     commune           =models.CharField(max_length =160, null =True , blank =True)
     langue            =models.CharField(max_length =160, null =True, blank =True)
-    
+    create_at         =models.DateTimeField (auto_now_add =True)
     # Je stock ici  les latitudes et mongitudes de tostan , les latitudes 
     # et les longitudes utilises par google map sont dans location.latitude
     # et dans location.longitude

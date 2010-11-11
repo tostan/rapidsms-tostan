@@ -222,9 +222,10 @@ msgid  "relay-exist"
 msgstr "Desole , mais ce relay existe"
 
 msgid  "no-village-found"
-msgstr "Desole, mais je ne peux pas trouver ce village,etes vous sure des coordonnees"
+msgstr "Aucun village trouvé"
+
 msgid "identification-requise"
 msgstr "Identifiez vous s'il vous plait."
+
 msgid "help-message"
 msgstr "Contacter votre superviseur,pour vous expliquer comment utiliser Rapidsuivi"
-

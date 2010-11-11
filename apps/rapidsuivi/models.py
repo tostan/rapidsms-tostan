@@ -42,7 +42,7 @@ class Relay(models.Model):
                 
     # Type du Relay               )
     TITLE_TYPES =(("1", "Facilitateur"),
-                   ("2", "CMC"),
+                   ("2", "CGC"),
                    ("3", "Radio Host")
                  )
     STATUS = (("U" , "Update"),

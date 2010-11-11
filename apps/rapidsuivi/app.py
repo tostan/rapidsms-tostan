@@ -322,7 +322,13 @@ class App (rapidsms.app.App):
         """Sauvegarde une nouvelle classe [Kobi 1 ,Awade 1, ...] 
         args [0] :cohort_id, args [1] :title_id ,args [2] :num_session ,args [3] :num_women
         args [4] :num_men ,args [5]: num_girls  ,args [6] :num_boys"""
-        keys = ["cohort_id" ,"title_id" , "num_session" ,"num_women" ,
+        
+	
+	#The radio  host should not abable to send a class
+	if message.relay and message.relay.title_id =="3":
+		message.respond ("Vous ne pouvez pas envoyer ce type de message")
+		return True			
+	keys = ["cohort_id" ,"title_id" , "num_session" ,"num_women" ,
 		"num_men" , "num_girls" ,"num_boys"]
         kw_args  = dict (zip (keys , args))
         cla  =Class.objects.create (relay =message.relay, **kw_args)
@@ -347,6 +353,10 @@ class App (rapidsms.app.App):
         [args [0]  :parent_class_id,args [1]  :num_women_dropped ,args [2]: num_men_drpped 
         args [3] : num_girls_drpped  ,args [4] :num_boys_dropped ]"""
         
+	if message.relay and message.relay.title_id =="3":
+		message.respond ("Vous ne pouvez pas envoyer ce type de message")
+		return True
+
         # Si le rapport sur le awade ou le  Kobi precedent ne passe 
         # pas alors on envoie un message
         
@@ -389,7 +399,11 @@ class App (rapidsms.app.App):
         Ajouter une nouvelle reunion  au systeme 
         args [0]  :num_members ,args [1]  :num_guests ,args [2]  :subject_id  ,args [3] :activity_id
         """
-        attrs    = ["num_members" ,"num_guests" , "subject_id" ,"activity_id"]
+        
+	if message.relay and message.relay.title_id =="3":
+		message.respond ("Vous ne pouver pas envoyer ce type de message")
+		return True 
+	attrs    = ["num_members" ,"num_guests" , "subject_id" ,"activity_id"]
         kw_args  = dict (zip (attrs  , args ))
         cmc  = Cmc.objects.create(type_id  ="1", relay = message.relay , **kw_args)
         try:
@@ -411,7 +425,12 @@ class App (rapidsms.app.App):
     @identify
     def add_finance (self, message ,  *args ,**kwargs):
         """Ajouter un rapport financier au systeme
-        args [0]:balance_com,args [1]:balance_bank"""     
+        args [0]:balance_com,args [1]:balance_bank"""    
+	
+	if message.relay and message.relay.title_id =="3":
+		message.respond ("Vous ne pouvez pas envoyer ce type de message")
+		return True
+ 
         attrs = ["balance_com" ,"balance_bank"]
         kw_args   =dict (zip (attrs , args))
         cmc =Cmc.objects.create(type_id ="2" ,relay  =message.relay, **kw_args)
@@ -436,7 +455,12 @@ class App (rapidsms.app.App):
         Ajouter un rapport su une mobilization
         args [0] : num_attendees ,args [1] :num_villages ,args [2] :activity_id  ,args [3] :location_id
         """
-        attrs  = ["num_attendees" , "num_villages" ,"activity_id" ,"location_id"]
+        if message.relay and message.relay.title_id =="3":
+		message.respond ("Vous ne pouvez pas envoyer ce type de message")
+		return True
+
+
+	attrs  = ["num_attendees" , "num_villages" ,"activity_id" ,"location_id"]
         kw_args  = dict (zip (attrs , args))
         cmc  = Cmc.objects.create(type_id ="3" , relay =message.relay ,**kw_args)
         # Get the response with arguement to send to the user 
@@ -473,17 +497,4 @@ class App (rapidsms.app.App):
             return True
 
 
-    @kw ("lang (.{2,3})")
-    @identify 
-    def change_lang (self , message , *args , **kwargs):
-        """
-        Cette fonction permet de hanger la langue du relay
-        """
-        lang = re.sub("[0-9]","" , args [0]).strip()
-        if not lang:
-                if message.relay.locale  != lang.lower ():
-                        message.relay.locale= lang
-                        message.relay.save ()
-
-        return True      
-    
+   

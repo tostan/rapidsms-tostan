@@ -178,15 +178,15 @@ def object_to_qtip(obj, from_page =None):
                                   obj.__str__()})
                 qtip_data.update({"date":
                                   obj.date.strftime ("%d-%m-%Y %H:%M:%S")})
-                qtip_data.update({"village_pk" :
-                                  relay.village_suivi.pk})
-                # The radio host does not have village
-                if not isinstance (obj ,Radio):
-                    qtip_data.update({"village_name":
-                                      relay.village_suivi.village.name})
-                else :
-                    qtip_data.update({"village_name":
-                                      "Radio host"})
+                
+		# Parfois le Radio est enyoye par un CGC donc , il a un village 
+		# d'autre fois par un radio et dans ce cas il n'as pas de village
+		qtip_data.update({"village_pk" :
+                                  relay.village_suivi.pk if relay.village_suivi else\
+				  "pas_de_village"})
+                qtip_data.update({"village_name":
+                                      relay.village_suivi.village.name if relay.village_suivi else\
+			          "pas_de_village"})
                 qtip_data.update({"message_pk" :
                                   str(obj.pk)})
                 qtip_data.update({"cordination" :

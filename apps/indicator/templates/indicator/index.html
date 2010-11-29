@@ -1,0 +1,73 @@
+{% extends "layout.html" %}
+{% load i18n %}
+{% block title %}The Jokko Initiative - A RapidSMS Project by Tostan{% endblock %}
+{% block content %}
+
+{% block stylesheets %}
+		<link type="text/css" rel="stylesheet" href="/static/indicator/stylesheets/layout.css" />
+		<link type="text/css" rel="stylesheet" href="/static/webui/stylesheets/modules.css" />
+{% endblock %}
+		
+		
+<div class="module">
+<h1>{% trans "Welcome!" %}</h1>
+
+<h4><i>{% trans "What would you like to do?" %}</i></h4>
+
+<table width=80% align="center"><tr align=center valign=top>
+<td>
+	<a href="{% url smsforum.views.visualize %}">
+	<img src="/static/indicator/images/user.png"/><br/>
+		{% trans  "Gerer les superviseurs et les cordinateurs" %}
+	</a>
+</td>
+
+
+<td>
+		<a href="{% url smsforum.views.manage %}">
+		<img src="/static/indicator/images/project.png"/><br/>
+			{% trans "Gerer les projects" %}
+		</a>
+</td>
+
+<td>
+		 <a href="{% url 404 %}">
+			<img src="/static/indicator/images/indicator.png"/><br/>
+				{% trans "Gerer les indicateurs" %}
+		  </a>
+
+</td>	
+<td>
+		{% if perms.tagging.change_tag %}
+			<a href="{% url smsforum.views.messages %}">
+				<img src="/static/indicator/images/statistic.png"/><br/>
+				{% trans "Gerer les statistiques" %}
+			</a>
+		{% endif %}
+		
+</td>
+
+
+{% if perms.contacts.change_contact %}
+	<td>
+		<a href="{% url messaging %}">
+		<img src="/static/indicator/images/export.png"/><br/>
+			{% trans "Gerer les exports" %}
+		</a>
+	</td>
+{% endif %}
+
+
+{% if perms.contacts.change_contact %}
+	<td>
+		<a href="{% url parametrage %}">
+		<img src="/static/indicator/images/parametre.png"/><br/>
+			{% trans "Gerer les parametres" %}
+		</a>
+	</td>
+{% endif %}
+
+</tr>
+</table>
+</div>
+{% endblock %}

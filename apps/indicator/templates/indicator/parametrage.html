@@ -1,0 +1,120 @@
+{% extends "layout.html" %}
+{% load i18n %}
+{% block title %}The Jokko Initiative - A RapidSMS Project by Tostan{% endblock %}
+{% block stylesheets %}
+		<link type="text/css" rel="stylesheet" href="/static/indicator/stylesheets/layout.css" />
+		<link type="text/css" rel="stylesheet" href="/static/webui/stylesheets/modules.css" />
+{% endblock %}
+
+{% block content %}
+
+
+
+<style>
+.line {
+	boder : solid 1px ;
+}
+</style>
+<table>
+<tr>
+<td>
+	<h3>  {% trans "SENEGAL" %}</h3>
+	<ul>
+	<li><a href = "/indicator/add/area/senegal/region">{% trans "Creer une region" %}</a></li>
+	<li><a href = "/add/area/senegal/dep">{% trans "Creer un departement" %}</a></li>
+	<li><a href = "/add/area/senegal/arr">{% trans "Creer un arrondissement " %}</a></li>
+	<li><a href = "/add/area/senegal/com_arr">{% trans "Creer une commune arrondissement " %}</a></li>
+	<li><a href = "/add/area/senegal/com">{% trans "Creer une commune" %}</a></li>
+	<li><a href = "/add/area/senegal/com_rur">{% trans "Creer une communaute rurale  " %}</a></li>
+	</ul>
+</td>
+</tr>
+<tr class = "line"> 
+</tr>
+<tr>
+<td>
+	<h3>  {% trans "GUINEE CONAKRY" %}</h3>
+	<ul>
+	<li><a href = "">{% trans "Creer une régions" %}</a></li>
+	<li><a href = "">{% trans "Creer un  préfectures" %}</a></li>
+	<li><a href = "">{% trans "Creer un une zone spéciale " %}</a></li>
+	<li><a href = "">{% trans "Creer une communes urbaines  " %}</a></li>
+	<li><a href = "">{% trans "Creer une communautés rurales  " %}</a></li>
+	</ul>
+</td>
+
+</tr>
+<tr class = "line"> 
+</tr>
+<tr>
+<td>
+	<h3>  {% trans "GUINEE BISSAU" %}</h3>
+	<ul>
+	<li><a href = "">{% trans "Creer une régions" %}</a></li>
+	</ul>
+</td>
+</tr>
+
+<tr class = "line"> 
+</tr>
+<tr>
+<td>
+	<h3>  {% trans "GAMBIE" %}</h3>
+	<ul>
+	<li><a href = "">{% trans "Creer une régions" %}</a></li>
+	<li><a href = "">{% trans "Creer une district" %}</a></li>
+	
+	</ul>
+</td>
+</tr>
+
+
+<tr class = "line"> 
+</tr>
+<tr>
+<td>
+	<h3>  {% trans "SOMALIE" %}</h3>
+	<ul>
+	<li><a href = "">{% trans "Creer une régions" %}</a></li>
+	
+	</ul>
+</td>
+</tr>
+
+
+<tr class = "line"> 
+</tr>
+<tr>
+<td>
+	<h3>  {% trans "DJIBOUTI" %}</h3>
+	<ul>
+	<li><a href = "">{% trans "Creer une régions" %}</a></li>
+	
+	</ul>
+</td>
+</tr>
+
+
+
+
+
+
+<tr class = "line"> 
+</tr>
+<tr>
+<td>
+	<h3>  {% trans "MAURITANIE" %}</h3>
+	<ul>
+	<li><a href = "">{% trans "Creer une régions" %}</a></li>
+	<li><a href = "">{% trans "Creer un departement" %}</a></li>
+	
+	</ul>
+</td>
+</tr>
+
+
+
+
+</table>
+
+{% endblock %}

@@ -35,17 +35,26 @@ class Indicator (models.Model):
     
     '''   
     name  =models.CharField (max_length = 20 , null =True , blank =True)
-    type  =models.CharField (max_length =2 , null =True , blank =True, choices =INDICATOR_CHOICES)
+    type  =models.CharField (max_length =2, choices =INDICATOR_CHOICES,
+                             help_text =_("le type de l'indicateur\
+                             [Text : si une valeur  alphabetique a saisir],\
+                             [Date: si format =YYYY-MM-DD]\
+                             [Numeric : Si une valeur numeric a saisir]"))
+    created =models.DateTimeField(auto_now_add =True)
+    modified =models.DateTimeField (auto_now =True)
+    description =models.CharField (max_length = 200 , null =True , blank =True)
     #If the indicator is a list store the value here
     # si l'indicateur est une liste de valueurs , nous gardons la liste
     # des valeurs saisies ici
     #values =models.ManyToManyField ("IndicatorValue", null =True , blank=True)
     
-    
+    @property
+    def type_str(self):
+        return self.get_type_display ()
     
     def validate (self, type , value):
-        ''' Given a value and a indicator , test if the value 
-        is correct for this inticator'''
+        # Given a value and a indicator , test if the value 
+        #is correct for this inticator
         
         if type =="text":
             return validate_text ()
@@ -55,6 +64,7 @@ class Indicator (models.Model):
             validate_list ()
         elif type =="date":
             validate_date ()
+    
         
     def validate_date (self, value):
         pass
@@ -80,7 +90,9 @@ class IndicatorValue(models.Model):
     Chaque indicator de type list aura plusieurs valeurs
     '''
     indicator = models.ForeignKey("Indicator")
-    value = models.CharField (max_length = 200 , null =True , blank =True) 
+    value = models.CharField (_("La valeur de l'indicateur "),
+                              max_length = 200 , null =True , blank =True,
+                              help_text =_("Saisir ici la liste des valeurs de l'indicateur si l'indicacteur est une liste de choix")) 
     
     def __unicode__(self):
         
@@ -212,8 +224,29 @@ class Area(models.Model):
             else :
                 return casted 
             
-        return casted 
+        return casted
     
+    def flatten (self , klass = None):
+        seen = set ()
+        leave = set ()
+        def recurse(area):
+            if hasattr (area , "children") and  len(area.children.all()):
+                print  area , area.children
+                seen.add(area)
+                for area in area.children.all() :
+                        recurse(area)
+            else :
+                leave.add (area)
+                 
+        recurse (self)
+        if klass and len (leave):
+            casted =  [ area._downcast(klass)   for area in leave ]
+        else :
+            casted= leave
+        return casted
+        
+            
+             
     def get_ancestors(self):
         seen = set ()
         while self.parent :
@@ -233,7 +266,14 @@ class Area(models.Model):
     
     
         
-         
+    def get_children(self, klass=None):
+        childs = self.children.all()
+        if klass is not None:
+            return [c._downcast(klass) for c in childs]
+        else:
+            return childs   
+        
+          
     def __unicode__(self):
         return "%s"%(self.name)
     
@@ -271,6 +311,8 @@ class Departement (Area):
 
 class  Arrondissement(Area):
     pass
+class  CommuneArrondissement(Area):
+    pass
 
 class CommunauteRurale (Area):
     pass
@@ -278,11 +320,24 @@ class Commune(Area):
     pass
 class SpecialZone (Area):
     pass
+class Prefecture (Area):
+    pass
+class Secteur (Area):
+    pass
+class Etat(Area):
+    pass
+
 class Region (Area):
     pass
 class District (Area):
     pass
 class CommuneArrondissement(Area):
     pass
+
+class CommuneHurbaine (Area):
+    pass
 class IndicatorVillage (Area):
-    village = models.ForeignKey(SuiviVillage)
+    '''
+    This not be null , but Iam not sure
+    '''
+    village = models.ForeignKey(SuiviVillage , null =True , blank =True)

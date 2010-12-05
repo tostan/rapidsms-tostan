@@ -1,0 +1,78 @@
+{% extends "layout.html" %}
+{% load i18n %}
+{% block title %}The Jokko Initiative - A RapidSMS Project by Tostan{% endblock %}
+{% block stylesheets %}
+		<link type="text/css" rel="stylesheet" href="/static/indicator/stylesheets/layout.css" />
+		<link type="text/css" rel="stylesheet" href="/static/webui/stylesheets/modules.css" />
+{% endblock %}
+
+{% block content %}
+
+
+
+<style>
+.line {
+	boder : solid 1px ;
+}
+</style>
+<table>
+{% if msg %}
+		<tr>
+		<td>
+		{%  for m in msg %}
+			{{ m }}
+		{% endfor %}
+		</td>
+		</tr>
+{% endif %}
+
+<tr>
+<td>
+	<h3>  {% trans "Ajouter un nouveau Pays" %}</h3>
+	<ul>
+		<li><a href = "/indicator/">{% trans "Retour a la page d'accueil de Indicateur" %}</a></li>
+	</ul>
+</td>
+</tr>
+
+<tr>
+	<form action = ""   method ="post">
+			<td  coslpan =2>
+			  <table>
+				 <tr> 
+				 <td>{{ form.as_table }} </td>
+				 </tr>
+				 <tr>
+				 	<td><input type ="submit"  value ="{% trans  "OK"  %}"> </td>
+				 </tr>
+				 
+			  </table>
+			</td>
+	</form>
+</tr>
+
+
+
+<tr>
+<td>
+	  <table>
+			 <tr>
+			 <th scope="col">{% trans "Nom" %} </th>
+			 <th scope="col">{% trans "Date de creation" %}</th> 
+			 <th scope="col">{% trans "Action" %} </th>
+			 </tr>
+			 
+			{% for  pay in  pays %}
+			    <tr>
+				  <td>{{  pay.name }}</td>
+				  <td>{{ pay.created }}</td>
+				  <!-- Ne pas permettre la supression des pays -->
+				  <!--  td><a href = "/indicator/delete_pays/{{ pay.pk }}">{% trans "Delete" %}</td-->
+			      <td><a href = "/indicator/edit_pays/{{ pay.pk }}">{% trans "Edit" %}</td>
+			    </tr>
+			 {% endfor %}
+		</table>
+</tr>
+</table>
+
+{% endblock %}

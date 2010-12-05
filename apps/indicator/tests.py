@@ -30,6 +30,7 @@ class TestApp (TestScript):
         self._testregionspays ()
         self._testdowncast_children ()
         self._testdowncast_parent ()
+        self._testflatten ()
     def _testcreatepays (self):
          senegal = Pays.objects.get_or_create (name = "Senegal")
          self.assertTrue(senegal is not None )
@@ -64,7 +65,28 @@ class TestApp (TestScript):
         print kaolack.parent , type (kaolack.parent)
         print kaolack.parent._downcast (klass = Pays) ,  type (kaolack.parent._downcast(klass =Pays))
         
-        
-        
+    
+    
+    def _testflatten (self):
+         senegal  = Pays.objects.get(name__icontains = "Senegal")
+         kaolack  = Region.objects.get (name__icontains ="kaolack")
+         bakel  , created =  Region.objects.get_or_create (name ="bakel" ,
+                     parent =senegal)
+         arr = Arrondissement.objects.create (
+                        name= "koki1" , parent =kaolack)
+         arr = Arrondissement.objects.create (
+                        name= "koki2" , parent =kaolack)
+         arr = Arrondissement.objects.create (
+                        name= "koki3" , parent =bakel)
+         
+         senegal = Pays.objects.get (name__icontains = "Senegal")
+         flat =senegal.flatten (klass = Arrondissement)
+         print "------------print flatten----------------"
+         for f in flat:
+             print type (f) , f.__unicode__()
+              
+         
+         
+         
         
         

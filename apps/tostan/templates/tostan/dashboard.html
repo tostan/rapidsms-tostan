@@ -71,6 +71,15 @@
    </td>
 {% endif %}
 
+{% if perms.rapidsuivi.see_map %}
+   <td>
+      <a href = "{% url map %}">
+            <img src ="/static/tostan/images/indicateur.jpg" /></br>
+                {% trans "Application de Sasie des Fiches Superviseurs/Parametrage/Statistiques" %}
+      </a>
+   </td>
+{% endif %}
+
 </tr>
 </table>
 

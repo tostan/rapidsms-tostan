@@ -278,7 +278,8 @@ class App (rapidsms.app.App):
 				return True
 		# Else this is not a radio , please raise village not exist 
                 except Exception :
-			pass
+			#pass
+			print traceback.print_exc()
                 message.respond(_t("fr","no-village-found"))
                 return True
             except Exception, e :

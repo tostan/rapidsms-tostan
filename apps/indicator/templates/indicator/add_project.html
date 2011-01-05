@@ -1,0 +1,100 @@
+{% extends "layout.html" %}
+{% load i18n %}
+{% block title %}The Jokko Initiative - A RapidSMS Project by Tostan{% endblock %}
+{% block stylesheets %}
+		<link type="text/css" rel="stylesheet" href="/static/indicator/stylesheets/layout.css" />
+		<link type="text/css" rel="stylesheet" href="/static/webui/stylesheets/modules.css" />
+{% endblock %}
+
+{% block content %}
+
+
+
+<style>
+.line {
+	boder : solid 1px ;
+}
+</style>
+<table width =100% cellpadding=0 cellspacing =0 border= 0>
+{% if msg %}
+		<tr>
+		<td>
+		{%  for m in msg %}
+			{{ m }}
+		{% endfor %}
+		</td>
+		</tr>
+{% endif %}
+
+<tr>
+<td>
+	<h3>  {% trans "Ajouter un nouveau indicateur" %}</h3>
+	<ul>
+		<li><a href = "/indicator/">{% trans "Retour a la page d'accueil de Indicateur" %}</a></li>
+	</ul>
+</td>
+</tr>
+<tr>
+	<form action = ""   method ="post">
+			<td>
+			  <table>
+				 <tr> 
+				 	 <td>
+				 	 <h2> {% trans  "Choisir les villages pour le projet village "%}</h2>
+				 		 {{ form_village.as_table }}
+				 	 
+				 	  </td>
+				 </tr>
+				 <tr>
+				 <td> 
+						 <input type ="submit"  value ="{% trans "Filtrer les villages" %}" /> 
+				 </td>
+				 </tr>				 
+				  <tr> 
+				 	 <td>
+				 	 <h2> 
+				 	 {% trans  "Choisir les indicateurs  pour le projet village "%}</h2>
+				 	 {{ form_indicator.as_table }}
+				 	 </td>
+				 </tr>			 
+				 <tr>
+				 	 <td><input type ="submit"  value ="{% trans  "OK"  %}"> </td>
+				 </tr>
+				 
+			  </table>
+			</td>
+	</form>
+</tr>
+<tr>
+<td>
+	  <table>
+	  <thead>
+			 <tr>
+				 <th>{% trans "Titre" %} </th>
+				 <th>{% trans "Bailleur" %} </th>
+				 <th>{% trans "Date de Demarrage" %} </th> 
+				 <th>{% trans "Fiches du Projet" %}</th>
+				 <th>{% trans "Action" %}</th>
+			 </tr>
+	  </thead>
+	  <tbody>
+			{% for  project in  projects %}
+			    <tr>
+				  <td>{{  project.titre }}</td>
+				  <td>{{  project.bailleur }}</td>
+				   <td>{{ project.created|date:"Y-m-d" }}</td>
+				   <td>
+					    <ul>
+					   	{% for fiche in project.fiches.all %}
+					   		<li> <a href = '/indicator/fiche/{{ fiche.pk }}/add_submission'>{{ fiche.get_period_display  }}</a></li>
+					    {% endfor %}
+					    </ul>
+				   </td>
+				   <td><a href = "/indicator/delete_project/{{ project.pk }}">{% trans "Delete" %}</td>
+			    </tr>
+			 {% endfor %}
+		</tbody>
+		</table>
+</tr>
+</table>
+{% endblock %}

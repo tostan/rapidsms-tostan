@@ -5,28 +5,17 @@
 		<link type="text/css" rel="stylesheet" href="/static/indicator/stylesheets/layout.css" />
 		<link type="text/css" rel="stylesheet" href="/static/webui/stylesheets/modules.css" />
 {% endblock %}
-
 {% block content %}
-
-
-
-<style>
-.line {
-	boder : solid 1px ;
-}
-</style>
 <table width =100% cellpadding=0 cellspacing =0 border= 0>
 {% if msg %}
 		<tr>
-		<td>
-		{%  for m in msg %}
-			{{ m }}
-		{% endfor %}
-		</td>
+			<td>
+			{%  for m in msg %}
+				{{ m }}
+			{% endfor %}
+			</td>
 		</tr>
 {% endif %}
-
-
 <tr>
 <td>
 	<h3>  {% trans "Rechercher un indicateur" %}</h3>
@@ -58,30 +47,33 @@
 <tr>
 <td>
 	  <table>
-			 <tr>
-			 <th>{% trans "Nom" %} </th>
-			 <th>{% trans "type" %} </th>
-			 <th>{% trans "Liste des valeurs" %} </th>
-			 <th>{% trans "Date de creation" %}</th> 
-			 <th>{% trans "Action" %}
-			 </tr>
-			 
-			{% for  indicator in  indicators %}
-			    <tr>
-				  <td>{{  indicator.name }}</td>
-				  <td>{{  indicator.type_str }}</td>
-				   <td>
-				    <ul>
-				   	{% for value in indicator.indicatorvalue_set.all %}
-				   		<li>{{ value.value  }} </li>
-				    {% endfor %}
-				    </ul>
-				   </td>
-				  <td>{{ indicator.created }}</td>
-				  <td><a href = "/indicator/delete_indicator/{{ pay.pk }}">{% trans "Delete" %}</td>
-			      <td><a href = "/indicator/edit_indicator/{{ pay.pk }}">{% trans "Edit" %}</td>
-			    </tr>
-			 {% endfor %}
+	         <thead>
+				 <tr>
+				 <th>{% trans "Nom" %} </th>
+				 <th>{% trans "type" %} </th>
+				 <th>{% trans "Liste des valeurs" %} </th>
+				 <th>{% trans "Date de creation" %}</th> 
+				 <th>{% trans "Action" %}
+				 </tr>
+			 </thead>
+			 <tbody>
+				{% for  indicator in  indicators %}
+				    <tr>
+					  <td>{{  indicator.name }}</td>
+					  <td>{{  indicator.type_str }}</td>
+					   <td>
+					    <ul>
+					   	{% for value in indicator.indicatorvalue_set.all %}
+					   		<li>{{ value.value  }} </li>
+					    {% endfor %}
+					    </ul>
+					   </td>
+					  <td>{{ indicator.created }}</td>
+					  <td><a href = "/indicator/delete_indicator/{{ pay.pk }}">{% trans "Delete" %}</td>
+				      <td><a href = "/indicator/edit_indicator/{{ pay.pk }}">{% trans "Edit" %}</td>
+				    </tr>
+				 {% endfor %}
+			 </tbody>
 		</table>
 </tr>
 </table>

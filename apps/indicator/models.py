@@ -5,27 +5,46 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import ValidationError
 from rapidsuivi.models import *
+from django.contrib.admin.models import User
+from django import forms 
+from datetime import date 
+from django.forms.extras.widgets import SelectDateWidget
 class Project(models.Model):
     '''
     Model to store all tostan ,s projects 
     Model pour garder tous les projects de tostan ,ainsi que leur description 
     '''
     name = models.CharField (_("Name of the project"), max_length = 160 , null =True , blank =True)
+    titre =models.CharField (_("Title of the project") ,max_length =160 , null =True , blank =True)
+    bailleur =models.CharField (_("Bailleur du project"), max_length =160 , null =True , blank =True)
     description = models.CharField (_("The description of the project") , max_length =160, null =True , blank =True)
     #List of the indicators of projects
     indicators = models.ManyToManyField ("Indicator", null =True , blank= True)
+    # Village of the projects
+    villages   = models.ManyToManyField ("Area" , null =True , blank =True)
     created    = models.DateTimeField (auto_now_add =True)
     
+        
+    @classmethod 
+    def create_project (cls, villages , indicators, **kwargs):
+          try:
+            p = Project.objects.create(**kwargs)
+            print "villages  :" , villages
+            p.villages= villages
+            p.indicators= indicators
+            print  "Saving project  : %s "%p.pk
+            print  "Saving Fiche    :"
+            Fiche.create_fiche (p, indicators)
+          except Exception , err:
+              raise
+              import traceback 
+              traceback.print_exc()
+              
+              
     def __unicode__(self):
-        return u"%s"%(self.name)
+        return u"%s -%s -%s"%(self.name , self.titre , self.bailleur)
 
 
-INDICATOR_CHOICES =(
- ("1" , "text" ),
- ("2" , "numeric"),
- ("3" , "date"),                    
- ("4" , "list")                   
-)
 class Indicator (models.Model): 
     '''
     Model to store an indicator , it is defined by the name , 
@@ -34,20 +53,36 @@ class Indicator (models.Model):
     (text, date , numeric , list)
     
     '''   
-    name  =models.CharField (max_length = 20 , null =True , blank =True)
-    type  =models.CharField (max_length =2, choices =INDICATOR_CHOICES,
-                             help_text =_("le type de l'indicateur\
-                             [Text : si une valeur  alphabetique a saisir],\
-                             [Date: si format =YYYY-MM-DD]\
-                             [Numeric : Si une valeur numeric a saisir]"))
+    TYPE_TEXT    = 't'
+    TYPE_NUMERIC = 'n'
+    TYPE_DATE    ='d'
+    TYPE_LIST    = 'l'
+    
+    MENSUEL  = "m"
+    SEMESTRIEL = "s"
+    TRIMESTRIEL = "t"
+    ANNUEL     = 'a'
+    
+    
+    INDICATOR_TYPE_CHOICES =(
+     (TYPE_TEXT , "text" ),
+     (TYPE_NUMERIC , "numeric"),
+     (TYPE_DATE , "date"),                    
+     (TYPE_LIST, "list")                   
+    )
+    
+    INDICATOR_PERIOD_CHOICES =(
+        (MENSUEL , "Mensuel") ,
+        (SEMESTRIEL , "Semestriel"),
+        (TRIMESTRIEL, "Trimestriel"),
+        (ANNUEL , "Annuel")                           
+    )
+    name  =models.CharField (max_length = 200, null =True , blank =True)
+    type  =models.CharField (max_length =2, choices =INDICATOR_TYPE_CHOICES)
+    period   = models.CharField (max_length =2  , null  =True  , choices  =INDICATOR_PERIOD_CHOICES)
     created =models.DateTimeField(auto_now_add =True)
     modified =models.DateTimeField (auto_now =True)
     description =models.CharField (max_length = 200 , null =True , blank =True)
-    #If the indicator is a list store the value here
-    # si l'indicateur est une liste de valueurs , nous gardons la liste
-    # des valeurs saisies ici
-    #values =models.ManyToManyField ("IndicatorValue", null =True , blank=True)
-    
     @property
     def type_str(self):
         return self.get_type_display ()
@@ -89,23 +124,17 @@ class IndicatorValue(models.Model):
     Each indicator whish is a list will have many values
     Chaque indicator de type list aura plusieurs valeurs
     '''
-    indicator = models.ForeignKey("Indicator")
+    indicator = models.ForeignKey("Indicator"  , related_name= "values")
+    # The submissions
+    submission= models.ForeignKey("Submission" , null =True , related_name ="indicatorvalues")
     value = models.CharField (_("La valeur de l'indicateur "),
-                              max_length = 200 , null =True , blank =True,
-                              help_text =_("Saisir ici la liste des valeurs de l'indicateur si l'indicacteur est une liste de choix")) 
-    
+                max_length = 200 , null =True , blank =True,
+                help_text =_("Saisir ici la liste des valeurs de l'indicateur si l'indicacteur est une liste de choix")) 
+
     def __unicode__(self):
-        
-        u"%s"%(self.value)
+        return "%s" %(self.value)
 
-
-FICHES_CHOICES =(
-("1" , "semestrielle"),
-("2" , "mensuelle"),
-("3", "trimestrielle"), 
-("4" , "anuelle")
-)
-class ProjectFiche (models.Model):  
+class Fiche (models.Model):  
       '''
       Each project will have many fiches depending to the indicators  types
       Chaque projet aura plusieurs fiches  (semestrielle , mensuelle ,annuelle , trimestrielle)
@@ -119,47 +148,137 @@ class ProjectFiche (models.Model):
       via un formulaire de la fiche , on doit savoir l'utilisateur qui a fait
       cette submission (Django User)
       '''
-      project = models.ForeignKey ("Project")
+      
+      MENSUEL  = "m"
+      SEMESTRIEL = "s"
+      TRIMESTRIEL = "t"
+      ANNUEL     = 'a'
+    
+    
+      FICHE_PERIOD_CHOICES =(
+        (MENSUEL , "Mensuel") ,
+        (SEMESTRIEL , "Semestriel"),
+        (TRIMESTRIEL, "Trimestriel"),
+        (ANNUEL , "Annuel")                           
+      )
+   
+      
+      project    = models.ForeignKey ("Project" , related_name = "fiches")
       # L'indicator depend de du type de la fiche      
       indicators = models.ManyToManyField("Indicator", null =True , blank =True)
-      created = models.DateTimeField (auto_now_add =True)
-      #submissions = models.ManyToManyField("Submissions", null =True , blank =True)
-      type = models.CharField (max_length  =1, choices = FICHES_CHOICES)
+      period     = models.CharField (max_length = 2 , choices  = FICHE_PERIOD_CHOICES)
+      created    = models.DateTimeField (auto_now_add =True)
+     
       
-      
-      def make_form (self):
-          '''Make a dynamique form depending to the indicator list'''
-          fields  = {}
-          for indicator  in self.indicators.all ():
-              if indicator.type =="1":
-                  fields [indicator.name] = models.CharField (
-                        label = str(indicator.label),
-                        max_length = 160
-                        
-                        )
-              elif indicator.type =="2":
-                 fields[indicator.name] =models.DateTimeField (
-                    label = str (indicator.label),
-                    input_formats = str(indicator.date_format,
-                    help_text = str ("Merci de taper la date sur cette format :%s "%str(indicator.date_format)))
-              )
-              elif idicator.type =="3":
-                 fields[indicator.name]= models.CharField (
-                  label = str (indicator.label),                 
-                  choices =list ([str(v) for v in indicator.indicatorvalue_set.all ()])
-              )
-              else :      
-                  raise ValidationError ("Invalidate indicator type :%s"%(indicator.type))
-            
-          return  type ("FicheForm" , (forms.Form ,) , 
-                        {"base_fields" :fields , "clean" :clean } ) 
-         
+      @classmethod 
+      def create_fiche (cls , project , indicators):
+            dict  = {"m" : [] , "s" :[] , 't' :[] , 'a':[]}  
+            for indicator in indicators :
+                if indicator.period ==Fiche.MENSUEL:
+                    dict ['m'] .append (indicator)
+                elif indicator.period ==Fiche.ANNUEL:
+                    dict['a'].append (indicator)
+                elif indicator.period  ==Fiche.SEMESTRIEL:
+                    dict ['s'].append (indicator)
+                    
+                elif indicator.period==Fiche.TRIMESTRIEL:
+                    dict['t'].append (indicator)
+                else :
+                    pass
                 
-      def make_static_form (self):
-        pass
+            if len (dict['m']):
+                f =Fiche.objects.create (
+                                project = project ,
+                                period = Fiche.MENSUEL)
+                f.indicators = (dict['m'])
+            if len (dict['s']):
+                f= Fiche.objects.create (
+                                project = project , 
+                                period = Fiche.SEMESTRIEL)
+                f.indicators =dict['s']
+            if len (dict['t']):
+                f=Fiche.objects.create (
+                                project = project , 
+                                period = Fiche.TRIMESTRIEL)
+                f.indicators = dict['t']
+            if len (dict['a']):
+                f=Fiche.objects.create (
+                                project = project ,
+                                period = Fiche.ANNUEL)
+                f.indicators = dict['a']
+    
+    
+      
+      def form_save  (self , indicators):
+          '''
+          Given a list of indicators (10 per page) , we create a dynamique from for them
+          '''     
+          fields  ={}
+          for indicator in indicators:
+              if indicator.type in (Indicator.TYPE_TEXT ,Indicator.TYPE_NUMERIC):
+                 fields["indicator_%s"%indicator.pk] = forms.CharField (
+                                            label =_(indicator.name) ,
+                                            widget =forms.TextInput (attrs  ={"size" : "50"}),
+                                            )
+              elif indicator.type == Indicator.TYPE_DATE:
+                  fields['indicator_%s'%indicator.pk] = forms.DateField(
+                                            label =_(indicator.name),
+                                            widget =SelectDateWidget,
+                                            initial= date.today)
+              else:
+                
+                fields["indicator_%s"%indicator.pk] = forms.MultipleChoiceField (
+                        label = _(indicator.name),
+                        widget = forms.CheckboxSelectMultiple() , 
+                        choices  = as_tuple(indicator.values.all ())
+                )
+        
+          def clean (self):
+             return self.cleaned_data
+         
+          return type ("FormFiche", 
+                       (forms.BaseForm ,) ,
+                       {"base_fields" : fields , "clean" :clean})
+             
+      
+      def form_edit (self ,submission ,indicator_values):
+          '''Basically different to the first submission form ,only  for edition '''
+          fields  ={}   
+          for indicator_value in indicator_values:
+              if indicator_value.indicator.type in (Indicator.TYPE_TEXT ,Indicator.TYPE_NUMERIC):
+                 fields["indicator_%s"%indicator_value.indicator.pk] = forms.CharField (
+                                label =_(indicator_value.indicator.name),
+                                widget =forms.TextInput (attrs  ={"size" : "50"}),
+                                initial =str (indicator_value.value))
+                
+              elif indicator_value.indicator.type in (Indicator.TYPE_DATE):
+                 fields["indicator_%s"%indicator_value.indicator.pk] = forms.CharField (
+                                label =_(indicator_value.indicator.name),
+                                widget =SelectDateWidget,
+                                initial =str (indicator_value.value))
+                
+              else:
+                   fields["indicator_%s"%indicator_value.indicator.pk] = forms.MultipleChoiceField (
+                        label  = _(indicator_value.indicator.name),
+                        widget = forms.CheckboxSelectMultiple (), 
+                        initial= as_ids (IndicatorValue.objects.filter (indicator=indicator_value.indicator , submission = submission).all ()),
+                        choices= as_tuple(IndicatorValue.objects.filter (indicator =indicator_value.indicator).all ())
+                )
+        
+          def clean (self):
+             return self.cleaned_data
+         
+          return type ("FormFiche", 
+                       (forms.BaseForm ,) ,
+                       {"base_fields" : fields , "clean" :clean})
+    
+      
           
       def __unicode__(self):
-          return "%s , %s"%(self.type, self.project.name)
+          return "%s , %s"%(self.pk, self.period)
+def as_ids (queryset):
+          return  ["%s" %obj.pk for obj in queryset ]
+      
       
 class Submission (models.Model):
     '''
@@ -167,20 +286,14 @@ class Submission (models.Model):
     Une submission  est un sauvegarde d'un  formulaire
     Une submission contient en general plusieurs submission d'indiateurs
     '''
+    # The user who is editing this submission
+    # Le secretaire aui saisie la fiche
+    user      = models.ForeignKey(User , null =True ,blank =True)
     date = models.DateTimeField (auto_now_add =True)
-    fiche  = models.ForeignKey("ProjectFiche")
-    
-class IndicatorSubmission (models.Model):
-    submission =models.ForeignKey("Submission")
-    indicator = models.ForeignKey("Indicator")
-    #The value that the user has typed from the web UI
-    #La valeurs saisie par l'utlisateur depuis le formulaire
-    value = models.CharField (max_length = 300, null =True , blank =True)
-    def __unicode__(self):
-        return u"%s"%(self.value)
-    
-    
+    fiche  = models.ForeignKey("Fiche" , related_name = "submissions")
 
+    
+    
 class Area(models.Model):
     '''
     An are can be 
@@ -199,9 +312,6 @@ class Area(models.Model):
                                         help_text="The physical longitude of this location")
     longitude_gmap =models.DecimalField(max_digits=8, decimal_places=6, blank=True, null=True, 
                                         help_text="The physical longitude of this location")
-    
-    
-    
     description = models.TextField ()
     created     = models.DateTimeField (auto_now_add =True)
     modified    = models.DateTimeField (auto_now= True)
@@ -209,14 +319,8 @@ class Area(models.Model):
     def _downcast (self, klass):
         klass_name = klass.__name__
         klass_mro = [c.__name__.lower () for c in klass.__mro__]
-        klass_to_cast = [c.lower () 
-                         for c in 
-                         klass_mro[ : klass_mro.index (self.__class__.__name__.lower())]]
+        klass_to_cast = [c.lower () for c in klass_mro[ : klass_mro.index (self.__class__.__name__.lower())]]
         klass_to_cast.reverse ()
-        
-        print "*KLASS TO CAST*"
-        print klass_to_cast
-        
         casted = self
         for  c in klass_to_cast:
             if hasattr (casted, c):
@@ -263,42 +367,26 @@ class Area(models.Model):
             seen.append (self.parent._downcast(real_klass))
             
         return seen
-    
-    
-        
+
     def get_children(self, klass=None):
         childs = self.children.all()
         if klass is not None:
             return [c._downcast(klass) for c in childs]
         else:
             return childs   
-        
-          
+                  
     def __unicode__(self):
         return "%s"%(self.name)
-    
-    
-   # class Meta:
-   #    abstract =True 
-    
-    
-######################################################
-# [1]-Guinee
-# Region > Prefecture > Zone speciale > Commune Urbaine > Communaute Rurale 
-# [2]-Guinee Bissao 
-# Region
-# [3]-Gambie 
-#  Region > districts 
-# [4]-Somalie
-#  Region
-# [7]-DJibouti
-# Region
-# [8]-Mauritanie
-# Region
-# [9]-Senegal
-#  Region  > Departement > Arrondissement > CommuneArrondissement >
-#  Commune > CommunauteRurale
-######################################################   
+     
+def as_tuple (qs):
+    '''
+    Given a list of objets return a tuple
+    '''
+    #l  = [("0" , "--"*20)]
+    l =[]
+    [ l.append((q.pk , q.__unicode__()) ) for q in qs]
+    return l
+
 class Pays (Area):
     pass
 
@@ -321,6 +409,8 @@ class Commune(Area):
 class SpecialZone (Area):
     pass
 class Prefecture (Area):
+    pass
+class SubPrefecture (Area):
     pass
 class Secteur (Area):
     pass

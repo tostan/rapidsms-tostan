@@ -56,30 +56,32 @@
 <tr>
 <td>
 	  <table>
+	         <thead>
 			 <tr>
-			 <th>{% trans "Nom" %} </th>
-			 <th>{% trans "type" %} </th>
-			 <th>{% trans "Liste des valeurs" %} </th>
-			 <th>{% trans "Date de creation" %}</th> 
-			 <th>{% trans "Action" %}
-			 </tr>
-			 
-			{% for  indicator in  indicators %}
-			    <tr>
-				  <td>{{  indicator.name }}</td>
-				  <td>{{  indicator.type_str }}</td>
-				   <td>
-				    <ul>
-				   	{% for value in indicator.indicatorvalue_set.all %}
-				   		<li>{{ value.value  }} </li>
-				    {% endfor %}
-				    </ul>
-				   </td>
-				  <td>{{ indicator.created }}</td>
-				  <td><a href = "/indicator/delete_indicator/{{ pay.pk }}">{% trans "Delete" %}</td>
-			      <td><a href = "/indicator/edit_indicator/{{ pay.pk }}">{% trans "Edit" %}</td>
-			    </tr>
-			 {% endfor %}
+				 <th>{% trans "Nom" %} </th>
+				 <th>{% trans "type" %} </th>
+				 <th>{% trans "Liste des valeurs" %} </th>
+				 <th>{% trans "Date de creation" %}</th> 
+				 <th>{% trans "Action" %}
+				 </tr>
+			</thead>
+			<tbody> 
+				{% for  indicator in  indicators %}
+				    <tr>
+					  <td>{{  indicator.name }}</td>
+					  <td>{{  indicator.type_str }}</td>
+					   <td>
+					    <ul>
+					   	{% for value in indicator.values.all %}
+					   		<li>{{ value.value }} </li>
+					    {% endfor %}
+					    </ul>
+					   </td>
+					  <td>{{ indicator.created }}</td>
+					  <td><a href = "/indicator/delete_indicator/{{ indicator.pk }}">{% trans "Delete" %}</td>
+				    </tr>
+				 {% endfor %}
+			 </tbody>
 		</table>
 </tr>
 </table>

@@ -16,7 +16,7 @@
 
 <table width=80% align="center"><tr align=center valign=top>
 <td>
-	<a href="{% url smsforum.views.visualize %}">
+	<a href="{% url parametrage_user %}">
 	<img src="/static/indicator/images/user.png"/><br/>
 		{% trans  "Gerer les superviseurs et les cordinateurs" %}
 	</a>
@@ -38,24 +38,21 @@
 
 </td>	
 <td>
-		{% if perms.tagging.change_tag %}
-			<a href="{% url smsforum.views.messages %}">
+			<a href="{% url parametrage_stat %}">
 				<img src="/static/indicator/images/statistic.png"/><br/>
 				{% trans "Gerer les statistiques" %}
 			</a>
-		{% endif %}
 		
 </td>
 
 
-{% if perms.contacts.change_contact %}
 	<td>
-		<a href="{% url messaging %}">
+		<a href="{% url parametrage_export %}">
 		<img src="/static/indicator/images/export.png"/><br/>
 			{% trans "Gerer les exports" %}
 		</a>
 	</td>
-{% endif %}
+
 
 
 {% if perms.contacts.change_contact %}

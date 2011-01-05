@@ -52,14 +52,18 @@ div.clear-hack {
 
 
 #wrapper {
-	width: 80em;
+	/*width: 80em;*/
+	width : 90em;
 	margin: 0 auto;
 	background: #fff;
 }
 
 	/* no scaling for ie6 */
 	* html #wrapper {
-		width: 960px; }
+		width: 960px;
+		
+		
+		 }
 
 
 /* the header is based roughly upon

@@ -7,14 +7,6 @@
 {% endblock %}
 
 {% block content %}
-
-
-
-<style>
-.line {
-	boder : solid 1px ;
-}
-</style>
 <table>
 {% if msg %}
 		<tr>
@@ -26,27 +18,27 @@
 		</tr>
 {% endif %}
 <tr>
-<td>
-	<h3>  {% trans "Ajouter un nouveau Arrondissement" %}</h3>
-	<ul>
-		<li><a href = "/indicator/">{% trans "Retour a la page d'accueil de Indicateur" %}</a></li>
-	</ul>
-</td>
+	<td>
+		<h3>  {% trans "Ajouter un nouveau Arrondissement" %}</h3>
+		<ul>
+			<li><a href= "/indicator/">{% trans "Retour a la page d'accueil de Indicateur" %}</a></li>
+		</ul>
+	</td>
 </tr>
 <tr>
-	<form action = ""   method ="post">
 			<td  coslpan =2>
-			  <table>
-				 <tr> 
-				 <td>{{ form.as_table }} </td>
-				 </tr>
-				 <tr>
-				 	<td><input type ="submit"  value ="{% trans  "OK"  %}"> </td>
-				 </tr>
-				 
-			  </table>
+			  <form action = ""   method ="post">
+				  <table>
+					 <tr> 
+					 <td>{{ form.as_table }} </td>
+					 </tr>
+					 <tr>
+					 	<td><input type ="submit"  value ="{% trans  'OK'%}"> </td>
+					 </tr>
+					 
+				  </table>
+			  </form>
 			</td>
-	</form>
 </tr>
 
 
@@ -54,6 +46,7 @@
 <tr>
 <td>
 	  <table>
+	  <thead>
 			 <tr>
 				 <th>{% trans "Nom" %} </th>
 				 <th>{% trans "Departement" %} </th>
@@ -63,7 +56,8 @@
 				 <th>{% trans "Date de creation" %}</th>
 				 <th>{% trans "Action" %}</th>
 			 </tr>
-			 
+	  </thead>
+	  <tbody>
 			{% for region in  regions %}
 			    <tr>
 				  <td>{{ region.name }}</td>
@@ -76,6 +70,7 @@
 			      <td><a href = "/indicator/edit_arrondissement/{{ pay.pk }}">{% trans "Edit" %}</td>
 			    </tr>
 			 {% endfor %}
+		</tbody>
 		</table>
 </tr>
 </table>

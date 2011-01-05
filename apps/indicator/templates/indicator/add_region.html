@@ -7,15 +7,7 @@
 {% endblock %}
 
 {% block content %}
-
-
-
-<style>
-.line {
-	boder : solid 1px ;
-}
-</style>
-<table width=100% cellpadding= 0 cellspacing =0  border= 0>
+<table>
 {% if msg %}
 		<tr>
 		<td>
@@ -28,7 +20,7 @@
 
 <tr>
 <td>
-	<h3>  {% trans "Ajouter une nouvelle region" %}</h3>
+	<h3>{% trans "Ajouter une nouvelle region" %}</h3>
 	<ul>
 		<li><a href = "/indicator/">{% trans "Retour a la page d'accueil de Indicateur" %}</a></li>
 	</ul>
@@ -54,9 +46,9 @@
 	  <table>
 	  <thead>
 			 <tr>
-			 <th scope="col">{% trans "Nom" %}</th>
-			 <th scope="col">{% trans "Pays" %}</th>
-			 <th scope="col">{% trans "Latitude" %}</th> 
+			 <th>{% trans "Nom" %}</th>
+			 <th>{% trans "Pays" %}</th>
+			 <th>{% trans "Latitude" %}</th> 
 			 <th>{% trans "Longitude" %}</th>
 			 <th>{% trans "Surface" %}</th>
 			 <th>{% trans "Date de creation" %}</th>

@@ -5,16 +5,7 @@
 		<link type="text/css" rel="stylesheet" href="/static/indicator/stylesheets/layout.css" />
 		<link type="text/css" rel="stylesheet" href="/static/webui/stylesheets/modules.css" />
 {% endblock %}
-
 {% block content %}
-
-
-
-<style>
-.line {
-	boder : solid 1px ;
-}
-</style>
 <table>
 {% if msg %}
 		<tr>
@@ -54,28 +45,31 @@
 <tr>
 <td>
 	  <table>
-			 <tr>
-					 <th>{% trans "Nom" %} </th>
-					 <th>{% trans "Region" %} </th>
-					 <th>{% trans "Latitude" %}</th> 
-					 <th>{% trans "Longitude" %}</th>
-					 <th>{% trans "Surface" %}</th>
-					 <th>{% trans "Date de creation" %}</th>
-					 <th>{% trans "Action" %}</th>
-			 </tr>
-			 
-			{% for region in  regions %}
-			    <tr>
-					  <td>{{ region.name }}</td>
-					  <td>{{ region.parent.name }}</td>
-					  <td>{{ region.latitude }}</td>
-					  <td>{{ region.longitude}}</td>
-					  <td>{{ region.surface}}</td>
-					  <td>{{ region.created|date:"Y-m-d" }}</td>
-					  <td><a href = "/indicator/delete_district/{{ pay.pk }}">{% trans "Delete" %}</td>
-				      <td><a href = "/indicator/edit_district/{{ pay.pk }}">{% trans "Edit" %}</td>
-			    </tr>
-			 {% endfor %}
+	         <thead>
+				 <tr>
+						 <th>{% trans "Nom" %} </th>
+						 <th>{% trans "Region" %} </th>
+						 <th>{% trans "Latitude" %}</th> 
+						 <th>{% trans "Longitude" %}</th>
+						 <th>{% trans "Surface" %}</th>
+						 <th>{% trans "Date de creation" %}</th>
+						 <th>{% trans "Action" %}</th>
+				 </tr>
+			 </thead>
+			 <tbody>
+					{% for region in  regions %}
+					    <tr>
+							  <td>{{ region.name }}</td>
+							  <td>{{ region.parent.name }}</td>
+							  <td>{{ region.latitude }}</td>
+							  <td>{{ region.longitude}}</td>
+							  <td>{{ region.surface}}</td>
+							  <td>{{ region.created|date:"Y-m-d" }}</td>
+							  <td><a href = "/indicator/delete_district/{{ pay.pk }}">{% trans "Delete" %}</td>
+						      <td><a href = "/indicator/edit_district/{{ pay.pk }}">{% trans "Edit" %}</td>
+					    </tr>
+					 {% endfor %}
+			 </tbody>
 		</table>
 </tr>
 </table>

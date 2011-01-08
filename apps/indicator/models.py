@@ -369,7 +369,7 @@ def as_tuple (qs):
     '''
     Given a list of objets return a tuple
     '''
-    ruturn [ (q.pk , q.__unicode__()) 
+    return [ (q.pk , q.__unicode__()) 
       	     for q in qs]
 
 class Pays (Area):

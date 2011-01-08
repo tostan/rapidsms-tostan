@@ -9,6 +9,7 @@
 
 body {
 	background: #eef url("../images/page-bg.png") repeat-y 50% 0;
+	/*font: 9pt "Lucida Grande", "Bitstream Vera Sans", Verdana, sans-serif;*/
 	font: 9pt "Lucida Grande", "Bitstream Vera Sans", Verdana, sans-serif;
 	line-height: 1;
 	color: #333;
@@ -52,17 +53,15 @@ div.clear-hack {
 
 
 #wrapper {
-	/*width: 80em;*/
-	width : 90em;
+	width: 80em;
+	/*width : 90em;*/
 	margin: 0 auto;
 	background: #fff;
 }
 
 	/* no scaling for ie6 */
 	* html #wrapper {
-		width: 960px;
-		
-		
+		width:  960px;
 		 }
 
 

@@ -6,7 +6,7 @@ from django.views.generic.simple import direct_to_template
 import apps.tostan.views as views
 from apps.indicator import views
 urlpatterns = patterns('',
-    url(r'^indicator/?$',views.index,  name="dashboard"),
+    url(r'^indicator/?$',views.index,  name="indicator_dashboard"),
     url(r'^indicator/parametrage/?$',views.parametrage,  name="parametrage"),
     url(r'^indicator/add_pays/?$',views.add_pays,  name="add_pays"),
     url(r'^indicator/edit_pays/(?P<id>\d+)/?$',views.edit_pays,  name="edit_pays"),

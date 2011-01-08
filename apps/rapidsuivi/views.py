@@ -66,7 +66,6 @@ def calendar(req, template="rapidsuivi/calendar.html"):
     radios = Radio.objects.all()
     cmcs   = Cmc.objects.all()
     classes = Class.objects.all()
-
     datas = []
     if req.method =="POST":
             def handle_form (post):
@@ -74,23 +73,20 @@ def calendar(req, template="rapidsuivi/calendar.html"):
                     cordination =post.get("cordination" ,None)
                     project  =post.get("project" ,None)
                     village  = post.get("village" ,None)
-                    
-                    if cordination  is not None and cordination not in ["" ,"all"]:
+                    if ( cordination  is not None 
+			 and cordination not in ["" ,"all"]):
                         rel_params.update({"cordination_id" :cordination })
                         context.update({"cordination_selected":cordination})
-
-                    if project  is not None and  project not in ["" ,"all"]:
+                    if (project  is not None 
+			and  project not in ["" ,"all"]):
                        rel_params.update({"project_id" :project})
                        context.update({"project_selected" :project})
-                       
-                    if village is not None and  village not in ["", "all"]:
+                    if (village is not None 
+		       and  village not in ["", "all"]):
                         rel_params.update(
                             {"village_suivi__village" :  Village.objects.get (pk = village) })
                         context.update({"village_selected": village })
-
-
-                    return rel_params
-                
+                    return rel_params                
             rel_params  = handle_form (req.POST)
             if all.count ()>0:
                 all =all.filter (**rel_params)
@@ -100,6 +96,11 @@ def calendar(req, template="rapidsuivi/calendar.html"):
                    classes=classes.filter(relay__in =all)
                     
             def handle_form_actors(post) :
+		'''
+		Only exist  to handle  form filter from WeBUI .The page exact is calendar page 
+		The method handle the submission form data 
+		>>> handle_form_actors (req.POST)
+		'''
                 actor  = post.get ("actor" ,None)
                 if actor is not None  and actor not  in ["", "all"]:
                    return int(actor)
@@ -115,7 +116,6 @@ def calendar(req, template="rapidsuivi/calendar.html"):
             else :
 		for k in [cmcs ,classes , radios]:
 			datas.extend(objects_to_qtip(k))
-	    
     else :
 		for  k in [cmcs ,classes ,radios]:
                        datas.extend(objects_to_qtip (k))
@@ -124,11 +124,15 @@ def calendar(req, template="rapidsuivi/calendar.html"):
     # return HttpResponse (datas)
     context.update(_get_form_data())
     context.update ( {"data": datas})
-    
     return render_to_response (req ,template, context)
 
 def _get_form_data ():
-     """ Get the data for creating form """
+     """ 
+     Create data to populated  the form for   filtering data  from 
+     the  calendar UI  
+     >> _get_form_date  ()
+     >>	{'cordiations' :  (1,'kaolack'), ('2','Thies')}
+     """
      return {
         "cordination_options": dict (r.COORDINATION_TYPES),\
         "project_options": dict(r.PROJECT_TYPES),\
@@ -202,9 +206,7 @@ def object_to_qtip(obj, from_page =None):
 
 def objects_to_qtip(objects):
     '''
-    Parceque , jFullCalendar attends dans son attributs events le format suivant
-    events =[
-    
+    Parceque , jFullCalendar attends dans son attributs events le format suivants
     Le context est de la forms  context = {"cmcs" :[] ,"classes": [] ,"radios" :[] }
     '''
     objets_qtip=[]
@@ -215,11 +217,11 @@ def objects_to_qtip(objects):
                 objets_qtip.append(object_qtip)
     return objets_qtip
  
-   
 def  object_to_gmap_qtip(village):
         '''
         Return the gmap data for each village
-        {"icon" :(red'green) , "gmap_latitude": "12.75555" ,"gmap_longitude": "-15.7777555" , "name":"name of the village"}
+        {"icon" :(red'green) , "gmap_latitude": "12.75555" ,
+	"gmap_longitude": "-15.7777555" , "name":"name of the village"}
         '''
         current_message = village.current_message()
         data = dict()
@@ -241,7 +243,9 @@ def  object_to_gmap_qtip(village):
  
 def object_to_gmap_qtip_with_qtip(village):
         """
-        Add some information to
+        Fill   data into the dict  to populate the Qtip Widget
+	whish are going to be used into Google Map  to display 
+	villages' currents messages
         """
         data ={}
         object_gmap_qtip= object_to_gmap_qtip(village)
@@ -257,7 +261,9 @@ def object_to_gmap_qtip_with_qtip(village):
         return data
 
 def map (req , template = "rapidsuivi/gmap.html"):
-        """Handle google map request"""
+        """
+	Handle google map data from the form displayed over the map via Qtip 
+	"""
         context =dict()
         context.update(_get_form_data())
         villages =list()
@@ -269,41 +275,35 @@ def map (req , template = "rapidsuivi/gmap.html"):
                         rel_params=dict()
                         coordination =  post.get ("cordination")
                         village =  post.get ("village")
-                        
                         if coordination and   coordination  not in ["" , "all"]:
                                rel_params.update({"cordination_id" :
                                                   coordination })
                                context.update({"cordination_selected" :
                                                coordination})
-                               
                         if village and village not in ["" , "all"]:
                                rel_params.update({"village_suivi__village" :
                                                   Village.objects.get (pk =village)})
                                context.update({"village_selected" :
                                             village})
                         return rel_params
-
-                    
                 rel_params = handle_form (req.POST)
                 if all.count ()>0:
                     all = all.filter(**rel_params)
                 if all.count()>0:
                     villages =SuiviVillage.objects.filter(pk__in =\
                             [ v.pk for v in [r.village_suivi for r in all if r.village_suivi]])
-                
         if (not villages or not len (villages)):
                 villages = SuiviVillage.objects.all ()
-                
         for suivi_village in villages :
                 gmap_data =object_to_gmap_qtip_with_qtip(suivi_village)
                 gmap_datas.append (gmap_data)
-
         context.update ( {"villages" : gmap_datas})
         return render_to_response (req , template ,
                                    context)
 
 def update_message_status (req ,from_page , type ,message_pk):
-        '''Update message from calendar UI
+        '''
+	Update message from calendar UI
         Note ***
         From _template_ param tell us where the req come from
         Either from calendar ui ,or from map ui .We need to know for redirection
@@ -323,7 +323,6 @@ def update_message_status (req ,from_page , type ,message_pk):
         return HttpResponseRedirect(reverse("map") if from_page =="map" \
                                     else reverse ("calendar"))
 
-     
 def update_message (req , from_page ,type ,message_pk) :
         '''
         message_instance allow us to use the Best Model Form
@@ -335,7 +334,11 @@ def update_message (req , from_page ,type ,message_pk) :
         errors = []
         context ={}
         def _get_message_form (type , data ={} ,pk=None  ):
-                # Get message with pk , data , and type
+                '''
+		Return the message Form depending  to the given type
+		>>>_get_message_form(cmc)
+		>>>CmcForm()
+		'''
                 if  type =='cmc':
                     return CmcForm ( data = data  ,
                               instance  = Cmc.objects.get(pk =int(pk)))
@@ -344,8 +347,7 @@ def update_message (req , from_page ,type ,message_pk) :
                                 instance = Class.objects.get(pk =int(pk)))
                 if  type =='radio':
                     return RadioForm ( data = data ,
-                                instance = Radio.objects.get(pk =int(pk)))
-                    
+                                instance = Radio.objects.get(pk =int(pk)))                    
         if req.method =="POST":
             form =_get_message_form (type ,
                                      data =req.POST ,
@@ -361,12 +363,17 @@ def update_message (req , from_page ,type ,message_pk) :
         return render_to_response (req , template ,{"form" :form})
 
 def export_message (req,village_pk):
-            """Given a village I am going to export all CMC , RADIO , AND CLASS
-            activity sent from the given village """
+            """
+	    Given a village I am going to export all CMC , RADIO , AND CLASS
+            activity sent from the given village
+	    """
             village =SuiviVillage.objects.get (pk = int (village_pk))
-
             def _get_all_cmc_radio_class_from_village (village):
-               # For this village get all cmcs , classes and radios messages for building xls reports
+	       '''
+		Return the data list   for export depending of the given village
+		>>>_get_all_cmc_radio_class_from_village (1)
+		>>>[cmc1 , radio1 , cmc2 , class3]
+	       '''
                all = [ o for o in Cmc.objects.filter\
                           (relay__village_suivi = village).all()]+\
                      [ o for o in Class.objects.filter\
@@ -374,23 +381,15 @@ def export_message (req,village_pk):
                      [ o for o in Radio.objects.filter\
                           (relay__village_suivi =village).all()]
                return all
-
-               
             all_cmc_radio_class = _get_all_cmc_radio_class_from_village (village)
-
-            
             if not len(all_cmc_radio_class):
                 response = HttpResponse (mimetype ="application/vnd.ms-excel")
                 response ["Content-Disposition"]="attachment; filename =empty.xls"
                 return response
-
-            
             response = HttpResponse (mimetype ="text/csv")
             response ["Content-Disposition"]="attachment; filename =%s.xls"\
             %village.village.name.replace(" " ,"_")
             writer = UnicodeWriter(response)
-            # I dont think if the is the best place to put this
-            # Rowena should check
             fields = {"message" : _("Message Recu par Tostan"), "relay": _("Le Relay") ,
                       "date" :_("Date de Reception"), "type_id":_("Type du message")}
             writer.writerow (fields.values ())
@@ -411,9 +410,9 @@ def export_message (req,village_pk):
                 writer.writerow(row)
             return response
 
-        
 class UnicodeWriter(object):
-        """ A unicode Writer helper that allow us to write
+        """ 
+	A unicode Writer helper that allow us to write
         any given encoding , default is utf-8
         """
         def __init__ (self,stream , dialect ="excel-tab" , encoding= "Utf-8",**kw):   

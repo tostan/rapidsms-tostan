@@ -14,56 +14,64 @@ class Project(models.Model):
     Model to store all tostan ,s projects 
     Model pour garder tous les projects de tostan ,ainsi que leur description 
     '''
-    name = models.CharField (_("Name of the project"), max_length = 160 , null =True , blank =True)
-    titre =models.CharField (_("Title of the project") ,max_length =160 , null =True , blank =True)
-    bailleur =models.CharField (_("Bailleur du project"), max_length =160 , null =True , blank =True)
-    description = models.CharField (_("The description of the project") , max_length =160, null =True , blank =True)
+    name = models.CharField (
+		_("Name of the project"),
+		 max_length = 160 ,
+		 null =True , 
+	 	 blank =True)
+    titre =models.CharField (
+		_("Title of the project") ,
+		max_length =160 ,
+		null =True ,
+		blank =True)
+    bailleur =models.CharField (_
+		("Bailleur du project"),
+		 max_length =160 , 
+		null =True , blank =True)
+    description = models.CharField (
+		_("The description of the project") , 
+		max_length =160, 
+		null =True , blank =True)
     #List of the indicators of projects
     indicators = models.ManyToManyField ("Indicator", null =True , blank= True)
     # Village of the projects
     villages   = models.ManyToManyField ("Area" , null =True , blank =True)
     created    = models.DateTimeField (auto_now_add =True)
     
-        
     @classmethod 
     def create_project (cls, villages , indicators, **kwargs):
-          try:
+          '''
+	  create a new project 
+	  ''' 
+	  try:
             p = Project.objects.create(**kwargs)
-            print "villages  :" , villages
             p.villages= villages
             p.indicators= indicators
-            print  "Saving project  : %s "%p.pk
-            print  "Saving Fiche    :"
             Fiche.create_fiche (p, indicators)
-          except Exception , err:
-              raise
+            return True
+	  except Exception , err:
               import traceback 
               traceback.print_exc()
-              
-              
+      	      return False
     def __unicode__(self):
         return u"%s -%s -%s"%(self.name , self.titre , self.bailleur)
-
 
 class Indicator (models.Model): 
     '''
     Model to store an indicator , it is defined by the name , 
     the type (text , date , list , numeric)
     Model pour garder les indicateurs , chaque indicateur est definit par son type , 
-    (text, date , numeric , list)
-    
+    (text, date , numeric , list)    
     '''   
     TYPE_TEXT    = 't'
     TYPE_NUMERIC = 'n'
-    TYPE_DATE    ='d'
+    TYPE_DATE    = 'd'
     TYPE_LIST    = 'l'
-    
-    MENSUEL  = "m"
-    SEMESTRIEL = "s"
-    TRIMESTRIEL = "t"
-    ANNUEL     = 'a'
-    
-    
+    MENSUEL      = "m"
+    SEMESTRIEL   = "s"
+    TRIMESTRIEL  = "t"
+    ANNUEL       = 'a'
+   
     INDICATOR_TYPE_CHOICES =(
      (TYPE_TEXT , "text" ),
      (TYPE_NUMERIC , "numeric"),
@@ -83,14 +91,12 @@ class Indicator (models.Model):
     created =models.DateTimeField(auto_now_add =True)
     modified =models.DateTimeField (auto_now =True)
     description =models.CharField (max_length = 200 , null =True , blank =True)
+    
     @property
     def type_str(self):
         return self.get_type_display ()
     
-    def validate (self, type , value):
-        # Given a value and a indicator , test if the value 
-        #is correct for this inticator
-        
+    def validate (self, type , value):   
         if type =="text":
             return validate_text ()
         elif type =="numeric":
@@ -99,10 +105,10 @@ class Indicator (models.Model):
             validate_list ()
         elif type =="date":
             validate_date ()
-    
         
     def validate_date (self, value):
         pass
+    
     def validate_numeric (self, value):
         try:
             float (value)
@@ -114,8 +120,7 @@ class Indicator (models.Model):
             str (value)
         except ValueError ,e :
             raise ValidationError ("Text is reauired")
-        
-    
+
     def __unicode__(self):
         return  "%s"%(self.name)
 
@@ -125,12 +130,11 @@ class IndicatorValue(models.Model):
     Chaque indicator de type list aura plusieurs valeurs
     '''
     indicator = models.ForeignKey("Indicator"  , related_name= "values")
-    # The submissions
     submission= models.ForeignKey("Submission" , null =True , related_name ="indicatorvalues")
-    value = models.CharField (_("La valeur de l'indicateur "),
+    value = models.CharField (
+		_("La valeur de l'indicateur "),
                 max_length = 200 , null =True , blank =True,
                 help_text =_("Saisir ici la liste des valeurs de l'indicateur si l'indicacteur est une liste de choix")) 
-
     def __unicode__(self):
         return "%s" %(self.value)
 
@@ -149,27 +153,22 @@ class Fiche (models.Model):
       cette submission (Django User)
       '''
       
-      MENSUEL  = "m"
-      SEMESTRIEL = "s"
+      MENSUEL     = "m"
+      SEMESTRIEL  = "s"
       TRIMESTRIEL = "t"
-      ANNUEL     = 'a'
-    
-    
+      ANNUEL      = 'a'
       FICHE_PERIOD_CHOICES =(
         (MENSUEL , "Mensuel") ,
         (SEMESTRIEL , "Semestriel"),
         (TRIMESTRIEL, "Trimestriel"),
         (ANNUEL , "Annuel")                           
       )
-   
-      
       project    = models.ForeignKey ("Project" , related_name = "fiches")
       # L'indicator depend de du type de la fiche      
       indicators = models.ManyToManyField("Indicator", null =True , blank =True)
       period     = models.CharField (max_length = 2 , choices  = FICHE_PERIOD_CHOICES)
       created    = models.DateTimeField (auto_now_add =True)
-     
-      
+
       @classmethod 
       def create_fiche (cls , project , indicators):
             dict  = {"m" : [] , "s" :[] , 't' :[] , 'a':[]}  
@@ -179,17 +178,15 @@ class Fiche (models.Model):
                 elif indicator.period ==Fiche.ANNUEL:
                     dict['a'].append (indicator)
                 elif indicator.period  ==Fiche.SEMESTRIEL:
-                    dict ['s'].append (indicator)
-                    
+                    dict ['s'].append (indicator)                    
                 elif indicator.period==Fiche.TRIMESTRIEL:
                     dict['t'].append (indicator)
                 else :
                     pass
-                
             if len (dict['m']):
                 f =Fiche.objects.create (
-                                project = project ,
-                                period = Fiche.MENSUEL)
+                       project = project ,
+                       period = Fiche.MENSUEL)
                 f.indicators = (dict['m'])
             if len (dict['s']):
                 f= Fiche.objects.create (
@@ -207,8 +204,6 @@ class Fiche (models.Model):
                                 period = Fiche.ANNUEL)
                 f.indicators = dict['a']
     
-    
-      
       def form_save  (self , indicators):
           '''
           Given a list of indicators (10 per page) , we create a dynamique from for them
@@ -225,24 +220,22 @@ class Fiche (models.Model):
                                             label =_(indicator.name),
                                             widget =SelectDateWidget,
                                             initial= date.today)
-              else:
-                
+              else:            
                 fields["indicator_%s"%indicator.pk] = forms.MultipleChoiceField (
                         label = _(indicator.name),
                         widget = forms.CheckboxSelectMultiple() , 
                         choices  = as_tuple(indicator.values.all ())
                 )
-        
           def clean (self):
              return self.cleaned_data
-         
           return type ("FormFiche", 
                        (forms.BaseForm ,) ,
                        {"base_fields" : fields , "clean" :clean})
-             
-      
+    
       def form_edit (self ,submission ,indicator_values):
-          '''Basically different to the first submission form ,only  for edition '''
+          '''
+	  Basically different to the first submission form ,only  for edition
+	  '''
           fields  ={}   
           for indicator_value in indicator_values:
               if indicator_value.indicator.type in (Indicator.TYPE_TEXT ,Indicator.TYPE_NUMERIC):
@@ -250,35 +243,32 @@ class Fiche (models.Model):
                                 label =_(indicator_value.indicator.name),
                                 widget =forms.TextInput (attrs  ={"size" : "50"}),
                                 initial =str (indicator_value.value))
-                
               elif indicator_value.indicator.type in (Indicator.TYPE_DATE):
                  fields["indicator_%s"%indicator_value.indicator.pk] = forms.CharField (
                                 label =_(indicator_value.indicator.name),
                                 widget =SelectDateWidget,
-                                initial =str (indicator_value.value))
-                
+                                initial =str (indicator_value.value))      
               else:
                    fields["indicator_%s"%indicator_value.indicator.pk] = forms.MultipleChoiceField (
                         label  = _(indicator_value.indicator.name),
                         widget = forms.CheckboxSelectMultiple (), 
-                        initial= as_ids (IndicatorValue.objects.filter (indicator=indicator_value.indicator , submission = submission).all ()),
-                        choices= as_tuple(IndicatorValue.objects.filter (indicator =indicator_value.indicator).all ())
-                )
-        
+                        initial= as_ids (IndicatorValue.objects.filter (
+				indicator=indicator_value.indicator , 
+				submission = submission).all ()),
+                        choices= as_tuple(IndicatorValue.objects.filter (
+				indicator =indicator_value.indicator).all()))
+       
           def clean (self):
-             return self.cleaned_data
-         
+             return self.cleaned_data  
           return type ("FormFiche", 
                        (forms.BaseForm ,) ,
                        {"base_fields" : fields , "clean" :clean})
-    
       
-          
       def __unicode__(self):
           return "%s , %s"%(self.pk, self.period)
+
 def as_ids (queryset):
           return  ["%s" %obj.pk for obj in queryset ]
-      
       
 class Submission (models.Model):
     '''
@@ -292,8 +282,6 @@ class Submission (models.Model):
     date = models.DateTimeField (auto_now_add =True)
     fiche  = models.ForeignKey("Fiche" , related_name = "submissions")
 
-    
-    
 class Area(models.Model):
     '''
     An are can be 
@@ -318,8 +306,11 @@ class Area(models.Model):
     
     def _downcast (self, klass):
         klass_name = klass.__name__
-        klass_mro = [c.__name__.lower () for c in klass.__mro__]
-        klass_to_cast = [c.lower () for c in klass_mro[ : klass_mro.index (self.__class__.__name__.lower())]]
+        klass_mro = [c.__name__.lower () 
+		     for c in klass.__mro__]
+        klass_to_cast = [c.lower () 
+			 for c in klass_mro[ : klass_mro.index (
+			 self.__class__.__name__.lower())]]
         klass_to_cast.reverse ()
         casted = self
         for  c in klass_to_cast:
@@ -327,36 +318,33 @@ class Area(models.Model):
                 casted = getattr (casted,c) 
             else :
                 return casted 
-            
         return casted
     
     def flatten (self , klass = None):
         seen = set ()
         leave = set ()
         def recurse(area):
-            if hasattr (area , "children") and  len(area.children.all()):
+            if (hasattr (area , "children") 
+		and  len(area.children.all())):
                 print  area , area.children
                 seen.add(area)
                 for area in area.children.all() :
                         recurse(area)
             else :
                 leave.add (area)
-                 
         recurse (self)
         if klass and len (leave):
-            casted =  [ area._downcast(klass)   for area in leave ]
+            casted =  [ area._downcast(klass)  
+			for area in leave ]
         else :
             casted= leave
         return casted
         
-            
-             
     def get_ancestors(self):
         seen = set ()
         while self.parent :
             seen.add(self.parent)
             self = self.parent 
-        
         return seen 
     
     def get_ancestor (self, klass_list):
@@ -365,7 +353,6 @@ class Area(models.Model):
         while self.parent and klass_list :
             real_klass = klass_list.pop ()
             seen.append (self.parent._downcast(real_klass))
-            
         return seen
 
     def get_children(self, klass=None):
@@ -382,26 +369,19 @@ def as_tuple (qs):
     '''
     Given a list of objets return a tuple
     '''
-    #l  = [("0" , "--"*20)]
-    l =[]
-    [ l.append((q.pk , q.__unicode__()) ) for q in qs]
-    return l
+    ruturn [ (q.pk , q.__unicode__()) 
+      	     for q in qs]
 
 class Pays (Area):
     pass
-
-
 class Region (Area):
     pass
-
 class Departement (Area):
     pass
-
 class  Arrondissement(Area):
     pass
 class  CommuneArrondissement(Area):
     pass
-
 class CommunauteRurale (Area):
     pass
 class Commune(Area):
@@ -416,18 +396,17 @@ class Secteur (Area):
     pass
 class Etat(Area):
     pass
-
 class Region (Area):
     pass
 class District (Area):
     pass
 class CommuneArrondissement(Area):
     pass
-
 class CommuneHurbaine (Area):
     pass
 class IndicatorVillage (Area):
     '''
     This not be null , but Iam not sure
     '''
-    village = models.ForeignKey(SuiviVillage , null =True , blank =True)
+    village = models.ForeignKey(SuiviVillage , 
+	null =True , blank =True)

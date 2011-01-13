@@ -84,7 +84,7 @@ def calendar(req, template="rapidsuivi/calendar.html"):
                         buffer["village_suivi__village" ]= Village.objects.get (pk = village)
                         buffer["village_selected"]= village
                     return buffer                
-            bubber = handle_form (req.POST)
+            buffer = handle_form (req.POST)
             if all.count ()>0:
                 all =all.filter (**buffer)
 		if all.count ()>0:

@@ -347,7 +347,7 @@ def export_message (req,village_pk =None):
 	    """
 
             # For Radio Type We have not village so  village_pk = None
-            'None' in village_pk  :
+            if 'None' in village_pk  :
                     return  HttpResponseRedirect ('rapidsuivi/calendar.html')
             village =SuiviVillage.objects.get (pk = int (village_pk))
             

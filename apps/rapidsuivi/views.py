@@ -61,32 +61,35 @@ def calendar(req, template="rapidsuivi/calendar.html"):
     De Meme comme il y'a pas de  village pour les Radio , Si vous selectionner un village vous
     ne verrai pas les radios.
     '''
-    # Conext  dict 
-    c =dict()
+    context =dict()
     all= Relay.objects.all ()
     radios = Radio.objects.all()
     cmcs   = Cmc.objects.all()
     classes = Class.objects.all()
-    qtip_datas = []
-    if req.POST:
+    datas = []
+    if req.method =="POST":
             def handle_form (post):
-                    buffer = dict()
+                    rel_params  = dict()
                     cordination =post.get("cordination" ,None)
                     project  =post.get("project" ,None)
                     village  = post.get("village" ,None)
-                    if  (cordination  and cordination not in ["" ,"all"]):
-                        buffer['cordination_id'] =cordination
-                        c['cordination_selected']=cordination
-                    if  (project   and  project not in ["" ,"all"]):
-                        buffer['project_id'] =project
-                        c["project_selected"]=project
-                    if(village and  village not in ["", "all"]):
-                        buffer["village_suivi__village" ]= Village.objects.get (pk = village)
-                        buffer["village_selected"]= village
-                    return buffer                
-            buffer = handle_form (req.POST)
+                    if ( cordination  is not None 
+			 and cordination not in ["" ,"all"]):
+                        rel_params.update({"cordination_id" :cordination })
+                        context.update({"cordination_selected":cordination})
+                    if (project  is not None 
+			and  project not in ["" ,"all"]):
+                       rel_params.update({"project_id" :project})
+                       context.update({"project_selected" :project})
+                    if (village is not None 
+		       and  village not in ["", "all"]):
+                        rel_params.update(
+                            {"village_suivi__village" :  Village.objects.get (pk = village) })
+                        context.update({"village_selected": village })
+                    return rel_params                
+            rel_params  = handle_form (req.POST)
             if all.count ()>0:
-                all =all.filter (**buffer)
+                all =all.filter (**rel_params)
 		if all.count ()>0:
                    radios =radios.filter(relay__in =all)
                    cmcs   =cmcs.filter(relay__in =all)
@@ -101,25 +104,27 @@ def calendar(req, template="rapidsuivi/calendar.html"):
                 actor  = post.get ("actor" ,None)
                 if actor is not None  and actor not  in ["", "all"]:
                    return int(actor)
-		return None
+		else :
+		   return None
             actor  =handle_form_actors (req.POST)
             if actor ==1:    
-                 qtip_datas.extend (objects_to_qtip (cmcs))
+                    datas.extend (objects_to_qtip (cmcs))
             elif actor==2:
-                 qtip_datas.extend (objects_to_qtip (classes))
+                    datas.extend (objects_to_qtip (classes))
             elif actor==3 :
-                 qtip_datas.extend (objects_to_qtip (radios))
+                    datas.extend (objects_to_qtip (radios))
             else :
 		for k in [cmcs ,classes , radios]:
-		 qtip_datas.extend(objects_to_qtip(k))
+			datas.extend(objects_to_qtip(k))
     else :
-	for  k in [cmcs ,classes ,radios]:
-             qtip_datas.extend(objects_to_qtip (k))
+		for  k in [cmcs ,classes ,radios]:
+                       datas.extend(objects_to_qtip (k))
+            
     # Get the form and the qtip data for calendar
     # return HttpResponse (datas)
-    c.update(_get_form_data())
-    c.update ( {"data": qtip_datas})
-    return render_to_response (req ,template, c)
+    context.update(_get_form_data())
+    context.update ( {"data": datas})
+    return render_to_response (req ,template, context)
 
 def _get_form_data ():
      """ 
@@ -146,7 +151,7 @@ def object_to_qtip(obj, from_page =None):
         {"title":"CLASS" , "url":"/" , "start":"2010-10-02"},
         {"title":"CLASS" , "url":"/" , "start":"2010-10-03" , {"village_name" : "" , 'from_page' :'' ....}} ,
         '''
-        buffer= dict ()
+        qtip_data = {}
         if isinstance (obj , Class):
             _title ="CLASSE"
             type = "classe"
@@ -161,37 +166,57 @@ def object_to_qtip(obj, from_page =None):
             type =""
         if hasattr (obj ,"relay"):
                 relay = obj.relay
-                buffer["title"]= _title
-                buffer["start"]= obj.date.strftime("%Y-%m-%d")
-                buffer["is_read"]= obj.is_read
-                buffer["first_and_last_name"]= relay.first_name + relay.last_name
-                buffer["phone"]= relay.contact.phone_number()
-                buffer["role"] = relay.get_title_id_display()
-                buffer["message"]= obj.__str__()
-           	buffer["date"]= obj.date.strftime ("%d-%m-%Y %H:%M:%S")
+                qtip_data.update({"title":
+                                  _title})
+                qtip_data.update({"start":
+                                  obj.date.strftime("%Y-%m-%d")})
+                qtip_data.update({"is_read":
+                                  obj.is_read})
+                qtip_data.update({"first_and_last_name" :
+                                  relay.first_name + relay.last_name})
+                qtip_data.update({ "phone" :
+                                   relay.contact.phone_number()})
+                qtip_data.update({"role" :
+                                  relay.get_title_id_display()})
+                qtip_data.update({"message":
+                                  obj.__str__()})
+                qtip_data.update({"date":
+                                  obj.date.strftime ("%d-%m-%Y %H:%M:%S")})
+                
 		# Parfois le Radio est enyoye par un CGC donc , il a un village 
 		# d'autre fois par un radio et dans ce cas il n'as pas de village
-		buffer["village_pk" ]=( relay.village_suivi.pk 
-				       if relay.village_suivi 
-				       else "pas_de_village")
-                buffer["village_name"]=(relay.village_suivi.village.name 
-				       if relay.village_suivi 
-				       else  "pas_de_village")
-                buffer["message_pk"] =str(obj.pk)
-                buffer["cordination"] =relay.get_cordination_id_display()
-                buffer["message_instance"]= type
-                buffer["from_page"]=from_page
-                html_buffer= GOOGLE_QTIP_WIDGET%buffer
-                buffer["current_message"] =html_buffer
-                return buffer
+		qtip_data.update({"village_pk" :
+                                  relay.village_suivi.pk if relay.village_suivi else\
+				  "pas_de_village"})
+                qtip_data.update({"village_name":
+                                      relay.village_suivi.village.name if relay.village_suivi else\
+			          "pas_de_village"})
+                qtip_data.update({"message_pk" :
+                                  str(obj.pk)})
+                qtip_data.update({"cordination" :
+                                  relay.get_cordination_id_display()})
+                qtip_data.update({"message_instance" :
+                                  type})
+                qtip_data.update({"from_page" :
+                                  from_page})
+                google_qtip_widget_data = GOOGLE_QTIP_WIDGET%qtip_data
+                qtip_data.update({"current_message" :
+                                  google_qtip_widget_data})
+                return qtip_data
 
 def objects_to_qtip(objects):
     '''
     Parceque , jFullCalendar attends dans son attributs events le format suivants
     Le context est de la forms  context = {"cmcs" :[] ,"classes": [] ,"radios" :[] }
     '''
-    return [ object_to_qtip (obj , 'cal') 
-	     for obj in objects ]
+    objets_qtip=[]
+    for object in objects:
+                # This function is used into the calendar ui  so  set the
+                # from_page to cal
+                object_qtip=object_to_qtip(object ,"cal")
+                objets_qtip.append(object_qtip)
+    return objets_qtip
+ 
 def  object_to_gmap_qtip(village):
         '''
         Return the gmap data for each village
@@ -199,17 +224,22 @@ def  object_to_gmap_qtip(village):
 	"gmap_longitude": "-15.7777555" , "name":"name of the village"}
         '''
         current_message = village.current_message()
-        buffer= dict()
+        data = dict()
         _icon ="red"
         if current_message:
             if not current_message.is_read :
                _icon ="green"
-        buffer["message"]= EMPTY_VILLAGE_MESSAGE
-        buffer["icon"] =   _icon
-        buffer["gmap_latitude"]= village.village.location.latitude
-        buffer["gmap_longitude"]= village.village.location.longitude
-        buffer["name"]= village.village.name
-        return buffer
+        data.update({"message":
+                     EMPTY_VILLAGE_MESSAGE})
+        data.update ({"icon" :
+                     _icon})
+        data.update({"gmap_latitude" :
+                     village.village.location.latitude})
+        data.update({"gmap_longitude":
+                     village.village.location.longitude})
+        data.update({"name" :
+                     village.village.name})
+        return data
  
 def object_to_gmap_qtip_with_qtip(village):
         """
@@ -217,18 +247,18 @@ def object_to_gmap_qtip_with_qtip(village):
 	whish are going to be used into Google Map  to display 
 	villages' currents messages
         """
-        buffer=dict ()
+        data ={}
         object_gmap_qtip= object_to_gmap_qtip(village)
         object_qtip =None
         if village.current_message():
-                  #This function is used into the map  so set from page to map
-                   object_qtip =object_to_qtip(village.current_message() ,'map')
-                   object_gmap_qtip.update({"message":
+                        #This function is used into the map  so set from page to map
+                        object_qtip =object_to_qtip(village.current_message() ,'map')
+                        object_gmap_qtip.update({"message":
                                                 object_qtip.get("current_message")})
         if object_qtip:
-            buffer.update (object_qtip)
-        buffer.update (object_gmap_qtip)
-        return buffer
+            data.update (object_qtip)
+        data.update (object_gmap_qtip)
+        return data
 
 def map (req , template = "rapidsuivi/gmap.html"):
         """
@@ -281,14 +311,17 @@ def update_message_status (req ,from_page , type ,message_pk):
         def update(pk , type):
                 # Update the message with pk and type 
                 if type =='classe':
-                    Class.objects.filter(pk=message_pk).update (is_read=True)
+                    Class.objects.filter(pk=message_pk)\
+                                 .update (is_read=True)
                 elif type =='cmc':
-                    Cmc.objects.filter(pk =message_pk).update(is_read=True)
+                    Cmc.objects.filter(pk =message_pk)\
+                     		.update(is_read=True)
                 elif type =='radio':
-                    Radio.objects.filter(pk =message_pk).update(is_read=True)
+                    Radio.objects.filter(pk =message_pk)\
+                                 .update(is_read=True)
         update(message_pk , type)
         return HttpResponseRedirect(reverse("map") if from_page =="map" \
-               else reverse ("calendar"))
+                                    else reverse ("calendar"))
 
 def update_message (req , from_page ,type ,message_pk) :
         '''
@@ -307,19 +340,26 @@ def update_message (req , from_page ,type ,message_pk) :
 		>>>CmcForm()
 		'''
                 if  type =='cmc':
-                    return CmcForm ( data = data  ,instance  = Cmc.objects.get(pk =int(pk)))
+                    return CmcForm ( data = data  ,
+                              instance  = Cmc.objects.get(pk =int(pk)))
                 if  type =='classe':
-                    return ClassForm ( data = data ,instance = Class.objects.get(pk =int(pk)))
+                    return ClassForm ( data = data ,
+                                instance = Class.objects.get(pk =int(pk)))
                 if  type =='radio':
-                    return RadioForm ( data = data , instance = Radio.objects.get(pk =int(pk)))                    
+                    return RadioForm ( data = data ,
+                                instance = Radio.objects.get(pk =int(pk)))                    
         if req.method =="POST":
-            form =_get_message_form (type ,data =req.POST ,pk = message_pk)
+            form =_get_message_form (type ,
+                                     data =req.POST ,
+                                     pk = message_pk)
             if form.is_valid ():
                 form.save()
                 return HttpResponseRedirect(reverse("map") if from_page =="map" \
-                      else reverse("calendar"))
+                                            else reverse("calendar"))
         else :
-               form = _get_message_form (type  , data =None ,pk  =message_pk)
+               form = _get_message_form (type ,
+                                         data =None ,
+                                         pk  =message_pk)
         return render_to_response (req , template ,{"form" :form})
 
 def export_message (req,village_pk):

@@ -138,9 +138,9 @@ def _get_form_data ():
      >>	{'cordiations' :  (1,'kaolack'), ('2','Thies')}
      """
      return {
-        "cordination_options": dict (r.COORDINATION_TYPES),\
-        "project_options": dict(r.PROJECT_TYPES),\
-        "village_options": SuiviVillage.objects.values ("village__pk" , "village__name"),\
+        "cordination_options": dict (r.COORDINATION_TYPES),
+        "project_options": dict(r.PROJECT_TYPES),
+        "village_options": SuiviVillage.objects.values ("village__pk" , "village__name"),
         "actor_options":  dict([("1" , "CMC" ) , ("2" , "CLASS") ,("3" ,"RADIO")])
      }
 
@@ -180,6 +180,11 @@ def object_to_qtip(obj, from_page =None):
                 
 		# Parfois le Radio est enyoye par un CGC donc , il a un village 
 		# d'autre fois par un radio et dans ce cas il n'as pas de village
+
+		#Si le type est un radio ,meme si on indqique sur Qtip Ui qu'il in n'ya
+		#certains personne essayent quand meme d'exporter les  messages
+		#Alors nous allons fixer lorsque le village est de type radio
+		
 		qtip_data.update({"village_pk" : relay.village_suivi.pk if relay.village_suivi else "pas_de_village"})
                 qtip_data.update({"village_name": relay.village_suivi.village.name if relay.village_suivi else "pas_de_village"})
                 qtip_data.update({"message_pk" :str(obj.pk)})
@@ -216,7 +221,7 @@ def  object_to_gmap_qtip(village):
             if not current_message.is_read :
                 icon_color ="green"
         data_dict.update({"message":EMPTY_VILLAGE_MESSAGE})
-        data_dict.update ({"icon" :_icon})
+        data_dict.update ({"icon" :icon_color})
         data_dict.update({"gmap_latitude" :village.village.location.latitude})
         data_dict.update({"gmap_longitude": village.village.location.longitude})
         data_dict.update({"name" :village.village.name})
@@ -232,9 +237,9 @@ def object_to_gmap_qtip_with_qtip(village):
         object_gmap_qtip= object_to_gmap_qtip(village)
         object_qtip =None
         if village.current_message():
-                        #This function is used into the map  so set from page to map
-                        object_qtip =object_to_qtip(village.current_message() ,'map')
-                        object_gmap_qtip.update({"message":object_qtip.get("current_message")})
+                    #This function is used into the map  so set from page to map
+                    object_qtip =object_to_qtip(village.current_message() ,'map')
+                    object_gmap_qtip.update({"message":object_qtip.get("current_message")})
         if object_qtip:
             data_dict.update (object_qtip)
         data_dict.update (object_gmap_qtip)
@@ -333,11 +338,13 @@ def _get_all_cmc_radio_class_from_village (village):
                      [ o for o in Class.objects.filter(relay__village_suivi =village).all()]+\
                      [ o for o in Radio.objects.filter(relay__village_suivi =village).all()]
                return all
-def export_message (req,village_pk):
+def export_message (req,village_pk =None):
             """
 	    Given a village I am going to export all CMC , RADIO , AND CLASS
             activity sent from the given village
 	    """
+            if not village_pk  :
+                    return  HttpResponseRedirect ('rapidsuivi/calendar.html')
             village =SuiviVillage.objects.get (pk = int (village_pk))
             
             all_cmc_radio_class = _get_all_cmc_radio_class_from_village (village)

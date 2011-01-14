@@ -10,7 +10,7 @@ urlpatterns = patterns('',
     url(r'^map', views.map , name ="map"),
     url(r'^rapidsuivi/update_message_status/(?P<from_page>\w+)/(?P<type>\w+)/(?P<message_pk>\d+)$' ,views.update_message_status ,name ="update_message_status"),
     url(r'^rapidsuivi/update_message/(?P<from_page>\w+)/(?P<type>\w+)/(?P<message_pk>\d+)?$' , views.update_message , name ="update_message"),   
-    url(r'^rapidsuivi/export_village_message/(?P<village_pk>\d+)$' , views.export_message , name ='export_village')
-	
+    # Instead of accepting along  int for village_pk, we are going to accept a string  we will able  to handle a  None for radio 
+    url(r'^rapidsuivi/export_village_message/(?P<village_pk>.+)$' , views.export_message , name ='export_village')
 )
 

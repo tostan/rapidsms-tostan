@@ -348,7 +348,7 @@ def export_message (req,village_pk =None):
 
             # For Radio Type We have not village so  village_pk = None
             if 'None' in village_pk  :
-                    return  HttpResponseRedirect ('rapidsuivi/calendar.html')
+                    return  HttpResponseRedirect (reverse ('calendar'))
             village =SuiviVillage.objects.get (pk = int (village_pk))
             
             all_cmc_radio_class = _get_all_cmc_radio_class_from_village (village)

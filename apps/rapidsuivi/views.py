@@ -184,9 +184,11 @@ def object_to_qtip(obj, from_page =None):
 		#Si le type est un radio ,meme si on indqique sur Qtip Ui qu'il in n'ya
 		#certains personne essayent quand meme d'exporter les  messages
 		#Alors nous allons fixer lorsque le village est de type radio
+
+		#Very bad adea to put  'pas de village'  so I replace right now with None 
 		
-		qtip_data.update({"village_pk" : relay.village_suivi.pk if relay.village_suivi else "pas_de_village"})
-                qtip_data.update({"village_name": relay.village_suivi.village.name if relay.village_suivi else "pas_de_village"})
+		qtip_data.update({"village_pk" : relay.village_suivi.pk if relay.village_suivi else None})
+                qtip_data.update({"village_name": relay.village_suivi.village.name if relay.village_suivi else ''})
                 qtip_data.update({"message_pk" :str(obj.pk)})
                 qtip_data.update({"cordination" :relay.get_cordination_id_display()})
                 qtip_data.update({"message_instance" :type})

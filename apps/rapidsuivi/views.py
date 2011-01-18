@@ -109,15 +109,15 @@ def handle_form (posted_data , context):
         village_id     = posted_data.get("village" ,None)
         # Get all the attribute for the relay 
         if cordination_id  is not None :
-		if cordination_id not in ["" ,"all"]):
+		if cordination_id not in  ("" ,"all"):
         		d.update({"cordination_id":cordination_id})
         		context.update({"cordination_selected":cordination_id})
         if project_id  is not None :
-		if project_id not in ["" ,"all"]):
+		if project_id not in ("" ,"all"):
         		d.update({"project_id":project_id})
            context.update({"project_selected":project_id})
-        if (village_id  is not None :
-		if  village_id not in ["", "all"]):
+        if village_id  is not None :
+		if  village_id not in ("", "all"):
             		d.update({"village_suivi__village":Village.objects.get (pk = village_id) })
             		context.update({"village_selected":village_id })
         return d
@@ -258,12 +258,12 @@ def handle_map_form  (posted_data , context):
             village_id =  posted_data.get ("village" ,None)
             # Get the cordination id
             if coordination_id :
-		if  coordination_id  not in ["" , "all"]:
+		if  coordination_id  not in ("" , "all"):
                    d.update({"cordination_id":        coordination_id })
                    context.update({"cordination_selected":     coordination_id})
             # Get the village id 
             if village_id :
-		if  village_id not in ["" , "all"]:
+		if  village_id not in ("" , "all"):
                    d.update({"village_suivi__village": Village.objects.get (pk =village_id)})
                    context.update({"village_selected":          village_id})
             return d

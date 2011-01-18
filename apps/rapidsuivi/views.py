@@ -196,8 +196,8 @@ def object_to_qtip(obj, from_page =None):
                     "village_name":relay.village_suivi.village.name if relay.village_suivi else '',\
                       "message_pk":str(obj.pk),\
                     "cordination" : relay.get_cordination_id_display(),\
-                "message_instance":    type ,\
-                       "from_page":           from_page)
+                "message_instance": type ,\
+                       "from_page": from_page}
                 google_qtip_widget_data = GOOGLE_QTIP_WIDGET%qtip_data
                 qtip_data.update({"current_message" :    google_qtip_widget_data})
                 return qtip_data
@@ -241,7 +241,7 @@ def object_to_gmap_qtip_with_qtip(village):
         if village.current_message():
                 #This function is used into the map  so set from page to map
                 object_qtip =object_to_qtip(village.current_message() ,'map')
-                object_gmap_qtip.update({"message":   object_qtip.get("current_message")})
+                object_gmap_qtip.update({"message": object_qtip.get("current_message")})
         if object_qtip:
             data_dict.update (object_qtip)
         data_dict.update (object_gmap_qtip)
@@ -329,7 +329,8 @@ def update_message (req , from_page ,type ,message_pk) :
                 return HttpResponseRedirect(\
                     reverse("map") if from_page =="map" else reverse("calendar"))
         else :
-               form = _get_message_form (type , model_data =None , model_pk =message_pk)
+               form = _get_message_form (type , model_data =None ,\
+                    model_pk =message_pk)
         return render_to_response (req , template ,{"form" :form})
 
 

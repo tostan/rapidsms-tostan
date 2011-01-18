@@ -103,21 +103,24 @@ def calendar(req, template="rapidsuivi/calendar.html"):
 
 def handle_form (posted_data , context):
         ''' Handle  the form  data  '''
-        rel_params  = dict()
+        d = dict()
         cordination_id = posted_data.get("cordination" ,None)
         project_id     = posted_data.get("project" ,None)
         village_id     = posted_data.get("village" ,None)
         # Get all the attribute for the relay 
-        if ( cordination_id  is not None  and cordination_id not in ["" ,"all"]):
-            rel_params.update({"cordination_id"    :      cordination_id})
-            context.update({"cordination_selected" :      cordination_id})
-        if (project_id  is not None  and  project_id not in ["" ,"all"]):
-           rel_params.update({"project_id"    :           project_id})
-           context.update({"project_selected" :           project_id})
-        if (village_id  is not None  and  village_id not in ["", "all"]):
-            rel_params.update({"village_suivi__village" :  Village.objects.get (pk = village_id) })
-            context.update({"village_selected":            village_id })
-        return rel_params
+        if cordination_id  is not None :
+		if cordination_id not in ["" ,"all"]):
+        		d.update({"cordination_id":cordination_id})
+        		context.update({"cordination_selected":cordination_id})
+        if project_id  is not None :
+		if project_id not in ["" ,"all"]):
+        		d.update({"project_id":project_id})
+           context.update({"project_selected":project_id})
+        if (village_id  is not None :
+		if  village_id not in ["", "all"]):
+            		d.update({"village_suivi__village":Village.objects.get (pk = village_id) })
+            		context.update({"village_selected":village_id })
+        return d
 
 def handle_form_actors(posted_data) :
 		'''
@@ -126,9 +129,13 @@ def handle_form_actors(posted_data) :
 		>>> handle_form_actors (req.POST)
 		'''
                 actor_str  = posted_data.get ("actor" ,None)
-                if actor_str is not None  and actor_str not  in ["", "all"]:
-                   return int(actor_str)
-		return None
+                if actor_str is not None  :
+			if actor_str not  in ["", "all"]:
+                  		 return int(actor_str)
+			else :
+				return None
+		else :
+			return None
 		
 def _get_form_data ():
      """ 
@@ -202,13 +209,10 @@ def objects_to_qtip(objects):
     Parceque , jFullCalendar attends dans son attributs events le format suivants
     Le context est de la forms  context = {"cmcs" :[] ,"classes": [] ,"radios" :[] }
     '''
-    objets_qtip=[]
+    list = []
     for object in objects:
-                # This function is used into the calendar ui  so  set the
-                # from_page to cal
-                object_qtip=object_to_qtip(object ,"cal")
-                objets_qtip.append(object_qtip)
-    return objets_qtip
+          list.append (object_to_qtip(object ,"cal"))
+    return list
  
 def  object_to_gmap_qtip(village):
         '''
@@ -249,18 +253,20 @@ def object_to_gmap_qtip_with_qtip(village):
 
 def handle_map_form  (posted_data , context):
             # Get the village et cordination selected  by the user
-            rel_params=dict()
+            d=dict()
             coordination_id =  posted_data.get ("cordination" , None)
             village_id =  posted_data.get ("village" ,None)
             # Get the cordination id
-            if coordination_id and   coordination_id  not in ["" , "all"]:
-                   rel_params.update({"cordination_id":        coordination_id })
+            if coordination_id :
+		if  coordination_id  not in ["" , "all"]:
+                   d.update({"cordination_id":        coordination_id })
                    context.update({"cordination_selected":     coordination_id})
             # Get the village id 
-            if village_id and village_id not in ["" , "all"]:
-                   rel_params.update({"village_suivi__village": Village.objects.get (pk =village_id)})
+            if village_id :
+		if  village_id not in ["" , "all"]:
+                   d.update({"village_suivi__village": Village.objects.get (pk =village_id)})
                    context.update({"village_selected":          village_id})
-            return rel_params 
+            return d
         
 def map (req , template = "rapidsuivi/gmap.html"):
         """

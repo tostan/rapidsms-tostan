@@ -115,7 +115,7 @@ def handle_form (posted_data , context):
         if project_id  is not None :
 		if project_id not in ("" ,"all"):
         		d.update({"project_id":project_id})
-           context.update({"project_selected":project_id})
+           	 	context.update({"project_selected":project_id})
         if village_id  is not None :
 		if  village_id not in ("", "all"):
             		d.update({"village_suivi__village":Village.objects.get (pk = village_id) })

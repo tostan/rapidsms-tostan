@@ -16,7 +16,6 @@ import codecs
 import csv
 import cStringIO
 
-
 GOOGLE_QTIP_WIDGET="""<ul>\
 <li>Message envoye par :%(first_and_last_name)s</li>\
 <li>Contact :%(phone)s</li>\
@@ -144,12 +143,12 @@ def _get_form_data ():
      >> _get_form_date  ()
      >>	{'cordiations' :  (1,'kaolack'), ('2','Thies')}
      """
-     return {
-        "cordination_options": dict (r.COORDINATION_TYPES),
-        "project_options": dict(r.PROJECT_TYPES),
-        "village_options": SuiviVillage.objects.values ("village__pk" , "village__name"),
-        "actor_options":  dict([("1" , "CMC" ) , ("2" , "CLASS") ,("3" ,"RADIO")])
-     }
+     return {"cordination_options": dict (r.COORDINATION_TYPES),\
+                 "project_options": dict(r.PROJECT_TYPES),\
+                 "village_options": SuiviVillage.objects.values (\
+                         "village__pk" , "village__name"),
+                   "actor_options":  dict([("1" , "CMC" ) ,\
+                         ("2" , "CLASS") ,("3" ,"RADIO")])  }
 
 def  title_and_type (obj) :
         if isinstance (obj , Class):
@@ -176,14 +175,14 @@ def object_to_qtip(obj, from_page =None):
         _title , type  = title_and_type  (obj)
         if hasattr (obj ,"relay"):
                 relay = obj.relay
-                qtip_data.update({"title":              _title})
-                qtip_data.update({"start":              obj.date.strftime("%Y-%m-%d")})
-                qtip_data.update({"is_read":            obj.is_read})
-                qtip_data.update({"first_and_last_name":relay.first_name + relay.last_name})
-                qtip_data.update({ "phone":             relay.contact.phone_number()})
-                qtip_data.update({"role":               relay.get_title_id_display()})
-                qtip_data.update({"message":            obj.__str__()})
-                qtip_data.update({"date":               obj.date.strftime ("%d-%m-%Y %H:%M:%S")})
+                qtip_data ={"title":_title,\
+                            "start":obj.date.strftime("%Y-%m-%d"),\
+                          "is_read":obj.is_read,\
+              "first_and_last_name":'%s%s'%(relay.first_name ,relay.last_name),\
+                            "phone":relay.contact.phone_number(),\
+                             "role": relay.get_title_id_display(),\
+                          "message": obj.__str__(),\
+                             "date": obj.date.strftime ("%d-%m-%Y %H:%M:%S"),\
                 
 		# Parfois le Radio est enyoye par un CGC donc , il a un village 
 		# d'autre fois par un radio et dans ce cas il n'as pas de village
@@ -193,13 +192,12 @@ def object_to_qtip(obj, from_page =None):
 		#Alors nous allons fixer lorsque le village est de type radio
 
 		#Very bad adea to put  'pas de village'  so I replace right now with None 
-		
-		qtip_data.update({"village_pk" :         relay.village_suivi.pk if relay.village_suivi else None})
-                qtip_data.update({"village_name":        relay.village_suivi.village.name if relay.village_suivi else ''})
-                qtip_data.update({"message_pk":          str(obj.pk)})
-                qtip_data.update({"cordination":         relay.get_cordination_id_display()})
-                qtip_data.update({"message_instance":    type})
-                qtip_data.update({"from_page":           from_page})
+                     "village_pk" :relay.village_suivi.pk if relay.village_suivi else None ,\
+                    "village_name":relay.village_suivi.village.name if relay.village_suivi else '',\
+                      "message_pk":str(obj.pk),\
+                    "cordination" : relay.get_cordination_id_display(),\
+                "message_instance":    type ,\
+                       "from_page":           from_page)
                 google_qtip_widget_data = GOOGLE_QTIP_WIDGET%qtip_data
                 qtip_data.update({"current_message" :    google_qtip_widget_data})
                 return qtip_data
@@ -221,17 +219,15 @@ def  object_to_gmap_qtip(village):
 	"gmap_longitude": "-15.7777555" , "name":"name of the village"}
         '''
         current_message = village.current_message()
-        data_dict  = dict()
         icon_color  ="red"
         if current_message:
             if not current_message.is_read :
                 icon_color ="green"
-        data_dict.update({"message":        EMPTY_VILLAGE_MESSAGE})
-        data_dict.update({"icon":          icon_color})
-        data_dict.update({"gmap_latitude" : village.village.location.latitude})
-        data_dict.update({"gmap_longitude": village.village.location.longitude})
-        data_dict.update({"name":           village.village.name})
-        return data_dict  
+        return { "message": EMPTY_VILLAGE_MESSAGE,\
+                    "icon": icon_color,\
+          "gmap_latitude" : village.village.location.latitude,\
+          "gmap_longitude": village.village.location.longitude,\
+                    "name": village.village.name}  
  
 def object_to_gmap_qtip_with_qtip(village):
         """
@@ -243,9 +239,9 @@ def object_to_gmap_qtip_with_qtip(village):
         object_gmap_qtip= object_to_gmap_qtip(village)
         object_qtip =None
         if village.current_message():
-                    #This function is used into the map  so set from page to map
-                    object_qtip =object_to_qtip(village.current_message() ,'map')
-                    object_gmap_qtip.update({"message":   object_qtip.get("current_message")})
+                #This function is used into the map  so set from page to map
+                object_qtip =object_to_qtip(village.current_message() ,'map')
+                object_gmap_qtip.update({"message":   object_qtip.get("current_message")})
         if object_qtip:
             data_dict.update (object_qtip)
         data_dict.update (object_gmap_qtip)
@@ -259,13 +255,13 @@ def handle_map_form  (posted_data , context):
             # Get the cordination id
             if coordination_id :
 		if  coordination_id  not in ("" , "all"):
-                   d.update({"cordination_id":        coordination_id })
-                   context.update({"cordination_selected":     coordination_id})
+                   d.update({"cordination_id":coordination_id })
+                   context.update({"cordination_selected":coordination_id})
             # Get the village id 
             if village_id :
 		if  village_id not in ("" , "all"):
                    d.update({"village_suivi__village": Village.objects.get (pk =village_id)})
-                   context.update({"village_selected":          village_id})
+                   context.update({"village_selected": village_id})
             return d
         
 def map (req , template = "rapidsuivi/gmap.html"):
@@ -282,7 +278,8 @@ def map (req , template = "rapidsuivi/gmap.html"):
                 if all.count ()>0:
                     all = all.filter(**rel_params)
                 if all.count()>0:
-                    villages =SuiviVillage.objects.filter(pk__in =[ v.pk for v in [r.village_suivi for r in all if r.village_suivi]])
+                    villages =SuiviVillage.objects.filter(\
+                        pk__in =[ v.pk for v in [r.village_suivi for r in all if r.village_suivi]])
         if (not villages or not len (villages)):
                 villages = SuiviVillage.objects.all ()
         for suivi_village in villages :
@@ -305,12 +302,14 @@ def update_message_status (req ,from_page , type ,message_pk):
         '''
         model_class = getattr (models ,  '%s'%type.capitalize())
         update_model (model_class , message_pk)
-        return HttpResponseRedirect(reverse("map") if from_page =="map"  else reverse ("calendar"))
+        return HttpResponseRedirect(\
+                reverse("map") if from_page =="map"  else reverse ("calendar"))
 
 def _get_message_form(model_type , model_data  = {} ,model_pk =None ):
         model_class = getattr (models ,'%s'%model_type.capitalize())
         form_class  = getattr (forms ,'%sForm'%model_type.capitalize())
-        return   form_class (data  =model_data  , instance  = model_class.objects.get (pk  = int(model_pk)))
+        return   form_class (data  =model_data  ,\
+            instance  = model_class.objects.get (pk  = int(model_pk)))
     
 def update_message (req , from_page ,type ,message_pk) :
         '''
@@ -323,10 +322,12 @@ def update_message (req , from_page ,type ,message_pk) :
         errors = []
         context ={}                   
         if req.method =="POST":
-            form =_get_message_form (type ,model_data =req.POST ,model_pk= message_pk)
+            form =_get_message_form (type ,model_data =req.POST ,\
+                model_pk= message_pk)
             if form.is_valid ():
                 form.save()
-                return HttpResponseRedirect(reverse("map") if from_page =="map" else reverse("calendar"))
+                return HttpResponseRedirect(\
+                    reverse("map") if from_page =="map" else reverse("calendar"))
         else :
                form = _get_message_form (type , model_data =None , model_pk =message_pk)
         return render_to_response (req , template ,{"form" :form})

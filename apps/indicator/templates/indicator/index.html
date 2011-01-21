@@ -18,7 +18,7 @@
 <td>
 	<a href="{% url parametrage_user %}">
 	<img src="/static/indicator/images/user.png"/><br/>
-		{% trans  "Gerer les superviseurs et les cordinateurs" %}
+		{% trans  "Gerer les utilisateurs" %}
 	</a>
 </td>
 
@@ -26,7 +26,7 @@
 <td>
 		<a href="{% url parametrage_project %}">
 		<img src="/static/indicator/images/project.png"/><br/>
-			{% trans "Gerer les projects" %}
+			{% trans "Gerer les projets" %}
 		</a>
 </td>
 
@@ -44,26 +44,28 @@
 			</a>
 		
 </td>
-
-
-	<td>
-		<a href="{% url parametrage_export %}">
-		<img src="/static/indicator/images/export.png"/><br/>
-			{% trans "Gerer les exports" %}
-		</a>
-	</td>
-
-
-
+<td>
+	<a href="{% url parametrage_export %}">
+	<img src="/static/indicator/images/export.png"/><br/>
+		{% trans "Gerer les exports" %}
+	</a>
+</td>
+{%if perms.contacts.change_contact %}
+        <td>
+                <a href="{% url parametrage %}">
+                <img src="/static/indicator/images/parametre.png"/><br/>
+                        {% trans "Gerer les parametres" %}
+                </a>
+        </td>
+{% endif %}
 {% if perms.contacts.change_contact %}
 	<td>
-		<a href="{% url parametrage %}">
-		<img src="/static/indicator/images/parametre.png"/><br/>
-			{% trans "Gerer les parametres" %}
+		<a href="{% url edition_fiche %}">
+		<img src="/static/indicator/images/fiche_edition.jpg"/><br/>
+			{% trans "Saisir les fiches" %}
 		</a>
 	</td>
 {% endif %}
-
 </tr>
 </table>
 </div>

@@ -15,64 +15,50 @@ urlpatterns = patterns('',
     url(r'^indicator/add_departement/(?P<pays>\w+)/?$',views.add_departement,  name="add_departement"),
     url(r'^indicator/add_arrondissement/(?P<pays>\w+)/?$',views.add_arrondissement,  name="add_arrondissement"),
     url(r'^indicator/add_commune_arrondissement/(?P<pays>\w+)/?$',views.add_commune_arrondissement,  name="add_commune_arrondissement"),
-    url(r'^indicator/add_commune/(?P<pays>\w+)/?$',views.add_commune,  name="add_commune"),
     url(r'^indicator/add_communaute_rurale/(?P<pays>\w+)/?$',views.add_communaute_rurale,  name="add_communaute_rurale"),
-    
-    
-    
-    
-    
+    url(r'^indicator/add_commune/(?P<pays>\w+)/?$',views.add_commune,  name="add_commune"),
+    url(r'^indicator/edition_fiche/?$',views.edition_fiche,  name="edition_fiche"),
     # Guinee Konkary
     url(r'^indicator/add_prefecture/(?P<pays>\w+)/?$',views.add_prefecture,  name="add_prefecture"),
     url(r'^indicator/add_sub_prefecture/(?P<pays>\w+)/?$',views.add_sub_prefecture,  name="add_sub_prefecture"),
-   
     # Guinee Bissau
     url(r'^indicator/add_secteur/(?P<pays>\w+)/?$',views.add_secteur,  name="add_secteur"),
- 
     # Gambie
-    url(r'^indicator/add_district/(?P<pays>\w+)/?$',views.add_district,  name="add_district"),
-    
-    
+    url(r'^indicator/add_district/(?P<pays>\w+)/?$',views.add_district,  name="add_district"), 
     # Somalie
     url(r'^indicator/add_etat/(?P<pays>\w+)/?$',views.add_etat,  name="add_etat"),
-    
-  
     # Village is the rural community
     url(r'^indicator/add_village/(?P<id>\w+)/?$',views.add_village,  name="add_village"),
-    
-    
     # Indicator 
     url(r'^indicator/parametrage_indicator/?$',views.parametrage_indicator,  name="parametrage_indicator"),
     url(r'^indicator/add_indicator/?$',views.add_indicator,  name="add_indicator"),
     url(r'^indicator/delete_indicator/(?P<id>\d+)/?$',views.delete_indicator,  name="delete_indicator"),
     url(r'^indicator/search_indicator/?$',views.search_indicator,  name="search_indicator"),
-    url(r'^indicator/export_indicator/?$',views.export_indicator,  name="export_indicator"),
-    url(r'^indicator/indicator_stats/?$',views.indicator_stats,  name="indicator_stats"),
-    
     #Project peer contry
     url(r'^indicator/parametrage_project/?$',views.parametrage_project,  name="parametrage_project"),
     url(r'^indicator/add_project/(?P<pays>\w+)/?$',views.add_project,  name="add_project"),
     url(r'^indicator/delete_project/(?P<id>\d+)/?$',views.delete_project,  name="delete_project"),
     url(r'^indicator/search_project/(?P<pays>\w+)/?$',views.search_project,  name="search_project"),
-    url(r'^indicator/project_stats/?$',views.project_stats,  name="project_stats"),
-    
     # Fiche and submission
     url(r'^indicator/fiche/(\d+)/add_submission/?$',views.add_submission,  name="add_submission"),
-    url(r'^indicator/submission/(\d+)/edit_submission/?$',views.edit_submission,  name="edit_submission"),
-
-    # Les statistiques 
-    url  (r'indicator/parametrage_stat/?$' , views.parametrage_stat , name  ="parametrage_stat"),
-    
-    #Exports
-    url(r'^indicator/parametrage_export/?$',views.parametrage_export,  name="parametrage_export"),
-    url (r'indicator/export_project/(?P<pays>\w+)/?$' ,  views.export_project , name ="export_project"),
-    url (r'indicator/export_indicator/?$' ,  views.export_indicator , name ="export_indicator") ,     
-    
+    url(r'^indicator/submission/(\d+)/edit_submission/?$',views.edit_submission,  name="edit_submission"),   
     #Users
     url(r'^indicator/parametrage_user/?$',views.parametrage_user,  name="parametrage_user"),
-    url (r'indicator/export_user/?$' ,  views.export_user, name ="export_user"),
     url (r'indicator/search_user/?$' ,  views.search_user , name ="search_user"),  
     url (r'indicator/add_user/?$' ,  views.add_user , name ="add_user"),
-    url (r'indicator/edit_user/(?P<id>\d+)?$' ,  views.edit_user , name ="edit_user")
+    url (r'indicator/edit_user/(?P<id>\d+)?$' ,  views.edit_user , name ="edit_user"),
+    #Export
+    url(r'^indicator/parametrage_export/?$',views.parametrage_export,  name="parametrage_export"),
+    url (r'^indicator/user_exports/?$',  views.user_exports, name ="user_exports"),
+    url(r'^indicator/indicator_exports/?$',views.indicator_exports,  name="indicator_exports"),
+    url (r'^indicator/project_exports/?$' ,views.project_exports , name ="project_exports"),
+    url (r'^indicator/village_exports/?$' ,views.village_exports , name ="village_exports"),
+    #Statistiques
+    url(r'indicator/parametrage_stat/?$' , views.parametrage_stat , name  ="parametrage_stat"),
+    url(r'^indicator/indicator_stats/?$',views.indicator_stats,  name="indicator_stats"),
+    url(r'^indicator/project_stats/?$',views.project_stats,  name="project_stats"),
+    url(r'^indicator/user_stats/?$',views.user_stats,   name="user_stats"),
+    url(r'^indicator/village_stats/?$',views.village_stats,   name="village_stats"),
+                       
     
 )

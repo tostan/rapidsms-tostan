@@ -23,94 +23,110 @@ ITEM_PER_PAGE = 20
 
 
 # This class should be moved into the module
-class Conf (objet):
+class Conf (object):
      '''The name of the contries used into views, and the name of contry stored into the data base '''
-     senegal  ="senegal":
-     konakry  ="guinee_konakry":
-     bissau   ="guinee_bissau":
-     gambie   ="gambie":
-     somalie  ="somalie":
-     djibouti   ="djibouti":
-     mauritanie ="mauritanie":
+     senegal    ="senegal"
+     konakry    ="guinee_konakry"
+     bissau     ="guinee_bissau"
+     gambie     ="gambie"
+     somalie    ="somalie"
+     djibouti   ="djibouti"
+     mauritanie ="mauritanie"
 
 # Instanciate  a conf
 conf  = Conf ()
 
 #This class should be moved into maybe into forms
 class DynamiqueForm (object):
-    def get_village_form (self , form_data):
-        '''
-        Create a form to filter contry , regions ,departements , village 
-        districts 
-        Should go later into the form  module 
-        >>> form  = make_village_form ({})
-        >>> form.as_table ()
-        '''
-        fields  = {}
-        #Get village data  without villages , the region , departements , etc
-        village_list  = form_data.pop("villages")
-        for item , qs  in form_data.iteritems () :
-                fields [str (item)] = forms.ChoiceField(label =_(str(item)),
-                choices  = as_tuple (qs))
-        fields["villages"] = forms.MultipleChoiceField (
-                label =_("Villages du projet") ,
-                choices = as_tuple (village_list))
-        def clean (self):
-              return self.cleaned_data 
-        return type ("FormArea" , (forms.BaseForm , ) , {"base_fields": fields , "clean": clean})
-        
- def get_indicator_form (self , ind_dict):
-    '''
-    Create a indicator form to let user choices the indicators when it 
-    create a new project.Should go into the form module 
-    >>> form = make_indicator_form 
-    >>> form.as_table ()
-    '''
-    fields  = {}
-    fields  ["titre"]  =forms.CharField (label    =_("Titre"),\
-        widget   = forms.TextInput (attrs  = {"size": "50"}))
-    fields  ["bailleur"] =forms.CharField (label  =_("Bailleur") ,\
-        widget  =forms.TextInput (attrs  ={"size" : "50"}))
-    fields  ["description"] =forms.CharField (label  =_("Description du Projet") ,\
-        widget = forms.Textarea (attrs  ={"size" : "50"}))
-    fields  ["started"]  = forms.DateField (label =_("Date de demarrage"),\
-        widget  = SelectDateWidget ,required =False , initial =date.today)
-    # Get the indicator list of elements
-    indicator_list=ind_dict.pop ("indicators")  
-    #fields ['indicators'] =forms.MultipleChoiceField(label =_("Indicateurs du projet"), choices = as_tuple (indicator_list))
-    fields ['indicators'] =forms.MultipleChoiceField(label =_("Indicateurs du projet"),\
-        widget =forms.CheckboxSelectMultiple ,choices = as_tuple (indicator_list))
-    def clean (self):
-          return self.cleaned_data 
-    return type ("FormArea" , (forms.BaseForm , ) , 
-            {"base_fields": fields , "clean": clean})
+     def get_village_form (self , form_data):
+             '''
+             Create a form to filter contry , regions ,departements , village 
+             districts 
+             Should go later into the form  module 
+             >>> form  = make_village_form ({})
+             >>> form.as_table ()
+             '''
+             fields  = {}
+             #Get village data  without villages , the region , departements , etc
+             village_list  = form_data.pop("villages")
+             for item , qs  in form_data.iteritems () :
+                     fields [str (item)] = forms.ChoiceField(label =_(str(item)),
+                     choices  = as_tuple (qs))
+             fields["villages"] = forms.MultipleChoiceField (
+                     label =_("Villages du projet") ,
+                     choices = as_tuple (village_list))
+             def clean (self):
+                   return self.cleaned_data 
+             return type ("FormArea" , (forms.BaseForm , ) , {"base_fields": fields , "clean": clean})
 
-  def get_submission_form (self,submission):
-    '''Create a dynamique submission form
-        It create dymamically a form to handle a list of indicators (max_per_page= 100)
-        Each submission form is linked to a *fiche* of project ,and it allow us to submit
-        values of given indicators .
-        Should go  into the form module later
-        >>> form  = make_submission_form (submission) form.as_table ()'''
-    fields  ={}
-    indicatorsubmissions = submission.indicatorsubmissions.all ()
-    for indicator_submission in  indicatorsubmissions:
-            fields ["%s_%s"%(indicator.name,indicator.pk)] =forms.CharField ()
+     def get_indicator_form (self , ind_dict):
+         '''
+         Create a indicator form to let user choices the indicators when it 
+         create a new project.Should go into the form module 
+         >>> form = make_indicator_form 
+         >>> form.as_table ()
+         '''
+         fields  = {}
+         fields  ["titre"]  =forms.CharField (label    =_("Titre"),\
+             widget   = forms.TextInput (attrs  = {"size": "50"}))
+         fields  ["bailleur"] =forms.CharField (label  =_("Bailleur") ,\
+             widget  =forms.TextInput (attrs  ={"size" : "50"}))
+         fields  ["description"] =forms.CharField (label  =_("Description du Projet") ,\
+             widget = forms.Textarea (attrs  ={"size" : "50"}))
+         fields  ["started"]  = forms.DateField (label =_("Date de demarrage"),\
+             widget  = SelectDateWidget ,required =False , initial =date.today)
+         # Get the indicator list of elements
+         indicator_list=ind_dict.pop ("indicators")  
+         #fields ['indicators'] =forms.MultipleChoiceField(label =_("Indicateurs du projet"), choices = as_tuple (indicator_list))
+         fields ['indicators'] =forms.MultipleChoiceField(label =_("Indicateurs du projet"),\
+             widget =forms.CheckboxSelectMultiple ,choices = as_tuple (indicator_list))
+         def clean (self):
+               return self.cleaned_data 
+         return type ("FormArea" , (forms.BaseForm , ) , 
+                 {"base_fields": fields , "clean": clean})
 
-   def get_search_project_form (self):
-        ''' Form to allow searching  project '''
-        fields  = {}
-        fields ['name'] = forms.CharField (required  = False ,label =_("Nom du projet") , \
-                widget =forms.TextInput (attrs  = {"size": "50"}))
-        fields ['villages']= forms.MultipleChoiceField (required =False , choices =\
-                as_tuple(IndicatorVillage.objects.all ()),label =_("Village dans lequel le projet est present"))
-        fields ['indicators']= forms.MultipleChoiceField (required =False,\
-                choices =as_tuple(Indicator.objects.all ()),label = _("Chosir un indicateur contenu dans le projet"))
-        def clean (self):
-            return self.cleaned_data
-        return type ("ProjectFormSearch" , (forms.BaseForm ,) ,\
-            {"base_fields": fields  , "clean": clean})
-        
+     def get_submission_form (self,submission):
+         '''Create a dynamique submission form
+             It create dymamically a form to handle a list of indicators (max_per_page= 100)
+             Each submission form is linked to a *fiche* of project ,and it allow us to submit
+             values of given indicators .
+             Should go  into the form module later
+             >>> form  = make_submission_form (submission) form.as_table ()'''
+         fields  ={}
+         indicatorsubmissions = submission.indicatorsubmissions.all ()
+         for indicator_submission in  indicatorsubmissions:
+                 fields ["%s_%s"%(indicator.name,indicator.pk)] =forms.CharField ()
+
+     def get_search_project_form (self):
+             ''' Form to allow searching  project '''
+             fields  = {}
+             fields ['name'] = forms.CharField (required  = False ,label =_("Nom du projet") , \
+                     widget =forms.TextInput (attrs  = {"size": "50"}))
+             fields ['villages']= forms.MultipleChoiceField (required =False , choices =\
+                     as_tuple(IndicatorVillage.objects.all ()),label =_("Village dans lequel le projet est present"))
+             fields ['indicators']= forms.MultipleChoiceField (required =False,\
+                     choices =as_tuple(Indicator.objects.all ()),label = _("Chosir un indicateur contenu dans le projet"))
+             def clean (self):
+                 return self.cleaned_data
+             return type ("ProjectFormSearch" , (forms.BaseForm ,) ,\
+                 {"base_fields": fields  , "clean": clean})
+          
+     def get_area_form(self,qs, area_parent):
+         '''
+         Create dynamically a area form 
+         >>> form = get_area_from (Departement.objects.all () , 'region')
+         >>> form.as_table()
+         '''
+         fields = {"name" :None  , "surface" :None , "latitude":None , "longitude":None}
+         for k in fields :
+             fields [k]  = forms.CharField (
+                          label = k , 
+                          widget =forms.TextInput ({"size":"50"}) )
+         fields[area_parent]  = forms.ChoiceField (label =area_parent , choices = qs)
+         def clean (self):
+             return self.cleaned_data
+         return type ("FormArea" , (forms.BaseForm,) , {"base_fields":fields  ,"clean" : clean})
+
     
 #Instanciate a dynamique from for using into views
 dyn_form  = DynamiqueForm ()
@@ -119,6 +135,12 @@ dyn_form  = DynamiqueForm ()
 def index (req):
     '''Go to indicator dashboard page'''
     return render_to_response (req,"indicator/index.html" , {})
+
+@login_required
+def edition_fiche (req):
+    '''Go to indicator dashboard page'''
+    return render_to_response (req,"indicator/edition_fiche.html" ,\
+           { "projects":Project.objects.all()})
 
 @login_required
 def parametrage(req):
@@ -207,7 +229,7 @@ def  edit_pays (req , id ):
                 form.save ()
                 msg.append (_("Element sauvegarde"))
                 return render_to_response (req , template , {"form" : PaysForm (),\
-                     "pays" : Pays.objects.all (),"msg" : msg })
+                    "pays" : Pays.objects.all (),"msg" : msg })
             else :
                 msg.append (_("Erreur dans le formulaire"))
     return render_to_response (
@@ -306,8 +328,8 @@ def add_arrondissement (req, pays):
         if form.is_valid ():
             #form.save ()
             parent = Departement.objects.get (pk =req.POST["region"])
-            Arrondissement.objects.create (parent =parent ,\ 
-                        name =req.POST.get ("name"))
+            Arrondissement.objects.create (parent =parent ,\
+                    name =req.POST.get ("name"))
             msg.append (_("OK"))
             return render_to_response (req,"indicator/add_arrondissement.html",\
              {"form" : form ,"msg": msg,"regions": Arrondissement.objects.all () } )
@@ -817,7 +839,7 @@ def get_pays_form (pays):
     else :
         return []
       
-def indicators ():
+def indicators_list():
     #The indicator list to be associated to the project
     return {"indicators":Indicator.objects.all ()}
 
@@ -829,8 +851,8 @@ def add_project(req , pays):
     template = 'indicator/add_project.html'
     pays= get_object_or_404(Pays , name__icontains = pays.lower ())
     #Get the village filter form
-    vil_form_data         = dyn_form.get_pays_form (pays)
-    ind_form_data         =indicators()
+    vil_form_data         =get_pays_form (pays)
+    ind_form_data         =indicators_list()
     #Go to create dynamically a project from based on the vil_from_filter and the indicator_form
     form_village_class   =dyn_form.get_village_form (vil_form_data)
     form_village         =form_village_class ()
@@ -1028,7 +1050,7 @@ def search_user (req):
 
 def search_project (req,pays):
     '''Search a new projet'''
-    form_class  = get_form_search_project ()
+    form_class  =dyn_form.get_search_project_form()
     form  = form_class ()
     projects  = Project.objects.all ()
     if req.POST :
@@ -1050,21 +1072,68 @@ def search_project (req,pays):
         {"projects" : projects ,
         "form" : form})
         
-def export_project(req ,pays):
-    return export (Project.objects.all (), ["name" , "titre" , \
-        "bailleur" , "description", "indicators" , "villages"] )
-def export_indicator (req):
-    '''
-    Export the indicator list
-    '''
-    return export (Indicator.objects.all ())
+def project_exports(req):
+    '''Provide a list of projets  and  let us the user to choice one projet for export
+    IF no indicator are selected , all will be exported ,'''
+    form =ProjectExportForm ()
+    if req.POST :
+        form  = ProjectExportForm(req.POST)
+        if form.is_valid (): 
+            data = form.cleaned_data
+            project , indicators = data ["projet"] , data['indicators']
+            if not len (indicators):
+                 return  export(project.indicators.all())
+            else :
+                 return  export(project.indicators.filter(pk__in =[ind.pk  for ind  in  indicators]))     
+    template = "indicator/project_exports.html"
+    return render_to_response (req,
+         template ,
+        {"form": form})
+         
+def indicator_exports (req):
+    '''Let the user choice one indicator and the list of projects linked , if no project
+    is selected all project are considered'''
+    form =IndicatorExportForm ()
+    if req.POST :
+        if form.is_valid ():
+            data = form.cleaned_data
+            indicator , projects= data ["indicator"], data ['projects']
+            return  export(Indicator.objects.all())
+    template = "indicator/indicator_exports.html"
+    return render_to_response (req,
+        template ,
+        {"form": form})
 
-def export_user (req):
+def user_exports (req):
     '''
-    Export the indicator list
+    Export the users_list
     '''
-    return export (User.objects.filter (groups__in =['indicator']))
-       
+    form = UserExportForm()
+    msg  = []
+    if req.POST:
+        form  = UserExportForm(req.POST)
+        if form.is_valid ():
+               users   = form.cleaned_data ['users']
+               return export(users)
+    template = "indicator/user_exports.html"
+    return render_to_response (req,
+        template ,
+        {"form": form})
+   
+def village_exports(req):
+    '''Export  village list'''
+    form = VillageExportForm()
+    msg  = []
+    if req.POST:
+        form  = VillageExportForm(req.POST)
+        if form.is_valid ():
+               villages   = form.cleaned_data ['villages'] 
+               return export(villages)
+    template = "indicator/village_exports.html"
+    return render_to_response (req,
+        template ,
+        {"form": form})
+
 def stats (req):
     template ="indicator/index_stats.html"
     return render_to_response (req, template  , {})
@@ -1074,29 +1143,56 @@ def indicator_stats (req):
     Dashboard stats indicator
     '''
     form =IndicatorStatForm ()
+    stat_data ={}
     if req.POST :
         if form.is_valid ():
-                pass
-    
+            data = form.cleaned_data
+            project = data ["indicator"]
+            stat_data = _get_stat_data_for_indicator (project)  
     template = "indicator/indicator_stats.html"
     return render_to_response (req,
-        template ,
-        {"form": form})
+        template ,{"form": form  , "stat_data"  : stat_data})
     
 def project_stats (req):
-    '''
-    Dashorboard project stat
-    '''
+    '''Dashorboard project stat '''
     form =ProjectStatForm ()
+    stat_data ={}
     if req.POST :
         form  = ProjectStatForm(req.POST)
         if form.is_valid (): 
             data = form.cleaned_data
-            context ["projet"] = data ["projet"]
+            project = data ["project"]
+            stat_data = _get_stat_data_for_project (project)
     template = "indicator/project_stats.html"
     return render_to_response (req,
         template ,
-        {"form": form})
+        {"form": form  , "stat_data"  : stat_data})
+
+def village_stats (req):
+    '''Dashorboard village  stat'''
+    form =VillageStatForm ()
+    stat_data ={}
+    if req.POST :
+        form  = VillageStatForm(req.POST)
+        if form.is_valid (): 
+            data = form.cleaned_data
+            village = data ["village"]
+            stat_data = _get_stat_data_for_village (village)
+    template = "indicator/village_stats.html"
+    return render_to_response (req,
+        template ,
+        {"form": form  , "stat_data"  : stat_data})
+
+def user_stats (req):
+     ''' Nothing  to display here we will see later what-to-do '''
+     return HttpResponseRedirect (reverse ('indicator_dashboard'))
+
+def _get_stat_data_for_project (project) :
+          return  {}
+def _get_stat_data_for_indicator(indicator) :
+          return  {}
+def _get_stat_data_for_village(village) :
+          return  {}
      
 def add_user (req):
     '''
@@ -1143,21 +1239,8 @@ def edit_user (req , id):
     {"form": form ,
       # Get teh list of users that have  a profil to edit  from Web UI of the indicators app
       "users" : User.objects.filter (groups__name='indicator_edit'),
-     "msg" : msg})
+      "msg" : msg})
 
-def  stat_by_project (req , id )
-     project   = Project.objects.get (id  = id)
-     stat_data = _stat_projet (projet)
-     if  req.method  == 'POST':
-        form  = ProjectStatForm(req.POST)
-        if form.is_valid (): 
-            # Indicator liked  to the projet 
-            indicators = form.cleaned_data ['indicators']
-            values  = IndicatorValue.objects.filter (indicator__in= indicators , submission__fiche__in =project.fiches)
-            stat_data ['indicator-sum '] = indicator_sum (values)
-            
-def indicator_sum  (indicators_values):
-        data  ={}
-        for  indicator in indicators_values.values_list ( 'indicators' , flat =True):
+
                 
      

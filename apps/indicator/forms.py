@@ -67,25 +67,6 @@ class  SearchIndicatorForm(forms.Form):
         if not name or name.strip() =="":
             raise ValidationError (_("Vous devez saisir une valeur pour effectuer une recherche"))
         return  name 
-    
-def get_area_form(qs, area_parent):
-    '''
-    Create dynamically a area form 
-    >>> form = get_area_from (Departement.objects.all () , 'region')
-    >>> form.as_table()
-    '''
-    fields = {"name" :None  , "surface" :None , "latitude":None , "longitude":None}
-    for k in fields :
-        fields [k]  = forms.CharField (
-                     label = k , 
-                     widget =forms.TextInput ({"size":"50"}) )
-    fields[area_parent]  = forms.ChoiceField (
-                            label =area_parent , 
-                            choices = qs)
-    def clean (self):
-        return self.cleaned_data
-    return type ("FormArea" , (forms.BaseForm,) , {"base_fields":fields  ,"clean" : clean})
-
 class IndicatorStatForm (forms.Form):
     '''
     Create form to display statistiques data related of the indicator
@@ -95,7 +76,16 @@ class IndicatorStatForm (forms.Form):
                 queryset=Indicator.objects.all ())
     projects  = forms.ModelMultipleChoiceField(
                 label = _("CHoisir les projects"),
-                queryset =Project.objects.all ()) 
+                queryset =Project.objects.all ())
+
+
+class IndicatorExportForm (forms.Form):
+    '''
+    Create form to display statistiques data related of the indicator
+    '''
+    indicators  = forms.ModelMultipleChoiceField(
+                label = _("Choisir le ou les  indicateurs a exporter"),
+                queryset =Indicator.objects.all ()) 
     
 class ProjectStatForm (forms.Form):
     '''
@@ -105,8 +95,50 @@ class ProjectStatForm (forms.Form):
                 label = _("Choisir un seul projet"),
                 queryset=Project.objects.all ())
     projects  = forms.ModelMultipleChoiceField(
-                label = _("CHoisir les  indicateurs"),
+                label = _("Choisir les  indicateurs"),
                 queryset =Indicator.objects.all ())
+
+class ProjectExportForm (forms.Form):
+    '''
+    Create form to display statistiques data related of the indicator
+    '''
+    projects  = forms.ModelMultipleChoiceField(
+                label = _("Choisir le ou les  projets a exporter"),
+                queryset =Project.objects.all ()) 
+
+class VillageStatForm (forms.Form):
+    '''
+    The village list for export not for stat
+    '''
+    villages = forms.ModelMultipleChoiceField (
+                label = _("Choisir les utilisateurs a expoter"),
+                #Uniquement les utilsateurs du groupe des indicateurs
+                queryset=IndicatorVillage.objects.all ())
+
+class VillageExportForm (forms.Form):
+    '''
+    Create form to display statistiques data related of the indicator
+    '''
+    villages  = forms.ModelMultipleChoiceField(
+                label = _("Choisir le ou les  villages a exporter"),
+                queryset =Village.objects.all ()) 
+
+class UserStatForm (forms.Form):
+    '''
+    The user list for export not for stat
+    '''
+    users = forms.ModelMultipleChoiceField (
+            label = _("Choisir les utilisateurs a expoter"),
+            #Uniquement les utilsateurs du groupe des indicateurs
+            queryset=User.objects.all ().filter(groups__name__in =['indicator_edit']))
+
+class UserExportForm (forms.Form):
+    '''
+    Create form to display statistiques data related of the indicator
+    '''
+    users  = forms.ModelMultipleChoiceField(
+                label = _("Choisir le ou les  utilisateurs a exporter"),
+                queryset=User.objects.all ().filter(groups__name__in =['indicator_edit'])) 
     
 class  UserForm (forms.Form):
        '''

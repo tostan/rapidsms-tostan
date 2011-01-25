@@ -17,16 +17,16 @@ from django.forms.extras.widgets import SelectDateWidget
 from django.core.paginator import Paginator,InvalidPage,EmptyPage
 from utilities.export import export
 from forms import *
-
+from datetime import datetime 
 # The number of indicator displayed into edition  by page 
-ITEM_PER_PAGE = 20
+ITEM_PER_PAGE = 30
 
 
 # This class should be moved into the module
 class Conf (object):
      '''The name of the contries used into views, and the name of contry stored into the data base '''
      senegal    ="senegal"
-     konakry    ="guinee_konakry"
+     konakry    ="guinee_conakry"
      bissau     ="guinee_bissau"
      gambie     ="gambie"
      somalie    ="somalie"
@@ -75,6 +75,11 @@ class DynamiqueForm (object):
              widget = forms.Textarea (attrs  ={"size" : "50"}))
          fields  ["started"]  = forms.DateField (label =_("Date de demarrage"),\
              widget  = SelectDateWidget ,required =False , initial =date.today)
+         #If the needed date is not into  the list
+         #This is not desired
+         #Si la date de saisie n'est pas dans la liste , cela n'est pas l'ideal   ,mais bon
+         fields ['edited_date'] = forms.CharField  (label =_('Date de demarrage') ,\
+           help_text = 'YYYY/MM/DD' , required =False)
          # Get the indicator list of elements
          indicator_list=ind_dict.pop ("indicators")  
          #fields ['indicators'] =forms.MultipleChoiceField(label =_("Indicateurs du projet"), choices = as_tuple (indicator_list))
@@ -781,7 +786,7 @@ def get_pays_form (pays):
         return {"regions": cast_region (pays),
             "prefectures": cast_prefecture (pays),
         "subprefectures":  cast_sub_prefecture (pays),
-              "villages":  cast_village(pays , "guinee_konakry")}
+              "villages":  cast_village(pays , "guinee_conakry")}
     
     def get_bissau_form ():
         return {"regions":cast_region(pays) ,
@@ -843,6 +848,28 @@ def indicators_list():
     #The indicator list to be associated to the project
     return {"indicators":Indicator.objects.all ()}
 
+def  edit_project (req , id):
+     msg= []
+     project  = get_object_or_404(Project , pk= id)
+     form  = ProjectForm (instance = project)
+     if req.method  =='POST':
+          #return HttpResponse ( ''.join ( [ '%s:%s \n'%(k, v)  for(k ,v) in req.POST.items ()] ))
+          if 'delete' in req.POST:
+               #delete request was sent
+               project.delete()
+               msg.append (_('Suppression reussie'))
+               #Ok redirect to param project
+               return HttpResponseRedirect(reverse('parametrage_project'))
+          form  = ProjectForm (req.POST)
+          if form.is_valid ():
+               form.save()
+               msg.append (_('Sauvegarde reussie'))
+          else:
+               msg.append (_('Formulaire invalide'))
+     template  = 'indicator/edit_project.html'
+     return  render_to_response (req ,  template , { 'form':form})
+     
+          
 def add_project(req , pays):
     '''
     Each pays should have it own layout 
@@ -869,15 +896,21 @@ def add_project(req , pays):
                        villages.append(IndicatorVillage.objects.get (pk =vil_pk)) 
                    for ind_pk in req.POST.getlist ('indicators'):
                        indicators.append(Indicator.objects.get (pk =ind_pk))
+                   dt = date = datetime.now().date ()
+                   try:
+                         year, month ,day  = req.POST.get( 'edited_date' ,None)
+                         dt = datetime(year, month, day).date ()
+                   except:
+                        pass
                    Project.create_project (villages , indicators ,** {"titre": req.POST.get ("titre") , \
-                            "bailleur": req.POST.get ("bailleur"),"description": req.POST.get ("description")})
-                   msg.append (_("OK"))          
+                            "bailleur": req.POST.get ("bailleur"),"description": req.POST.get ("description")\
+                            ,'created' :dt})
+                   msg.append (_("Le projet a bien ete sauvegarde"))          
                 except (KeyError, Exception):
                    raise
-                   project.delete ()
                    msg.append(_("Vous devez choisir le dernier element dans le filtre"))
         else:
-                msg.append (_("OK"))
+                msg.append (_("Le formulaire est invalide ,verifiez que tous les champs obligatoires sont bien renseignes"))
     return render_to_response (req , template , { "form_village" : form_village ,\
            "form_indicator": form_indicator , "projects" :Project.objects.all (), "msg" :msg })
 
@@ -1162,7 +1195,9 @@ def project_stats (req):
         if form.is_valid (): 
             data = form.cleaned_data
             project = data ["project"]
-            stat_data = _get_stat_data_for_project (project)
+            stat_data['indicator_count'] = project.indicators.count()
+            stat_data['village_count']   = project.villages.count ()
+            stat_data =_get_stat_data_for_project (project)
     template = "indicator/project_stats.html"
     return render_to_response (req,
         template ,
@@ -1188,7 +1223,8 @@ def user_stats (req):
      return HttpResponseRedirect (reverse ('indicator_dashboard'))
 
 def _get_stat_data_for_project (project) :
-          return  {}
+      return  project.indicatorvalues
+           
 def _get_stat_data_for_indicator(indicator) :
           return  {}
 def _get_stat_data_for_village(village) :

@@ -193,41 +193,55 @@
   </head>
   <body>
        <table>
-		<tr>
-			<td>
-				<h3>  {% trans "Statistique sur les projets" %}</h3>
-				<ul>
-					<li><a href = "/indicator/">{% trans "Retour a la page d'accueil de Indicateur" %}</a></li>
-				</ul>
-			</td>
-		</tr>
-        <tr>
-	       	<form action =""  method ="post">
-		       	<td valign='top'>
-		        	<div id="chart4" style="width:360px; height:300px;">
-		       	</td>
-		  		<td valign ='top'>
-		  		 <h3>{% trans "Choisir un indicateur et les projects concernes " %}</h3>
+		<h2><a href = "/indicator/">{% trans "Retour a la page d'accueil de Indicateur" %}</a></h2>
+                <tr>
+		       	<td valign='top' width ='50%'>
+                                <form action =""  method ="post">
+                                        <p>
+                                         <h3>{% trans "Choisir un indicateur et les projects concernes " %}</h3>
+                                         {{ form.as_ul}}
+                                         <input  type = "submit"  value ="{% trans  'GO' %}" />
+                                        </p>
+                                        <p>
+                                           <div id="chart4" style="width:360px; height:360px;over-flow:scroll;">
+                                        </p>
+                                </form>
+                        </td>
+                       	<td valign='top' width ='50%'>
+                            <h3>  {% trans "Tablau de board" %}
+                                    <ol>
+                                        {% for indicator , count_data in   stat_data.items %}
+                                             <li>{{indicator }}- {{ count_data }}</li>
+                                        {% endfor %}
+                                    </ol>
+                       
+                            </h3>
+                        </td>
+                 </tr>
+                 <tr>
+                        <td valign='top' width ='50%'>
+                            <form action =""  method ="post"> 
+		  		 <p>
+		  		<h3>{% trans "Choisir un indicateur et les projects concernes " %}</h3>
 		  		 {{ form.as_ul}}
-		  		 <br/>
-		  		 <input  type = "submit"  value ="{% trans  'GO' %}" />
-		  		</td>
-		  	</form>
+                                 <input  type = "submit"  value ="{% trans  'GO' %}" />
+		  		</p>
+                                <p>
+                                  <div id="chart3c" style="width:360px; height:360px;over-flow:scroll">
+                                </p>
+		  	      </form>
+                         </td>
+                         <td valign='top' width ='50%'>
+                            <h3>  {% trans "Tablau de board" %}
+                                    <ol>
+                                        {% for indicator , count_data in   stat_data.items %}
+                                             <li>{{indicator }}- {{ count_data }}</li>
+                                        {% endfor %}
+                                    </ol>
+                       
+                            </h3>
+                        </td>
 	  	</tr>
-	  	 <tr>
-	       	<form action =""  method ="post">
-		       	<td valign='top'>
-		        	<div id="chart3c" style="width:360px; height:300px;">
-		       	</td>
-		  		<td valign ='top'>
-		  		 <h3>{% trans "Choisir un indicateur et les projects concernes " %}</h3>
-		  		 {{ form.as_ul}}
-		  		 <br/>
-		  		 <input  type = "submit"  value ="{% trans  'GO' %}" />
-		  		</td>
-		  	</form>
-	  	</tr>
-	
 	  	</table>
   </body>
 </html>

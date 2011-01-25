@@ -74,7 +74,8 @@
 				 <th>{% trans "Bailleur" %} </th>
 				 <th>{% trans "Date de Demarrage" %} </th> 
 				 <th>{% trans "Fiches du Projet" %}</th>
-				 <th>{% trans "Action" %}</th>
+				 <th>{% trans "Supprimer le projet" %}</th>
+				 <th>{% trans "Editer le projet" %}</th>
 			 </tr>
 	  </thead>
 	  <tbody>
@@ -86,11 +87,12 @@
 				   <td>
 					    <ul>
 					   	{% for fiche in project.fiches.all %}
-					   		<li> <a href = '/indicator/fiche/{{ fiche.pk }}/add_submission'>{{ fiche.get_period_display  }}</a></li>
+					   		<li> <a href = '/indicator/fiche/{{ fiche.pk }}/add_submission'> {% trans  'fiche' %} - {{ fiche.get_period_display  }}</a></li>
 					    {% endfor %}
 					    </ul>
 				   </td>
 				   <td><a href = "/indicator/delete_project/{{ project.pk }}">{% trans "Delete" %}</td>
+				   <td><a href = "/indicator/edit_project/{{ project.pk }}">{% trans "edition" %}</td>
 			    </tr>
 			 {% endfor %}
 		</tbody>

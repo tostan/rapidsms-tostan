@@ -37,6 +37,7 @@ urlpatterns = patterns('',
     #Project peer contry
     url(r'^indicator/parametrage_project/?$',views.parametrage_project,  name="parametrage_project"),
     url(r'^indicator/add_project/(?P<pays>\w+)/?$',views.add_project,  name="add_project"),
+    url(r'^indicator/edit_project/(?P<id>\d+)/?$',views.edit_project,  name="edit_project"),
     url(r'^indicator/delete_project/(?P<id>\d+)/?$',views.delete_project,  name="delete_project"),
     url(r'^indicator/search_project/(?P<pays>\w+)/?$',views.search_project,  name="search_project"),
     # Fiche and submission

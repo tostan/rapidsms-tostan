@@ -3,7 +3,7 @@ from .models import *
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User, Group
 from django.db.models import Q
-
+from django.forms.extras.widgets import SelectDateWidget
 class PaysForm (forms.ModelForm):
     '''
     Pays Form
@@ -56,7 +56,12 @@ class  SearchIndicatorForm(forms.Form):
     '''
     Search  indicator Form 
     '''
-    name = forms.CharField (_("Name") , help_text ="Saisir le nom de l'indicateur")
+    name = forms.CharField (label =_("Name") , help_text ="Saisir le nom de l'indicateur" , required =False)
+    date = forms.DateField (label =_('La date de creation') , help_text =\
+        _('La date de creation de cette indicateur dans la base de donnee') ,\
+         widget =SelectDateWidget , required =False)
+    edited_date  = forms.CharField  (label=_('Saisir une date(Exception!)') ,\
+        help_text = 'YYYY/MM/DD' , required =False)
     def clean_name(self) :
         '''
         Le name est valide automatquement par django car required =True , mais 
@@ -85,16 +90,21 @@ class IndicatorExportForm (forms.Form):
     '''
     indicators  = forms.ModelMultipleChoiceField(
                 label = _("Choisir le ou les  indicateurs a exporter"),
-                queryset =Indicator.objects.all ()) 
-    
+                queryset =Indicator.objects.all ())
+
+class ProjectForm (forms.ModelForm):
+     ''' Create a project-based model form '''
+     class meta :
+         model = Project
+         
 class ProjectStatForm (forms.Form):
     '''
     Create form to display statistiques date related of the  projet
     '''
-    indicator = forms.ModelChoiceField (
+    project = forms.ModelChoiceField (
                 label = _("Choisir un seul projet"),
                 queryset=Project.objects.all ())
-    projects  = forms.ModelMultipleChoiceField(
+    indicators  = forms.ModelMultipleChoiceField(
                 label = _("Choisir les  indicateurs"),
                 queryset =Indicator.objects.all ())
 

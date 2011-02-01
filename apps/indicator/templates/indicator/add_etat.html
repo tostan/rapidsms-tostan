@@ -7,32 +7,19 @@
 {% endblock %}
 
 {% block content %}
-
-
-
-<style>
-.line {
-	boder : solid 1px ;
-}
-</style>
-<table  width=100% cellpadding= 0 cellspacing =0  border= 0>
+<div class  ='module'>
 {% if msg %}
-		<tr>
-		<td>
-		{%  for m in msg %}
-			{{ m }}
-		{% endfor %}
-		</td>
-		</tr>
+<p>
+{%  for m in msg %}
+{{ m }}
+{% endfor %}
+</p>
 {% endif %}
-<tr>
-	<td>
-		<h3>  {% trans "Ajouter un nouveau Etat" %}</h3>
-		<ul>
-			<li><a href = "/indicator/">{% trans "Retour a la page d'accueil de Indicateur" %}</a></li>
-		</ul>
-	</td>
-</tr>
+<h2>{% trans "Creer un  etat" %}</a></h2>
+<div class ='indicator-menu'>
+  <a href = '/indicator'>{% trans  "Retour Accueil"%}</a>
+</div>
+<table  width=100% cellpadding= 0 cellspacing =0  border= 0>
 <tr>
 	<form action = ""   method ="post">
 			<td  coslpan =2>
@@ -48,9 +35,6 @@
 			</td>
 	</form>
 </tr>
-
-
-
 <tr>
 <td>
 	  <table>
@@ -79,5 +63,6 @@
 		</table>
 </tr>
 </table>
+</div>
 
 {% endblock %}

@@ -7,24 +7,19 @@
 {% endblock %}
 
 {% block content %}
-<table>
+<div class  ='module'>
 {% if msg %}
-		<tr>
-		<td>
-		{%  for m in msg %}
-			{{ m }}
-		{% endfor %}
-		</td>
-		</tr>
+<p>
+{%  for m in msg %}
+{{ m }}
+{% endfor %}
+</p>
 {% endif %}
-<tr>
-<td>
-	<h3>  {% trans "Ajouter une nouvelle commune d'Arrondissement" %}</h3>
-	<ul>
-		<li><a href = "/indicator/">{% trans "Retour a la page d'accueil de Indicateur" %}</a></li>
-	</ul>
-</td>
-</tr>
+<h2>{% trans "Creer une commune d arrondissement" %}</a></h2>
+<div class ='indicator-menu'>
+   <a href = '/indicator'>{% trans  "Retour Accueil"%}</a>
+</div>
+<table>
 <tr>
 			<td  coslpan=2>
 				 <form action =""  method ="post">
@@ -40,9 +35,6 @@
 			</td>
 	</form>
 </tr>
-
-
-
 <tr>
 <td>
 	  <table>
@@ -72,5 +64,5 @@
 		</table>
 </tr>
 </table>
-
+</div>
 {% endblock %}

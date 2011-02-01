@@ -5,28 +5,21 @@
 		<link type="text/css" rel="stylesheet" href="/static/indicator/stylesheets/layout.css" />
 		<link type="text/css" rel="stylesheet" href="/static/webui/stylesheets/modules.css" />
 {% endblock %}
-
 {% block content %}
-<table>
+<div class  ='module'>
 {% if msg %}
-		<tr>
-		<td>
-		{%  for m in msg %}
-			{{ m }}
-		{% endfor %}
-		</td>
-		</tr>
+<p>
+{%  for m in msg %}
+{{ m }}
+{% endfor %}
+</p>
 {% endif %}
+<h2>{% trans "Creer une nouvelle prefecture" %}</a></h2>
+<div class ='indicator-menu'>
+  <a href = '/indicator'>{% trans  "Retour Accueil"%}</a>
+</div>
 
-<tr>
-<td>
-	<h3>  {% trans "Ajouter une nouvelle prefeture" %}</h3>
-	<ul>
-		<li><a href = "/indicator/">{% trans "Retour a la page d'accueil de Indicateur" %}</a></li>
-	</ul>
-</td>
-</tr>
-
+<table>
 <tr>
 	<form action = ""   method ="post">
 			<td  coslpan =2>

@@ -599,7 +599,7 @@ def add_sub_prefecture (req, pays):
     msg = []
     #as tuple to fill the form choice fields dynamique 
     data =as_tuple (regions)
-    form_class  = get_area_form (data,"region")
+    form_class  = dyn_form.get_area_form (data,"region")
     form   = form_class ()
     if  req.method.lower ()=="post":
         form = form_class (req.POST)
@@ -902,16 +902,24 @@ def add_project(req , pays):
                          dt = datetime(year, month, day).date ()
                    except:
                         pass
-                   Project.create_project (villages , indicators ,** {"titre": req.POST.get ("titre") , \
-                            "bailleur": req.POST.get ("bailleur"),"description": req.POST.get ("description")\
-                            ,'created' :dt})
+                   #mutable post is the  project  'args 
+                   mutable_post = req.POST
+                   create_project_args  = ['bailleur' , 'titre',
+                      'description' ]
+                   for key in req.POST.iterkeys ():
+                             if key  not in  create_project_args:
+                                       del mutable_post[key]
+                   mutable_post ['create'] =dt  
+                   Project.create_project (villages , indicators ,**mutable_post)
                    msg.append (_("Le projet a bien ete sauvegarde"))          
                 except (KeyError, Exception):
                    raise
                    msg.append(_("Vous devez choisir le dernier element dans le filtre"))
         else:
-                msg.append (_("Le formulaire est invalide ,verifiez que tous les champs obligatoires sont bien renseignes"))
-    return render_to_response (req , template , { "form_village" : form_village ,\
+                msg.append (_("Le formulaire est invalide ,verifiez que tous\
+                    les champs obligatoires sont bien renseignes"))
+    return render_to_response (req , template ,
+               { "form_village" : form_village ,\
            "form_indicator": form_indicator , "projects" :Project.objects.all (), "msg" :msg })
 
 def edit_submission (req , submission_pk):
@@ -1090,20 +1098,24 @@ def search_project (req,pays):
         form  = form_class (req.POST)
         if form.is_valid ():
             try:
-                    project_kwargs  = {}
-                    project_kwargs.update({"indicators__in": [Indicator.objects.get (id =int (pk))\
-                            for pk in form.cleaned_data["indicators"]]})
-                    project_kwargs.update({"villages__in": [IndicatorVillage.objects.get (id =int (pk))\
-                            for pk in form.cleaned_data["villages"]]})
-                    project_kwargs.update({"name":form.cleaned_data ["name"]}) 
-                    projects =Project.objects.filter (**project_kwargs).all ()            
+                    def _project_search_args():
+                    #Help fonction , return a  dict or args to find projet
+                         return  {
+                         "indicators__in": [Indicator.objects.get (id =int (id))\
+                                    for id in  form.cleaned_data["indicators"]],
+                         "villages__in"  :[IndicatorVillage.objects.get (id =int (pk))\
+                                    for pk in form.cleaned_data["villages"] ],
+                         "name" : form.cleaned_data ["name"]
+                    }
+                    project_search_args  =_project_search_args ()
+                    projects =Project.objects.filter (**project_search_args).all ()            
             except Exception  ,e :
-                    projects  = []
-            if not len(projects): projects  = Project.objects.all ()
+                     raise 
+                     projects  = Project.objects.all ()
+                     
     template ='indicator/search_project.html'
     return render_to_response (req , template , 
-        {"projects" : projects ,
-        "form" : form})
+        {"projects" : projects ,"form" : form})
         
 def project_exports(req):
     '''Provide a list of projets  and  let us the user to choice one projet for export

@@ -357,7 +357,7 @@ table {
 	 * field or (if first) the module header */
 	.module label {
 		display: block;
-		margin: 2em 0 0.5em 0;
+		/*margin: 2em 0 0.5em 0;*/
 	}
 		
 		/* but sometimes... they can provide a clearer distinction between
@@ -672,3 +672,23 @@ table {
 				text-indent: -9999px;
 				display: block;
 			}
+
+
+/* For indicator app */
+.module div.indicator-menu {
+  position:absolute;
+  top:0;
+  right:0;
+  height:2em;
+  background-image:url("/static/indicator/images/home.png");
+  background-repeat:no-repeat;'
+}
+.module div.indicator-menu a {
+  padding-left:20px;
+  color:#fff;
+  font-weight: bold
+}
+
+/*End Indicator App*/
+
+

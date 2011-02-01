@@ -94,7 +94,7 @@ class IndicatorExportForm (forms.Form):
 
 class ProjectForm (forms.ModelForm):
      ''' Create a project-based model form '''
-     class meta :
+     class Meta :
          model = Project
          
 class ProjectStatForm (forms.Form):

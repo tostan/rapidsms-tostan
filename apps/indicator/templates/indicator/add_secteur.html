@@ -5,16 +5,19 @@
 		<link type="text/css" rel="stylesheet" href="/static/indicator/stylesheets/layout.css" />
 		<link type="text/css" rel="stylesheet" href="/static/webui/stylesheets/modules.css" />
 {% endblock %}
-
 {% block content %}
-
-
-
-<style>
-.line {
-	boder : solid 1px ;
-}
-</style>
+<div class  ='module'>
+{% if msg %}
+<p>
+{%  for m in msg %}
+{{ m }}
+{% endfor %}
+</p>
+{% endif %}
+<h2>{% trans "Creer un nouveau secteur " %}</a></h2>
+<div class ='indicator-menu'>
+  <a href = '/indicator'>{% trans  "Retour Accueil"%}</a>
+</div>
 <table  width=100% cellpadding= 0 cellspacing =0  border= 0>
 {% if msg %}
 		<tr>
@@ -25,13 +28,6 @@
 		</td>
 		</tr>
 {% endif %}
-<tr>
-	<td>
-		<h3>  {% trans "Ajouter un nouveau Secteur" %}</h3>
-		<ul>
-			<li><a href = "/indicator/">{% trans "Retour a la page d'accueil de Indicateur" %}</a></li>
-		</ul>
-	</td>
 </tr>
 <tr>
 	<form action = ""   method ="post">
@@ -48,9 +44,6 @@
 			</td>
 	</form>
 </tr>
-
-
-
 <tr>
 <td>
 	  <table>
@@ -79,5 +72,5 @@
 		</table>
 </tr>
 </table>
-
+</div>
 {% endblock %}

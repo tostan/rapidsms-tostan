@@ -7,26 +7,31 @@
 {% endblock %}
 
 {% block content %}
+<div class  ='module'>
+{% if msg %}
+<p>
+{%  for m in msg %}
+{{ m }}
+{% endfor %}
+</p>
+{% endif %}
+<h2>{% trans "Creer des regions , departements ...." %}</a></h2>
+<div class ='indicator-menu'>
+  <a href = '/indicator'>{% trans  "Retour Accueil"%}</a>
+</div>
+
 <table width =100% cellpadding = 0 cellspacing = 0 border =0>
 <tr>
 <td>
-	<h3>  {% trans "Gestion des Parametres" %}</h3>
-	<ul>
-		<li><a href = "/indicator/">{% trans "Retour a la page d'accueil de Indicateur" %}</a></li>
-	</ul>
+{% trans "Ajouter un pays" %}
+<ul>
+<li><a href = "/indicator/add_pays">{% trans "Ajouter un pays" %}</a></li>
+</ul>
 </td>
 </tr>
 <tr>
 <td>
-	<h3>  {% trans "Ajouter un pays" %}</h3>
-	<ul>
-		<li><a href = "/indicator/add_pays">{% trans "Ajouter un pays" %}</a></li>
-	</ul>
-</td>
-</tr>
-<tr>
-<td>
-	<h3>  {% trans "SENEGAL" %}</h3>
+	{% trans "SENEGAL" %}
 	<ul>
 	<li><a href = "/indicator/add_region/senegal">{% trans "Creer une region" %}</a></li>
 	<li><a href = "/indicator/add_departement/senegal">{% trans "Creer un departement" %}</a></li>
@@ -39,19 +44,19 @@
 </tr>
 <tr>
 <td>
-	<h3>  {% trans "GUINEE CONAKRY" %}</h3>
+	 {% trans "GUINEE CONAKRY" %}
 	<ul>
-	<li><a href = "/indicator/add_region/guinee_konakry">{% trans "Creer une régions" %}</a></li>
-	<li><a href = "/indicator/add_prefecture/guinee_konakry">{% trans "Creer une  préfecture" %}</a></li>
-	<li><a href = "/indicator/add_sub_prefecture/guinee_konakry">{% trans "Creer une sous prefecture  " %}</a></li>
-	<li><a href = "/indicator/add_village/guinee_konakry">{% trans "Creer un village" %}</a></li>
+	<li><a href = "/indicator/add_region/guinee_conakry">{% trans "Creer une régions" %}</a></li>
+	<li><a href = "/indicator/add_prefecture/guinee_conakry">{% trans "Creer une  préfecture" %}</a></li>
+	<li><a href = "/indicator/add_sub_prefecture/guinee_conakry">{% trans "Creer une sous prefecture  " %}</a></li>
+	<li><a href = "/indicator/add_village/guinee_conakry">{% trans "Creer un village" %}</a></li>
 	</ul>
 </td>
 
 </tr>
 <tr>
 <td>
-	<h3>  {% trans "GUINEE BISSAU" %}</h3>
+	 {%  trans "GUINEE BISSAU" %}
 	<ul>
 		<li><a href = "/indicator/add_region/guinee_bissau">{% trans "Creer une région" %}</a></li>
 		<li><a href = "/indicator/add_secteur/guinee_bissau">{% trans "Creer un secteur" %}</a></li>
@@ -61,7 +66,7 @@
 </tr>
 <tr>
 <td>
-	<h3>  {% trans "GAMBIE" %}</h3>
+	{% trans "GAMBIE" %}
 	<ul>
 		<li><a href = "/indicator/add_region/gambie">{% trans "Creer une régions" %}</a></li>
 		<li><a href = "/indicator/add_district/gambie">{% trans "Creer un district" %}</a></li>
@@ -71,7 +76,7 @@
 </tr>
 <tr>
 <td>
-	<h3>  {% trans "SOMALIE" %}</h3>
+	 {% trans "SOMALIE" %}
 	<ul>
 	<li><a href = "/indicator/add_etat/somalie">{% trans "Creer un etat" %}</a></li>
 	<li><a href = "/indicator/add_region/somalie">{% trans "Creer une region" %}</a></li>
@@ -81,7 +86,7 @@
 </tr>
 <tr>
 <td>
-	<h3>  {% trans "DJIBOUTI" %}</h3>
+	 {% trans "DJIBOUTI" %}
 	<ul>
 	<li><a href = "/indicator/add_region/djibouti">{% trans "Creer une région" %}</a></li>
 	<li><a href = "/indicator/add_village/djibouti">{% trans "Creer un village" %}</a></li>
@@ -90,7 +95,7 @@
 </tr>
 <tr>
 <td>
-	<h3>  {% trans "MAURITANIE" %}</h3>
+	  {% trans "MAURITANIE" %}
 	<ul>
     <li><a href = "/indicator/add_region/mauritanie">{% trans "Creer une region" %}</a></li>
 	<li><a href = "/indicator/add_departement/mauritanie">{% trans "Creer un departement" %}</a></li>
@@ -98,7 +103,6 @@
 	</ul>
 </td>
 </tr>
-
 </table>
-
+</div>
 {% endblock %}

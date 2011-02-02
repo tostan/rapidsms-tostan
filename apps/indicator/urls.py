@@ -48,6 +48,7 @@ urlpatterns = patterns('',
     url (r'indicator/search_user/?$' ,  views.search_user , name ="search_user"),  
     url (r'indicator/add_user/?$' ,  views.add_user , name ="add_user"),
     url (r'indicator/edit_user/(?P<id>\d+)?$' ,  views.edit_user , name ="edit_user"),
+    url (r'indicator/delete_user/(?P<id>\d+)?$' ,views.delete_user , name ="delete_user"),
     #Export
     url(r'^indicator/parametrage_export/?$',views.parametrage_export,  name="parametrage_export"),
     url (r'^indicator/user_exports/?$',  views.user_exports, name ="user_exports"),

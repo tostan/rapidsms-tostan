@@ -6,33 +6,40 @@
 		<link type="text/css" rel="stylesheet" href="/static/webui/stylesheets/modules.css" />
 {% endblock %}
 {% block content %}
+<div class  ='module'>
+{% if msg %}
+<p>
+{%  for m in msg %}
+{{ m }}
+{% endfor %}
+</p>
+{% endif %}
+<h2>{% trans "Creer un nouveau projet" %}</a></h2>
+<div class ='indicator-menu'>
+  <a href = '/indicator'>{% trans  "Retour Accueil"%}</a>
+</div>
+
 <table width =100% cellpadding = 0 cellspacing = 0 border = 0>
 <tr>
 <td>
-	<h3>  {% trans "Gestion des Indicateurs" %}</h3>
-	<ul>
-		<li><a href = "/indicator/">{% trans "Retour a la page d'accueil de Indicateur" %}</a></li>
-	</ul>
-</td>
-</tr>
-
-
-<tr>
-<td>
-	<h3>  {% trans "Gestion des projects SENEGAL" %}</h3>
+	 {% trans "SENEGAL" %}
 	<ul>
 		<li><a href = "/indicator/add_indicator">{% trans "Ajouter un indicateur" %}</a></li>
 		<li><a href = "/indicator/search_indicator">{% trans "Rechercher un indicateur" %}</a></li>
+		<li><a href = "/indicator/list_indicator">{% trans "Lister les indicateurs" %}</a></li>
+
 	</ul>
 </td>
 </tr>
 
 <tr>
 <td>
-	<h3>  {% trans "Gestion des projects GUINEE KONAKRY" %}</h3>
+	{% trans "GUINEE KONAKRY" %}
 	<ul>
 	<li><a href = "/indicator/add_indicator">{% trans "Ajouter un indicateur" %}</a></li>
 	<li><a href = "/indicator/search_indicator">{% trans "Rechercher un indicateur" %}</a></li>
+	<li><a href = "/indicator/list_indicator">{% trans "Lister les indicateurs" %}</a></li>
+
 	</ul>
 </td>
 </tr>
@@ -40,65 +47,76 @@
 
 <tr>
 <td>
-	<h3>  {% trans "Gestion des projects GUINEE BISSAU" %}</h3>
+	 {% trans "GUINEE BISSAU" %}
 	<ul>
 	<li><a href = "/indicator/add_indicator">{% trans "Ajouter un indicateur" %}</a></li>
 	<li><a href = "/indicator/search_indicator">{% trans "Rechercher un indicateur" %}</a></li>
+	 <li><a href = "/indicator/list_indicator">{% trans "Lister les indicateurs" %}</a></li>
+
 	</ul>
 </td>
 </tr>
 <tr>
 <td>
-	<h3>  {% trans "Gestion des projects GUINEE BISSAU" %}</h3>
+	{% trans "GUINEE BISSAU" %}
 	<ul>
 		<li><a href = "/indicator/add_indicator">{% trans "Ajouter un indicateur" %}</a></li>
 		<li><a href = "/indicator/search_indicator">{% trans "Rechercher un indicateur" %}</a></li>
+		 <li><a href = "/indicator/list_indicator">{% trans "Lister les indicateurs" %}</a></li>
+
 	</ul>
 </td>
 </tr>
 
 <tr>
 <td>
-	<h3>  {% trans "Gestion des projects GAMBIE" %}</h3>
+	{% trans "GAMBIE" %}
 	<ul>
 		<li><a href = "/indicator/add_indicator">{% trans "Ajouter un indicateur" %}</a></li>
 		<li><a href = "/indicator/search_indicator">{% trans "Rechercher un indicateur" %}</a></li>
-	
+		<li><a href = "/indicator/list_indicator">{% trans "Lister les indicateurs" %}</a></li>
+	      <li><a href = "/indicator/list_indicator">{% trans "Lister les indicateurs" %}</a></li>
+
+
 	</ul>
 </td>
 </tr>
 
-
 <tr>
 <td>
-	<h3>  {% trans "Gestion des projects SOMALIE" %}</h3>
+	{% trans "SOMALIE" %}
 	<ul>
 	<li><a href = "/indicator/add_indicator">{% trans "Ajouter un indicateur" %}</a></li>
 	<li><a href = "/indicator/search_indicator">{% trans "Rechercher un indicateur" %}</a></li>
+	<li><a href = "/indicator/list_indicator">{% trans "Lister les indicateurs" %}</a></li>
+
 	</ul>
 </td>
 </tr>
 
 <tr>
 <td>
-	<h3>  {% trans "Gestion des projects DJIBOUTI" %}</h3>
+	{% trans "DJIBOUTI" %}
 	<ul>	
 	<li><a href = "/indicator/add_indicator">{% trans "Ajouter un indicateur" %}</a></li>
 	<li><a href = "/indicator/search_indicator">{% trans "Rechercher un indicateur" %}</a></li>
+	<li><a href = "/indicator/list_indicator">{% trans "Lister les indicateurs" %}</a></li>
+
 	</ul>
 </td>
 </tr>
 
 <tr>
 <td>
-	<h3>  {% trans "Gestion des projects MAURITANIE" %}</h3>
+	{% trans "MAURITANIE" %}
 	<ul>
 	<li><a href = "/indicator/add_indicator">{% trans "Ajouter un indicateur" %}</a></li>
 	<li><a href = "/indicator/search_indicator">{% trans "Rechercher un indicateur" %}</a></li>
+      <li><a href = "/indicator/list_indicator">{% trans "Lister les indicateurs" %}</a></li>
 	</ul>
 </td>
 </tr>
 
 </table>
-
+</div>
 {% endblock %}

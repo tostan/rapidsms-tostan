@@ -9,6 +9,7 @@ from django.contrib.admin.models import User
 from django import forms 
 from datetime import date 
 from django.forms.extras.widgets import SelectDateWidget
+
 class Project(models.Model):
     '''
     Model to store all tostan ,s projects 
@@ -38,6 +39,12 @@ class Project(models.Model):
     villages   = models.ManyToManyField ("Area" , null =True , blank =True)
     created    = models.DateTimeField (auto_now_add =True)
 
+    class Meta:
+        permissions = (
+            ("can_admin", "Active Member"),
+            ("can_edit", "Edit Member"),
+        )
+
     @property
     def submissions(self):
         submission_list  = list ()
@@ -51,19 +58,19 @@ class Project(models.Model):
     def indicatorvalues(self):
         values  = {}
         if len (self.submissions):
-                for submission in self.submissions:
-                          for indicatorvalue in  submission.indicatorvalues.all():
-                               indicator = indicatorvalue.indicator
-                               #Only the indicator int value will be retreived ,
-                               # Skip the type string
-                               try:
-                                    if indicator in values :
-                                        values [indicator] =+int(indicatorvalue.value)
-                                    else:
-                                        values [indicator] = int(indicatorvalue.value) 
-                               except   Exception  as e:
-                                    #Sure it is not a int or float value
-                                    pass
+          for submission in self.submissions:
+             for indicatorvalue in  submission.indicatorvalues.all():
+                indicator = indicatorvalue.indicator
+                #Only the indicator int value will be retreived ,
+                # Skip the type string
+                try:
+                    if indicator in values :
+                         values [indicator] =+int(indicatorvalue.value)
+                    else:
+                        values [indicator] = int(indicatorvalue.value) 
+                except   Exception  as e:
+                    #Sure it is not a int or float value
+                    pass
         return values
                                                               
     @classmethod 

@@ -4,6 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User, Group
 from django.db.models import Q
 from django.forms.extras.widgets import SelectDateWidget
+from django.contrib.auth.models import Permission
 class PaysForm (forms.ModelForm):
     '''
     Pays Form
@@ -148,33 +149,42 @@ class UserExportForm (forms.Form):
     '''
     users  = forms.ModelMultipleChoiceField(
                 label = _("Choisir le ou les  utilisateurs a exporter"),
-                queryset=User.objects.all ().filter(groups__name__in =['indicator_edit'])) 
+                queryset=User.objects.all ().filter(groups__name__in =['indicator_edit' ,'indicator_admin'])) 
     
 class  UserForm (forms.Form):
-       '''
-       create a form to create user , update .The user is the editor od the indicator system
-       '''
+       '''create a form to create user , update .The user is the editor od the indicator system'''
        first_name  = forms.CharField (
                      label = _("Nom de l'employer pour la saisie") , 
                      widget =forms.TextInput ({"size":"50"}))
        last_name  = forms.CharField (
                      label = _("Prenom de l'employer pour la saisie") , 
                      widget =forms.TextInput ({"size":"50"}))
+       # to pass to django.contrib.auth.views as login
+       username  = forms.CharField (
+                     label = _("Le login") , 
+                     widget =forms.TextInput ({"size":"50"}))
        password  =  forms.CharField (
                      label = _("Mot de passe pour la saisie") ,
-                      widget =forms.PasswordInput ({"size":"50"})) 
+                      widget =forms.PasswordInput ({"size":"50"}))
+       group     = forms.ModelChoiceField(
+                label = _("Choisir le groupe de l'utilsateur"),
+                queryset=Group.objects.all ().filter (name__in= ['indicator_edit' , 'indicator_admin'] )) 
        def  save (self):
 	   '''
-	   Save the user and add to the indicator_editor group 
-	   '''
+	   Save the user and add to the indicator_editor group'''
            data  = self.cleaned_data
-           user =User.objects.create (
-		username ="%s :%s"%(data["first_name"] ,
-		data ["last_name"]) ,
-                password =data['password'])
-           indicator_group  , created= Group.objects.get_or_create(
-	      name="indicator_edit")
-           user.groups.add (indicator_group)
+           user =User.objects.create (first_name =data["first_name"] ,last_name=data ["last_name"] ,
+                 password =data['password'] , username = data['username'])
+           user.groups.add (data['group'])
+           # Add permission to admin  to the user if it is into the group admin
+           user.save ()
+           if  'indicator_admin' in data['group'].name:
+                # Add the Admin permission to the user
+                perm =Permission.objects.get(codename = 'can_admin')
+           else:
+                # Add the Edit permission to the user
+                perm =Permission.objects.get(codename = 'can_edit')
+           user.user_permissions.add (perm)
            user.save ()
            
 class  UserSearchForm (forms.Form):

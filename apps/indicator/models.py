@@ -126,7 +126,18 @@ class Indicator (models.Model):
     created =models.DateTimeField(auto_now_add =True)
     modified =models.DateTimeField (auto_now =True)
     description =models.CharField (max_length = 200 , null =True , blank =True)
-    
+
+    @property
+    def expected_values (self):
+        '''The value expected by the indicator , if not type list , return  '' , if
+        type is list return the list of value of the indicator'''
+        if not self.type  is  Indicator.TYPE_LIST:
+            return ''
+        values =self.values.filter (submission__isnull =True)
+        if values.count ()>0:
+            return   '\n\r' .join  (values.values_list ('value', flat = True))
+        return ''        
+
     @property
     def type_str(self):
         return self.get_type_display ()

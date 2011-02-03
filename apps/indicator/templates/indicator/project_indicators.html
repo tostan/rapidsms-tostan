@@ -14,28 +14,10 @@
 {% endfor %}
 </p>
 {% endif %}
-<h2>{% trans "Ajouter un indicateur" %}</a></h2>
+<h2>{% trans "Indicateurs du projet" %}</a></h2>
 <div class ='indicator-menu'>
   <a href = '/indicator'>{% trans  "Retour Accueil"%}</a>
 </div>
-<table>
-<tr>
-	<form action = ""   method ="post">
-			<td>
-			  <table>
-				 <tr> 
-				 	 <td>{{ form.as_table }} {{ form_value.as_table }} </td>
-				 </tr>
-				 <tr>
-				 	 <td><input type ="submit"  value ="{% trans  "OK"  %}"> </td>
-				 </tr>
-				 
-			  </table>
-			</td>
-	</form>
-</tr>
-<tr>
-<td>
 	  <table>
 	         <thead>
 			 <tr>
@@ -65,8 +47,6 @@
 				    </tr>
 				 {% endfor %}
 			 </tbody>
-		</table>
-</tr>
-</table>
+	</table>
 </div>
 {% endblock %}

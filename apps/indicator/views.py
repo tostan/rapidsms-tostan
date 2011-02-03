@@ -17,7 +17,9 @@ from django.forms.extras.widgets import SelectDateWidget
 from django.core.paginator import Paginator,InvalidPage,EmptyPage
 from utilities.export import export
 from forms import *
-from datetime import datetime 
+from datetime import datetime
+from django.contrib.auth.models import User, check_password
+
 # The number of indicator displayed into edition  by page 
 ITEM_PER_PAGE = 30
 
@@ -902,7 +904,7 @@ def add_project(req , pays):
                    Project.create_project (villages , indicators ,**d)
                    msg.append (_("Le projet a bien ete sauvegarde"))          
                 except (KeyError, Exception):
-                   print  '--*POOF*--'
+                   #print  '--*POOF*--'
                    #raise 
                    msg.append(_("Vous devez choisir le dernier element dans le filtre"))
         else:
@@ -911,6 +913,43 @@ def add_project(req , pays):
     return render_to_response (req , template ,{ "form_village" : form_village ,
            "form_indicator": form_indicator , "projects" :Project.objects.all (), "msg" :msg })
 
+def search_project (req,pays):
+    '''Search a new projet'''
+    form_class  =dyn_form.get_search_project_form()
+    form  = form_class ()
+    projects  = Project.objects.all ()
+    if req.POST :
+        form  = form_class (req.POST)
+        if form.is_valid ():
+            try:
+                    def _project_search_args():
+                    #Help fonction , return a  dict or args to find projet
+                         return  {
+                         "indicators__in": [Indicator.objects.get (id =int (id))\
+                                    for id in  form.cleaned_data["indicators"]],
+                         "villages__in"  :[IndicatorVillage.objects.get (id =int (pk))\
+                                    for pk in form.cleaned_data["villages"] ],
+                         "name" : form.cleaned_data ["name"]
+                    }
+                    project_search_args  =_project_search_args ()
+                    projects =Project.objects.filter (**project_search_args).all ()            
+            except Exception  ,e :
+                     #raise 
+                     projects  = Project.objects.all ()
+                     
+    template ='indicator/search_project.html'
+    return render_to_response (req , template , 
+        {"projects" : projects ,"form" : form})
+
+def list_project(req , pays):
+    '''Go to list projects'''
+    return render_to_response (req,"indicator/list_project.html" ,\
+           { "projects":Project.objects.all()})
+
+def project_indicators (req , id):
+     project = get_object_or_404 (Project , pk  = id)
+     return   render_to_response (req , 'indicator/project_indicators.html' , {'indicators':project.indicators.all()}) 
+     
 def edit_submission (req , submission_pk):
     '''Edit Submission '''
     dict =[]
@@ -990,8 +1029,7 @@ def add_indicator(req):
                         value =form_value.data["value"]
                         values  =  list ()
                         if value.strip()!=""  and indicator.type !=Indicator.TYPE_LIST:
-                            indicator.delete()
-                            raise ValidationError (_("La liste des valeurs doit etre saisie si \
+                            raise Exception(_("La liste des valeurs doit etre saisie si \
                              l'indicateur est de type list")) 
                         if indicator.type ==Indicator.TYPE_TEXT:
                             #IndicatorValue.objects.create(value ="text" , indicator =indicator)
@@ -1007,7 +1045,6 @@ def add_indicator(req):
                             #if len (values):
                             #  for value in values:
                             #       IndicatorValue.objects.create(value =value, indicator =indicator)
-                            
                         else :
                               pass
                         # Initilise the indicator values with the list  of values when we create it
@@ -1018,11 +1055,10 @@ def add_indicator(req):
                         if len (values)>0:
                               #create init values
                               _init_indicator_value_from_indicator (values , indicator)
-                              
                         msg.append (_("OK"))
-            except ValidationError, err:
-                msg.append (err.message)
-                print "err :" , dir (err)
+            except Exception , err:
+                indicator.delete()
+                msg.append (str(err))
         else :
             msg.append(form.errors)
             msg.append (form_value.errors)
@@ -1095,33 +1131,7 @@ def search_user (req):
       "users" : users,
      "msg" : msg})
 
-def search_project (req,pays):
-    '''Search a new projet'''
-    form_class  =dyn_form.get_search_project_form()
-    form  = form_class ()
-    projects  = Project.objects.all ()
-    if req.POST :
-        form  = form_class (req.POST)
-        if form.is_valid ():
-            try:
-                    def _project_search_args():
-                    #Help fonction , return a  dict or args to find projet
-                         return  {
-                         "indicators__in": [Indicator.objects.get (id =int (id))\
-                                    for id in  form.cleaned_data["indicators"]],
-                         "villages__in"  :[IndicatorVillage.objects.get (id =int (pk))\
-                                    for pk in form.cleaned_data["villages"] ],
-                         "name" : form.cleaned_data ["name"]
-                    }
-                    project_search_args  =_project_search_args ()
-                    projects =Project.objects.filter (**project_search_args).all ()            
-            except Exception  ,e :
-                     raise 
-                     projects  = Project.objects.all ()
-                     
-    template ='indicator/search_project.html'
-    return render_to_response (req , template , 
-        {"projects" : projects ,"form" : form})
+
         
 def project_exports(req):
     '''Provide a list of projets  and  let us the user to choice one projet for export
@@ -1265,21 +1275,26 @@ def add_user (req):
     {"form": form ,
       # Get teh list of users that have  a profil to edit  from Web UI of the indicators app
       "users" : User.objects.filter (groups__name__in = ['indicator_edit', 'indicator_admin']),"msg" : msg})
+
 def edit_user (req , id):
     '''Edit new user'''
     user  = get_object_or_404(User ,pk =id)
-    if ':' in user.username :
-            user_names = user.username.split (':')
-            initial_args  ={"first_name":  user_names [0] , 'last_name' :user_names[1]}
-    else :
-            initial_args  ={}
-    form  = UserForm(initial = initial_args)
+    form  = UserForm(initial = {'first_name' : user.first_name  , 'last_name' : user.last_name ,
+          'username': user.username , 'password' :''})
     msg  = []
     if req.POST:
+        form  = UserForm(req.POST)
         if form.is_valid ():
              try:
-                 form.save ()
-                 msg.append (_("Element sauvegarge"))
+                 # delete the exiting user before save change to avoid key duplicate
+                 # If the  password is empty skip
+                 # The user cahange the password 
+                 if form.cleaned_data ['password'] !='':
+                      user.delete()
+                      form.save ()
+                      msg.append (_("Element sauvegarge"))
+                 # return to the add_user to avoid user hit dabase   for deleted user :)
+                 return HttpResponseRedirect(reverse ('add_user'))
              except Exception , err:
                  msg.append (str(err))
     template ="indicator/add_user.html"

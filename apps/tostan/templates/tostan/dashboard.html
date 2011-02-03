@@ -71,14 +71,13 @@
    </td>
 {% endif %}
 
-{% if perms.rapidsuivi.see_map %}
+<!--Every body have access  to the indicator index page-->
    <td>
       <a href = "{% url indicator_dashboard  %}">
             <img src ="/static/tostan/images/indicateur.jpg" /></br>
                 {% trans "Application de Sasie des Fiches Superviseurs Parametrages Statistiques" %}
       </a>
    </td>
-{% endif %}
 
 </tr>
 </table>

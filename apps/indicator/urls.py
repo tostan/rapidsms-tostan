@@ -40,6 +40,8 @@ urlpatterns = patterns('',
     url(r'^indicator/edit_project/(?P<id>\d+)/?$',views.edit_project,  name="edit_project"),
     url(r'^indicator/delete_project/(?P<id>\d+)/?$',views.delete_project,  name="delete_project"),
     url(r'^indicator/search_project/(?P<pays>\w+)/?$',views.search_project,  name="search_project"),
+    url(r'^indicator/list_project/(?P<pays>\w+)/?$',views.list_project,  name="list_project"),
+    url(r'^indicator/project_indicators/(?P<id>\d+)/?$',views.project_indicators,  name="project_indicators"),  
     # Fiche and submission
     url(r'^indicator/fiche/(\d+)/add_submission/?$',views.add_submission,  name="add_submission"),
     url(r'^indicator/submission/(\d+)/edit_submission/?$',views.edit_submission,  name="edit_submission"),   

@@ -131,7 +131,7 @@ class Indicator (models.Model):
     def expected_values (self):
         '''The value expected by the indicator , if not type list , return  '' , if
         type is list return the list of value of the indicator'''
-        if not self.type  is  Indicator.TYPE_LIST:
+        if self.type != Indicator.TYPE_LIST:
             return ''
         values =self.values.filter (submission__isnull =True)
         if values.count ()>0:

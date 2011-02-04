@@ -1012,52 +1012,47 @@ def _init_indicator_value_from_indicator (values  , indicator):
           IndicatorValue.objects.create (value =  value  , indicator = indicator)
      
 def add_indicator(req):
-    '''
-    Here we are going to define  our indicator , by adding a basic indicator form and a list .
+    '''Here we are going to define  our indicator , by adding a basic indicator form and a list .
     Creation des indicateurs ici , en specifiant le type et les valeurs si 'indicateur est de type list
-    '''
+    [FR.]
+    Pour un indicateur , trois type de valeur sont disponible  , text , date , numeric
+    Si un indicateur est de  type text ou numeric , on cree un  indicateur value ,avec submission null
+    et avec value = text ou value  = numeric .
+    Si l'indicateur est de type list alors nous creeons un indicateurvalue avec une submission vide
+    et avec value  =list des valeurs saisies par l'administateur.'''
     form =IndicatorForm ()
     form_value =IndicatorValueForm ()
     template = "indicator/add_indicator.html"
     msg  = []
     if req.method.lower ()=="post":
         form = IndicatorForm (req.POST)
-        form_value =IndicatorValueForm (req.POST) 
+        form_value =IndicatorValueForm(req.POST) 
         if form.is_valid ():
             indicator =form.save ()
             try:
-                        value =form_value.data["value"]
+                        value =form_value.save(commit =False)
                         values  =  list ()
-                        if value.strip()!=""  and indicator.type !=Indicator.TYPE_LIST:
-                            raise Exception(_("La liste des valeurs doit etre saisie si \
-                             l'indicateur est de type list")) 
+                        if value.value.strip()!=""  and indicator.type !=Indicator.TYPE_LIST:
+                            raise forms.ValidationError("La liste des valeurs doit etre saisie si l'indicateur est de type list")
+                        if value.value.strip()==""  and indicator.type ==Indicator.TYPE_LIST:
+                            raise forms.ValidationError("La liste des valeurs est obligatoire si l'indicateur est de type list") 
                         if indicator.type ==Indicator.TYPE_TEXT:
-                            #IndicatorValue.objects.create(value ="text" , indicator =indicator)
                              values =  ['text']
                         elif indicator.type ==Indicator.TYPE_DATE:
-                            #IndicatorValue.objects.create(value ="date" , indicator =indicator)
                              values  =['date']
                         elif indicator.type ==Indicator.TYPE_NUMERIC:
-                            #IndicatorValue.objects.create(value ="numeric" , indicator =indicator)
                              values = ['numeric']    
                         elif indicator.type ==Indicator.TYPE_LIST:
                             values  = [v for  v  in value.split ('\r\n')  if v.strip() !='' ]
-                            #if len (values):
-                            #  for value in values:
-                            #       IndicatorValue.objects.create(value =value, indicator =indicator)
                         else :
                               pass
-                        # Initilise the indicator values with the list  of values when we create it
-                        # it the type of the value is  text  , init_value  =test
-                        # it the type of values  if date  , init_value  = date
-                        # if the list of values is  numeric ,  init_value = numeric
-                        # it the list  of values  is list  , the  init_value  = list  of values typed  from Web UI form
                         if len (values)>0:
                               #create init values
                               _init_indicator_value_from_indicator (values , indicator)
                         msg.append (_("OK"))
-            except Exception , err:
+            except forms.ValidationError as err:
                 indicator.delete()
+                #return HttpResponse (str(err))
                 msg.append (str(err))
         else :
             msg.append(form.errors)
@@ -1066,6 +1061,53 @@ def add_indicator(req):
     return render_to_response (
             req, template , {"form":form , "form_value": form_value ,\
              "msg": msg,"indicators" : Indicator.objects.all ()})
+
+def edit_indicator(req , id):
+     indicator = get_object_or_404(Indicator , pk =id)
+     form  = IndicatorForm(instance = indicator)
+     form_value = IndicatorValueForm (initial = {'value': indicator.expected_values})
+     msg  = []
+     if req.method  =='POST':
+          form =IndicatorForm (data = req.POST , instance=indicator)
+          form_value =IndicatorValueForm(req.POST) 
+          if form.is_valid ():
+               indicator = form.save ()
+               try:
+                      value =form_value.save(commit =False)
+                      values  =  list ()
+                      if value.value.strip()!=""  and indicator.type !=Indicator.TYPE_LIST:
+                         raise forms.ValidationError("La liste des valeurs doit etre saisie si l'indicateur est de type list")
+                      if value.value.strip()==""  and indicator.type ==Indicator.TYPE_LIST:
+                              raise forms.ValidationError("La liste des valeurs est obligatoire si l'indicateur est de type list") 
+                      if indicator.type ==Indicator.TYPE_TEXT:
+                              values =  ['text']
+                      elif indicator.type ==Indicator.TYPE_DATE:
+                              values  =['date']
+                      elif indicator.type ==Indicator.TYPE_NUMERIC:
+                              values = ['numeric']    
+                      elif indicator.type ==Indicator.TYPE_LIST:
+                              values  = [v for  v  in value.value.split ('\r\n')  if v.strip() !='' ]
+                      else :
+                              pass
+                      if len (values)>0:
+                              # Delete the old incator value init , we are sur that it  exit
+                              # I dont think that we need to try catch an exception
+                              # because the indicator have a value init , I am sure  , ;) not sure
+                              try:
+                                   indicator.values.filter (submission__isnull =True).delete()
+                              except Exception as e :
+                                        pass
+                              #create init values
+                              _init_indicator_value_from_indicator (values , indicator)
+                      msg.append (_("OK"))
+               except forms.ValidationError as err:
+                     #return HttpResponse (str(err))
+                     msg.append (str(err))
+          else :
+            msg.append(form.errors)
+     template  = 'indicator/add_indicator.html'
+     return render_to_response(req,template,{ 'form' :form ,
+          'msg': msg , 'form_value' :form_value,'indicators':Indicator.objects.all()}) 
 
 def search_indicator (req):
     template ="indicator/search_indicator.html"

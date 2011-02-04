@@ -32,6 +32,7 @@ urlpatterns = patterns('',
     # Indicator 
     url(r'^indicator/parametrage_indicator/?$',views.parametrage_indicator,  name="parametrage_indicator"),
     url(r'^indicator/add_indicator/?$',views.add_indicator,  name="add_indicator"),
+    url(r'^indicator/edit_indicator/(?P<id>\d+)/?$',views.edit_indicator,  name="edit_indicator"),
     url(r'^indicator/delete_indicator/(?P<id>\d+)/?$',views.delete_indicator,  name="delete_indicator"),
     url(r'^indicator/search_indicator/?$',views.search_indicator,  name="search_indicator"),
     #Project peer contry

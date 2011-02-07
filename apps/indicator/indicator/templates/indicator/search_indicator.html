@@ -1,0 +1,72 @@
+{% extends "layout.html" %}
+{% load i18n %}
+{% block title %}The Jokko Initiative - A RapidSMS Project by Tostan{% endblock %}
+{% block stylesheets %}
+		<link type="text/css" rel="stylesheet" href="/static/indicator/stylesheets/layout.css" />
+		<link type="text/css" rel="stylesheet" href="/static/webui/stylesheets/modules.css" />
+{% endblock %}
+{% block content %}
+<div class  ='module'>
+{% if msg %}
+<p>
+{%  for m in msg %}
+{{ m }}
+{% endfor %}
+</p>
+{% endif %}
+<h2>{% trans "Rechercher un indicateur" %}</a></h2>
+<div class ='indicator-menu'>
+  <a href = '/indicator'>{% trans  "Retour Accueil"%}</a>
+</div>
+<table>
+<tr>
+	<form action = ""   method ="post">
+			<td>
+			  <table>
+				 <tr> 
+				 	 <td>{{ form.as_table }}</td>
+				 </tr>
+				 <tr>
+				 	 <td><input type ="submit"  value ="{% trans  "OK"  %}"> </td>
+				 </tr>
+				 
+			  </table>
+			</td>
+	</form>
+</tr>
+<tr>
+<td>
+	  <table>
+	         <thead>
+			 <tr>
+				 <th>{% trans "Nom" %} </th>
+				 <th>{% trans "type" %} </th>
+				 <th>{% trans "Liste des valeurs" %} </th>
+				 <th>{% trans "Date de creation" %}</th> 
+				 <th>{% trans "Actions" %}
+				 </tr>
+			</thead>
+			<tbody> 
+				{% for  indicator in  indicators %}
+				    <tr>
+					  <td>{{  indicator.name }}</td>
+					  <td>{{  indicator.type_str }}</td>
+					   <td>
+					    <ul>
+					   	{% for value in indicator.values.all %}
+					   		<li>{{ value.value }} </li>
+					    {% endfor %}
+					    </ul>
+					   </td>
+					  <td>{{ indicator.created }}</td>
+					  <td><a href = "/indicator/delete_indicator/{{ indicator.pk }}">[{% trans "Supprimer" %}]
+						 <a href = "/indicator/edit_indicator/{{ indicator.pk }}">[{% trans "Editer" %}]
+					  </td>
+				    </tr>
+				 {% endfor %}
+			 </tbody>
+		</table>
+</tr>
+</table>
+</div>
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends "layout.html" %}
+{% load i18n %}
+{% block title %}The Jokko Initiative - A RapidSMS Project by Tostan{% endblock %}
+{% block stylesheets %}
+		<link type="text/css" rel="stylesheet" href="/static/indicator/stylesheets/layout.css" />
+		<link type="text/css" rel="stylesheet" href="/static/webui/stylesheets/modules.css" />
+{% endblock %}
+{% block content %}
+<div class  ='module'>
+{% if msg %}
+<p>
+{%  for m in msg %}
+{{ m }}
+{% endfor %}
+</p>
+{% endif %}
+<h2>{% trans "Modifier un projet" %}</a></h2>
+<div class ='indicator-menu'>
+  <a href = '/indicator'>{% trans  "Retour Accueil"%}</a>
+</div>
+<table>
+<tr>
+     <form action ="" method ="post">
+			<td>
+			  <table>
+				 <tr> 
+				 	 <td>
+				 		 {{ form.as_table }}
+				 	  </td>
+				 </tr>
+					 <tr>
+				 	 <td><input type ="submit"  name = 'save' value ="{% trans  "OK"  %}">&nbsp;&nbsp;<input type ="submit" name ='delete' value ="{% trans  "Supprimer"  %}"></td>
+				 </tr>
+			  </table>
+			</td>
+	</form>
+</tr>
+</table>
+</div>
+{% endblock %}

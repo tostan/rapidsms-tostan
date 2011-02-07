@@ -1,0 +1,108 @@
+{% extends "layout.html" %}
+{% load i18n %}
+{% block title %}The Jokko Initiative - A RapidSMS Project by Tostan{% endblock %}
+{% block stylesheets %}
+		<link type="text/css" rel="stylesheet" href="/static/indicator/stylesheets/layout.css" />
+		<link type="text/css" rel="stylesheet" href="/static/webui/stylesheets/modules.css" />
+{% endblock %}
+
+{% block content %}
+<div class  ='module'>
+{% if msg %}
+<p>
+{%  for m in msg %}
+{{ m }}
+{% endfor %}
+</p>
+{% endif %}
+<h2>{% trans "Creer des regions , departements ...." %}</a></h2>
+<div class ='indicator-menu'>
+  <a href = '/indicator'>{% trans  "Retour Accueil"%}</a>
+</div>
+
+<table width =100% cellpadding = 0 cellspacing = 0 border =0>
+<tr>
+<td>
+{% trans "Ajouter un pays" %}
+<ul>
+<li><a href = "/indicator/add_pays">{% trans "Ajouter un pays" %}</a></li>
+</ul>
+</td>
+</tr>
+<tr>
+<td>
+	{% trans "SENEGAL" %}
+	<ul>
+	<li><a href = "/indicator/add_region/senegal">{% trans "Creer une region" %}</a></li>
+	<li><a href = "/indicator/add_departement/senegal">{% trans "Creer un departement" %}</a></li>
+	<li><a href = "/indicator/add_arrondissement/senegal">{% trans "Creer un arrondissement " %}</a></li>
+    <li><a href = "/indicator/add_commune_arrondissement/senegal">{% trans "Creer une commune arrondissement" %}</a></li>
+	<li><a href = "/indicator/add_commune/senegal">{% trans "Creer une commune" %}</a></li>
+	<li><a href = "/indicator/add_village/senegal">{% trans "Creer une communaute rurale (Village)  " %}</a></li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td>
+	 {% trans "GUINEE CONAKRY" %}
+	<ul>
+	<li><a href = "/indicator/add_region/guinee_conakry">{% trans "Creer une régions" %}</a></li>
+	<li><a href = "/indicator/add_prefecture/guinee_conakry">{% trans "Creer une  préfecture" %}</a></li>
+	<li><a href = "/indicator/add_sub_prefecture/guinee_conakry">{% trans "Creer une sous prefecture  " %}</a></li>
+	<li><a href = "/indicator/add_village/guinee_conakry">{% trans "Creer un village" %}</a></li>
+	</ul>
+</td>
+
+</tr>
+<tr>
+<td>
+	 {%  trans "GUINEE BISSAU" %}
+	<ul>
+		<li><a href = "/indicator/add_region/guinee_bissau">{% trans "Creer une région" %}</a></li>
+		<li><a href = "/indicator/add_secteur/guinee_bissau">{% trans "Creer un secteur" %}</a></li>
+		<li><a href = "/indicator/add_village/guinee_bissau">{% trans "Creer un village" %}</a></li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td>
+	{% trans "GAMBIE" %}
+	<ul>
+		<li><a href = "/indicator/add_region/gambie">{% trans "Creer une régions" %}</a></li>
+		<li><a href = "/indicator/add_district/gambie">{% trans "Creer un district" %}</a></li>
+		<li><a href = "/indicator/add_village/gambie">{% trans "Creer un village" %}</a></li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td>
+	 {% trans "SOMALIE" %}
+	<ul>
+	<li><a href = "/indicator/add_etat/somalie">{% trans "Creer un etat" %}</a></li>
+	<li><a href = "/indicator/add_region/somalie">{% trans "Creer une region" %}</a></li>
+	<li><a href = "/indicator/add_village/somalie">{% trans "Creer un village" %}</a></li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td>
+	 {% trans "DJIBOUTI" %}
+	<ul>
+	<li><a href = "/indicator/add_region/djibouti">{% trans "Creer une région" %}</a></li>
+	<li><a href = "/indicator/add_village/djibouti">{% trans "Creer un village" %}</a></li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td>
+	  {% trans "MAURITANIE" %}
+	<ul>
+    <li><a href = "/indicator/add_region/mauritanie">{% trans "Creer une region" %}</a></li>
+	<li><a href = "/indicator/add_departement/mauritanie">{% trans "Creer un departement" %}</a></li>
+	<li><a href = "/indicator/add_village/mauritanie">{% trans "Creer un village" %}</a></li>
+	</ul>
+</td>
+</tr>
+</table>
+</div>
+{% endblock %}

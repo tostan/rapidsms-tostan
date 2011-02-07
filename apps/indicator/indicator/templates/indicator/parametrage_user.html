@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+{% load i18n %}
+{% block title %}The Jokko Initiative - A RapidSMS Project by Tostan{% endblock %}
+{% block stylesheets %}
+		<link type="text/css" rel="stylesheet" href="/static/indicator/stylesheets/layout.css" />
+		<link type="text/css" rel="stylesheet" href="/static/webui/stylesheets/modules.css" />
+{% endblock %}
+{% block content %}
+<div class="module">
+	
+      <div class  ='module'>
+{% if msg %}
+<p>
+{%  for m in msg %}
+{{ m }}
+{% endfor %}
+</p>
+{% endif %}
+<h2>{% trans "Creer une nouvelle prefecture" %}</a></h2>
+<div class ='indicator-menu'>
+  <a href = '/indicator'>{% trans  "Retour Accueil"%}</a>
+</div>
+
+      <ul>
+		<li><a href = "/indicator/add_user">
+		 {% trans "Ajouter un nouveau utilisateur" %}</a></li>
+		<li><a href = "/indicator/search_user">
+		{% trans "Rechercher des utilisateurs " %}</a></li>
+	</ul>
+ </div>
+{% endblock %}

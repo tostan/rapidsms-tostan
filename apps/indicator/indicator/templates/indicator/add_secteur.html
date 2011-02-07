@@ -1,0 +1,76 @@
+{% extends "layout.html" %}
+{% load i18n %}
+{% block title %}The Jokko Initiative - A RapidSMS Project by Tostan{% endblock %}
+{% block stylesheets %}
+		<link type="text/css" rel="stylesheet" href="/static/indicator/stylesheets/layout.css" />
+		<link type="text/css" rel="stylesheet" href="/static/webui/stylesheets/modules.css" />
+{% endblock %}
+{% block content %}
+<div class  ='module'>
+{% if msg %}
+<p>
+{%  for m in msg %}
+{{ m }}
+{% endfor %}
+</p>
+{% endif %}
+<h2>{% trans "Creer un nouveau secteur " %}</a></h2>
+<div class ='indicator-menu'>
+  <a href = '/indicator'>{% trans  "Retour Accueil"%}</a>
+</div>
+<table  width=100% cellpadding= 0 cellspacing =0  border= 0>
+{% if msg %}
+		<tr>
+		<td>
+		{%  for m in msg %}
+			{{ m }}
+		{% endfor %}
+		</td>
+		</tr>
+{% endif %}
+</tr>
+<tr>
+	<form action = ""   method ="post">
+			<td  coslpan =2>
+			  <table>
+				 <tr> 
+				 <td>{{ form.as_table }} </td>
+				 </tr>
+				 <tr>
+				 	<td><input type ="submit"  value ="{% trans  "OK"  %}"> </td>
+				 </tr>
+				 
+			  </table>
+			</td>
+	</form>
+</tr>
+<tr>
+<td>
+	  <table>
+			 <tr>
+					 <th>{% trans "Nom" %} </th>
+					 <th>{% trans "Region" %} </th>
+					 <th>{% trans "Latitude" %}</th> 
+					 <th>{% trans "Longitude" %}</th>
+					 <th>{% trans "Surface" %}</th>
+					 <th>{% trans "Date de creation" %}</th>
+					 <th>{% trans "Action" %}</th>
+			 </tr>
+			 
+			{% for region in  regions %}
+			    <tr>
+					  <td>{{ region.name }}</td>
+					  <td>{{ region.parent.name }}</td>
+					  <td>{{ region.latitude }}</td>
+					  <td>{{ region.longitude}}</td>
+					  <td>{{ region.surface}}</td>
+					  <td>{{ region.created|date:"Y-m-d" }}</td>
+					  <td><a href = "/indicator/delete_secteur/{{ pay.pk }}">{% trans "Delete" %}</td>
+				      <td><a href = "/indicator/edit_secteur/{{ pay.pk }}">{% trans "Edit" %}</td>
+			    </tr>
+			 {% endfor %}
+		</table>
+</tr>
+</table>
+</div>
+{% endblock %}

@@ -1,0 +1,66 @@
+{% extends "layout.html" %}
+{% load i18n %}
+{% block title %}The Jokko Initiative - A RapidSMS Project by Tostan{% endblock %}
+{% block stylesheets %}
+		<link type="text/css" rel="stylesheet" href="/static/indicator/stylesheets/layout.css" />
+		<link type="text/css" rel="stylesheet" href="/static/webui/stylesheets/modules.css" />
+{% endblock %}
+{% block content %}
+<div class  ='module'>
+{% if msg %}
+<p>
+{%  for m in msg %}
+{{ m }}
+{% endfor %}
+</p>
+{% endif %}
+<h2>{% trans "Creer , Rechercher des utilisateurs" %}</a></h2>
+<div class ='indicator-menu'>
+  <a href = '/indicator'>{% trans  "Retour Accueil"%}</a>
+</div>
+<table width =100% cellpadding=0 cellspacing =0 border= 0>
+<tr>
+	<form action = ""   method ="post">
+			<td>
+			  <table>
+				 <tr> 
+				 	 <td>
+				 		 {{ form.as_table }}
+				 	 </td> 
+				    <tr>
+				 	 <td><input type ="submit"  value ="{% trans  "OK"  %}"> </td>
+				 </tr>
+				 
+			  </table>
+			</td>
+	</form>
+</tr>
+<tr>
+<td>
+	  <table>
+	     <thead>
+			 <tr>
+			 <th>{% trans "Nom" %} </th>
+			 <th>{% trans "Prenom" %} </th>
+ 			 <th>{% trans "Login" %} </th>
+			 <th>{% trans "Groupe de l'utilisateur(Adminstrateur-Editeur)" %} </th>
+			 <th>{% trans "Action" %} </th>
+			 </tr>
+		 </thead>
+		 <tbody>
+			{% for  user in users %}
+			    <tr>
+				  <td>{{  user.first_name  }}</td>
+				  <td>{{  user.last_name }}</td>
+				  <td>{{  user.login}}</td>
+				  <td>{{  user.groups.all|join:";" }}</td>
+				  <td>[<a href = "/indicator/edit_user/{{ user.pk }}">{% trans "Editer" %}</a>]
+				  [<a href = "/indicator/delete_user/{{ user.pk }}">{% trans "Supprimer" %}</a>]</td>
+			    </tr>
+			 {% endfor %}
+		  </tbody>
+		</table>
+</tr>
+</table>
+
+{% endblock %}

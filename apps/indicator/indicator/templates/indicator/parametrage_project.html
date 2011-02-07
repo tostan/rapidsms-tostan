@@ -1,0 +1,110 @@
+{% extends "layout.html" %}
+{% load i18n %}
+{% block title %}The Jokko Initiative - A RapidSMS Project by Tostan{% endblock %}
+{% block stylesheets %}
+		<link type="text/css" rel="stylesheet" href="/static/indicator/stylesheets/layout.css" />
+		<link type="text/css" rel="stylesheet" href="/static/webui/stylesheets/modules.css" />
+{% endblock %}
+{% block content %}
+<div class  ='module'>
+{% if msg %}
+<p>
+{%  for m in msg %}
+{{ m }}
+{% endfor %}
+</p>
+{% endif %}
+<h2>{% trans "Gerer les projets dans les pays" %}</a></h2>
+<div class ='indicator-menu'>
+  <a href = '/indicator'>{% trans  "Retour Accueil"%}</a>
+</div>
+<table width =100% cellpadding = 0 cellspacing = 0 border = 0>
+<tr>
+<td>
+	{% trans "SENEGAL" %}
+	<ul>
+		<li><a href = "/indicator/add_project/senegal">{% trans "Ajouter un projet" %}</a></li>
+		<li><a href = "/indicator/search_project/senegal">{% trans "Rechercher un projet" %}</a></li>
+		<li><a href = "/indicator/list_project/senegal">{% trans "Lister tous les projets" %}</a></li>
+		<li><a href = "/indicator/list_project/senegal">{% trans "Modifier un projet" %}</a></li>
+
+	</ul>
+</td>
+</tr>
+
+<tr>
+<td>
+	 {% trans "GUINEE KONAKRY" %}
+	<ul>
+		<li><a href = "/indicator/add_project/guinee_conakry">{% trans "Ajouter un projet" %}</a></li>
+		<li><a href = "/indicator/search_project/guinee_conakry">{% trans "Rechercher un projet" %}</a></li>
+ 		<li><a href = "/indicator/list_project/senegal">{% trans "Lister tous les projets" %}</a></li>
+		<li><a href = "/indicator/update_project/senegal">{% trans "Modifier un projet" %}</a></li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td>
+	  {% trans "GUINEE BISSAU" %}
+	<ul>
+		<li><a href = "/indicator/add_project/guinee_bissau">{% trans "Ajouter un projet" %}</a></li>
+		<li><a href = "/indicator/search_project/guinee_bissau">{% trans "Rechercher un projet" %}</a></li>
+		<li><a href = "/indicator/list_project/guinee_bissau">{% trans "Lister tous les projets" %}</a></li>
+		<li><a href = "/indicator/update_project/guinee_bissau">{% trans "Modifier un projet" %}</a></li>
+		
+	</ul>
+</td>
+</tr>
+<tr>
+<td>
+	{% trans "GAMBIE" %}
+	<ul>
+		<li><a href = "/indicator/add_project/gambie">{% trans "Ajouter un projet" %}</a></li>
+		<li><a href = "/indicator/search_project/gambie">{% trans "Rechercher un projet" %}</a></li>
+		<li><a href = "/indicator/list_project/gambie">{% trans "Lister tous les projets" %}</a></li>
+		<li><a href = "/indicator/update_project/gambie">{% trans "Modifier un projet" %}</a></li>
+
+	</ul>
+</td>
+</tr>
+
+
+<tr>
+<td>
+	{% trans "SOMALIE" %}
+	<ul>
+		<li><a href = "/indicator/add_project/somalie">{% trans "Ajouter un projet" %}</a></li>
+		<li><a href = "/indicator/search_project/somalie">{% trans "Rechercher un projet" %}</a></li>
+		<li><a href = "/indicator/list_project/somalie">{% trans "Lister tous les projets" %}</a></li>
+		<li><a href = "/indicator/update_project/somalie">{% trans "Modifier un projet" %}</a></li>
+	</ul>
+</td>
+</tr>
+
+<tr>
+<td>
+	{% trans "DJIBOUTI" %}
+	<ul>
+		<li><a href = "/indicator/add_project/djibouti">{% trans "Ajouter un projet" %}</a></li>
+		<li><a href = "/indicator/search_project/djibouti">{% trans "Rechercher un projet" %}</a></li>
+		<li><a href = "/indicator/list_project/djibouti">{% trans "Lister tous les projets" %}</a></li>
+		<li><a href = "/indicator/update_project/djibouti">{% trans "Modifier un projet" %}</a></li>
+	</ul>
+</td>
+</tr>
+
+<tr>
+<td>
+      {% trans "MAURITANIE" %}
+	<ul>
+		<li><a href = "/indicator/add_project/mauritanie">{% trans "Ajouter un projet" %}</a></li>
+		<li><a href = "/indicator/search_project/mauritanie">{% trans "Rechercher un projet" %}</a></li>
+	      <li><a href = "/indicator/list_project/mauritanie">{% trans "Lister tous les projets" %}</a></li>
+		<li><a href = "/indicator/update_project/mauritanie">{% trans "Modifier un projet" %}</a></li>
+	</ul>
+</td>
+</tr>
+
+</table>
+</div>
+{% endblock %}

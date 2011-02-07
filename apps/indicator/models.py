@@ -324,10 +324,13 @@ class Submission (models.Model):
     '''
     # The user who is editing this submission
     # Le secretaire aui saisie la fiche
-    user      = models.ForeignKey(User , null =True ,blank =True)
-    date = models.DateTimeField (auto_now_add =True)
-    fiche  = models.ForeignKey("Fiche" , related_name = "submissions")
-
+    user = models.ForeignKey(User , null =True ,blank =True)
+    date = models.DateField (auto_now_add =True)
+    fiche= models.ForeignKey("Fiche" , related_name = "submissions")
+    village =  models.ForeignKey("Area" , null =True , blank =True)
+    
+    
+    
 class Area(models.Model):
     '''
     An are can be 

@@ -5,53 +5,36 @@
 		<link type="text/css" rel="stylesheet" href="/static/indicator/stylesheets/layout.css" />
 		<link type="text/css" rel="stylesheet" href="/static/webui/stylesheets/modules.css" />
 {% endblock %}
-
 {% block content %}
-
-
-
-<style>
-.line {
-	boder : solid 1px ;
-}
-</style>
-<table width =100% cellpadding=0 cellspacing =0 border= 0>
+<div class  ='module'>
 {% if msg %}
-		<tr>
-		<td>
-		{%  for m in msg %}
-			{{ m }}
-		{% endfor %}
-		</td>
-		</tr>
+<p>
+{%  for m in msg %}
+{{ m }}
+{% endfor %}
+</p>
 {% endif %}
-
+<h2>{% trans "Modifier un projet" %}</a></h2>
+<div class ='indicator-menu'>
+  <a href = '/indicator'>{% trans  "Retour Accueil"%}</a>
+</div>
+<table>
 <tr>
-<td>
-	<h3>  {% trans "Edition Projet" %}</h3>
-	<ul>
-		<li><a href = "/indicator/">{% trans "Retour a la page d'accueil de Indicateur" %}</a></li>
-	</ul>
-</td>
-</tr>
-<tr>
-     <form action = ""   method ="post">
+     <form action ="" method ="post">
 			<td>
 			  <table>
 				 <tr> 
 				 	 <td>
-				 	 <h2> {% trans  "Choisir les villages pour le projet village "%}</h2>
 				 		 {{ form.as_table }}
-				 	 
 				 	  </td>
 				 </tr>
 					 <tr>
 				 	 <td><input type ="submit"  name = 'save' value ="{% trans  "OK"  %}">&nbsp;&nbsp;<input type ="submit" name ='delete' value ="{% trans  "Supprimer"  %}"></td>
 				 </tr>
-				 
 			  </table>
 			</td>
 	</form>
 </tr>
 </table>
+</div>
 {% endblock %}

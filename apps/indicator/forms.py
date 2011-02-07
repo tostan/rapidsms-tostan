@@ -89,9 +89,8 @@ class IndicatorExportForm (forms.Form):
     '''
     Create form to display statistiques data related of the indicator
     '''
-    indicators  = forms.ModelMultipleChoiceField(
-                label = _("Choisir le ou les  indicateurs a exporter"),
-                queryset =Indicator.objects.all ())
+    indicators  = forms.ModelMultipleChoiceField(label = _("Choisir le ou les  indicateurs a exporter"),
+                queryset =Indicator.objects.all () ,required =False)
 
 class ProjectForm (forms.ModelForm):
      ''' Create a project-based model form '''
@@ -114,8 +113,7 @@ class ProjectExportForm (forms.Form):
     Create form to display statistiques data related of the indicator
     '''
     projects  = forms.ModelMultipleChoiceField(
-                label = _("Choisir le ou les  projets a exporter"),
-                queryset =Project.objects.all ()) 
+                label = _("Choisir le ou les  projets a exporter"),queryset =Project.objects.all () ,required=False) 
 
 class VillageStatForm (forms.Form):
     '''
@@ -132,7 +130,7 @@ class VillageExportForm (forms.Form):
     '''
     villages  = forms.ModelMultipleChoiceField(
                 label = _("Choisir le ou les  villages a exporter"),
-                queryset =Village.objects.all ()) 
+                queryset =IndicatorVillage.objects.all () , required =False) 
 
 class UserStatForm (forms.Form):
     '''
@@ -149,7 +147,8 @@ class UserExportForm (forms.Form):
     '''
     users  = forms.ModelMultipleChoiceField(
                 label = _("Choisir le ou les  utilisateurs a exporter"),
-                queryset=User.objects.all ().filter(groups__name__in =['indicator_edit' ,'indicator_admin'])) 
+                queryset=User.objects.all ().filter(groups__name__in =['indicator_edit' ,'indicator_admin']),
+                required =False) 
     
 class  UserForm (forms.Form):
        '''create a form to create user , update .The user is the editor od the indicator system'''

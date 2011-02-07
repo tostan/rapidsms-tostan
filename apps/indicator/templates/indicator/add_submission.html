@@ -5,42 +5,27 @@
 		<link type="text/css" rel="stylesheet" href="/static/indicator/stylesheets/layout.css" />
 		<link type="text/css" rel="stylesheet" href="/static/webui/stylesheets/modules.css" />
 {% endblock %}
-
 {% block content %}
-
-
-
-<style>
-.line {
-	boder : solid 1px ;
-}
-</style>
-<table width =100% cellpadding=0 cellspacing =0 border= 0>
+<div class  ='module'>
 {% if msg %}
-		<tr>
-		<td>
-		{%  for m in msg %}
-			{{ m }}
-		{% endfor %}
-		</td>
-		</tr>
+<p>
+{%  for m in msg %}
+{{ m }}
+{% endfor %}
+</p>
 {% endif %}
-
+<h2>{% trans "Saisie de fiche" %} {{ fiche.get_period_display }}</a></h2>
+<div class ='indicator-menu'> 
+  <a href = '/indicator'>{% trans  "Retour Accueil"%}</a>
+</div>
+<table>
 <tr>
-<td>
-	<h3>  {% trans "Saisie Fiche" %} {{ fiche.get_period_display  }}</h3>
-	<ul>
-		<li><a href = "/indicator/">{% trans "Retour a la page d'accueil de Indicateur" %}</a></li>
-	</ul>
-</td>
-</tr>
-
-<tr>
-	<form action = ""   method ="post">
+	<form action =""   method ="post">
 			<td  coslpan =2>
 			  <table>
 				 <tr> 
 				 <td>{{ form.as_table }} </td>
+				 <td><input type ='hidden' name ='submission_id' value ='{{ submission_id }}'></td>
 				 </tr>
 				 <tr>
 				 	<td><input type ="submit"  value ="{% trans  "Enregistrer"  %}"> </td>
@@ -51,11 +36,15 @@
 	</form>
 </tr>
 <tr>
+<tr>
+<td>{%  trans  "Enregister d'abord la saisie avant de passer a l'ecran suivant" %}</td>
+</tr>
 <td>
 	{% if indicators.has_previous %} 
 	<form  ation =''>
 	    <input type='hidden'  name = "page" value  ="{{ indicators.prvious_page_number }}" /> 
 		<input type='submit'  name = "previous" value  ="{% trans 'Ecran precedent' %}" /> 
+		<input type ='hidden' name ='submission_id' value ='{{ submission_id }}'>
 	</form>
 	{% endif %}
 
@@ -63,6 +52,7 @@
 	<form  ation =''>
 	    <input type='hidden'  name = "page" value  ="{{ indicators.next_page_number }}" /> 
 		<input type='submit'  name = "next" value  ="{% trans 'Ecran suivant' %}" /> 
+		<input type ='hidden' name ='submission_id' value ='{{ submission_id }}'>
 	</form>
 	{% endif %}
 </td>
@@ -78,6 +68,7 @@
 				 <th>{% trans "Type de la Fiche" %}</th> 
 				 <th>{% trans "Titre du  Projet " %}</th>
 				 <th>{% trans "Bailleur du  Projet " %}</th>
+				 <th>{% trans "Actions " %}</th>
 			</tr>
 			</thead>
 			<tbody>
@@ -87,14 +78,18 @@
 				 		 <td>{{  submission.date|date:"Y-m-d"}} </td>
 						 <td>{{  submission.fiche.get_period_display }}</td>
 						 <td>{{  submission.fiche.project.title }} </td>
-						 <td>{{  submission.fiche.project.bailleur }} </td>
-						 <td><a href = '/indicator/submission/{{ submission.pk }}/edit_submission'> {% trans "Voir la saisie" %}</a></th>
-				
+						 <td>{{  submission.fiche.project.bailleur }}</td>
+						 <td>
+						 	<a href = '/indicator/submission/{{ submission.pk }}/edit_submission'>[{% trans "Edition" %}]</a>
+						 	<a href = '/indicator/submission/{{ submission.pk }}/delete_submission'>[{% trans "Delete" %}]</a>
+						 </td>
 				</tr>
 			 </tbody>
 			 {% endfor %}
 		</table>
+</td>
 </tr>
-</table>
 
+</table>
+</div>
 {% endblock %}

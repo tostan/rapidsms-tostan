@@ -1,26 +1,26 @@
 {% extends  "layout.html" %}
 {% load i18n %}
 {% block title %} {% endblock %}
-{% block content %}
   {% block stylesheets %}
       <link type="text/css" rel="stylesheet" href="/static/indicator/stylesheets/layout.css" />
 	  <link type="text/css" rel="stylesheet" href="/static/webui/stylesheets/modules.css" />
 	  <link rel="stylesheet" type="text/css" href="/static/indicator/js/jquery.jqplot.css" />
 	  <link rel="stylesheet" type="text/css" href="examples.css" />
   {% endblock %}
-  
-  {% block javascripts %} 
-  {% endblock %}
-  <body>
-       <table>
-        <tr>
-		<td>
-			<h3>  {% trans "Choisir un indicateur ou plusieurs et exporter les donnees" %}</h3>
-			<ul>
-				<li><a href = "/indicator/">{% trans "Retour a la page d'accueil de Indicateur" %}</a></li>
-			</ul>
-		</td>
-	</tr>
+   {% block content %}
+	<div class  ='module'>
+	{% if msg %}
+	<p>
+	{%  for m in msg %}
+	{{ m }}
+	{% endfor %}
+	</p>
+	{% endif %}
+	<h2>{% trans "Expoter les indicateurs" %}</a></h2>
+	<div class ='indicator-menu'>
+	  <a href = '/indicator'>{% trans  "Retour Accueil"%}</a>
+	</div>
+	<table>
         <tr>
 	       	<form action =""  method ="post">
 		       	<td valign='top'>
@@ -31,6 +31,5 @@
 		</form>
 	 </tr> 	
 	 </table>
-  </body>
-</html>
+</div>
 {% endblock %}

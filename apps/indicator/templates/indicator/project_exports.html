@@ -1,7 +1,6 @@
 {% extends  "layout.html" %}
 {% load i18n %}
 {% block title %} {% endblock %}
-{% block content %}
   {% block stylesheets %}
       <link type="text/css" rel="stylesheet" href="/static/indicator/stylesheets/layout.css" />
 	  <link type="text/css" rel="stylesheet" href="/static/webui/stylesheets/modules.css" />
@@ -11,18 +10,23 @@
   
   {% block javascripts %} 
   {% endblock %}
-  <body>
-       <table>
-        <tr>
-		<td>
-			<h3>  {% trans "Choisir un projet ou plusieurs et exporter les donnees" %}</h3>
-			<ul>
-				<li><a href = "/indicator/">{% trans "Retour a la page d'accueil de Indicateur" %}</a></li>
-			</ul>
-		</td>
-	</tr>
-        <tr>
-	       	<form action =""  method ="post">
+
+  {% block content %}
+	<div class  ='module'>
+	{% if msg %}
+	<p>
+	{%  for m in msg %}
+	{{ m }}
+	{% endfor %}
+	</p>
+	{% endif %}
+	<h2>{% trans "Expoter les projets" %}</a></h2>
+	<div class ='indicator-menu'>
+	  <a href = '/indicator'>{% trans  "Retour Accueil"%}</a>
+	</div>
+	<table>
+     <tr>
+	   <form action =""  method ="post">
 		       	<td valign='top'>
 		    		{{ form.as_ul}}
 		  		 <br/>
@@ -31,6 +35,5 @@
 		</form>
 	 </tr> 	
 	 </table>
-  </body>
-</html>
+</div>
 {% endblock %}

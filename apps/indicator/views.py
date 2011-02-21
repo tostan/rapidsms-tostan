@@ -664,48 +664,48 @@ def get_pays_form (pays):
     les villages , ou secteurs , ou  regions a ajouter au projet
     '''
     def get_konakry_form():
-        return {"regions": cast_region (pays),
-            "prefectures": cast_prefecture (pays),
-         "subprefectures": cast_sub_prefecture (pays),
-               "villages": cast_village(pays , "guinee_conakry")}
+        return {"regions" : cast_region (pays),
+            "prefectures" : cast_prefecture (pays),
+         "subprefectures" : cast_sub_prefecture (pays),
+               "villages" : cast_village(pays , "guinee_conakry")}
     
     def get_bissau_form ():
-        return {"regions":cast_region(pays) ,
-               "secteurs":cast_secteur(pays),
-               "villages":cast_village(pays , "guinee_bissau")}
+        return {"regions" :  cast_region(pays) ,
+               "secteurs" :  cast_secteur(pays),
+               "villages" :  cast_village(pays , "guinee_bissau")}
     
     def get_gambie_form ():
-        return {"regions":cast_region(pays),
-              "districts":cast_district (pays),
-               "villages":cast_village(pays , "gambie")}
+        return {"regions" :  cast_region(pays),
+              "districts" :  cast_district (pays),
+               "villages" :  cast_village(pays , "gambie")}
         
     def get_senegal_form ():
-        return {"regions": cast_region (pays),
-        "arrondissements": cast_arrondissement (pays),
-           "departements": cast_departement (pays),
-"commune_arrondissements": cast_arrondissement (pays),
+        return {"regions" :  cast_region (pays),
+        "arrondissements" :  cast_arrondissement (pays),
+           "departements" :  cast_departement (pays),
+"commune_arrondissements" :  cast_arrondissement (pays),
                 #The last element list to be asspciated to the project
-              "villages" :cast_village (pays , "senegal")}
+              "villages"  :  cast_village (pays , "senegal")}
     
     def get_somalie_form ():
         '''Des regions qui sont regroupes en etats'''
-        return  {"etats" :cast_etat (pays),
+        return  {"etats" :  cast_etat (pays),
         # The last element to be associated to the projects
-              "regions"  :cast_region (pays),
-              "villages" :cast_village (pays , "somalie")}
+              "regions"  :  cast_region (pays),
+              "villages" :  cast_village (pays , "somalie")}
         
     def get_djibouti_form ():
         ''' Des regions '''
         # The last element list to be associated to the projet 
-        return {"regions":cast_region (pays),
-               "villages":cast_village (pays , "djibouti")}
+        return {"regions": cast_region (pays),
+               "villages": cast_village (pays , "djibouti")}
     
     def get_mauritanie_form ():
         ''' Regions qui sont partages en departements '''
-        return {"regions":cast_region (pays),
+        return {"regions": cast_region (pays),
                 # The elelements list to be associated to the projects
-           "departements":cast_departement (pays),
-               "villages":cast_village (pays ,"mauritanie")}
+           "departements": cast_departement (pays),
+               "villages": cast_village (pays ,"mauritanie")}
     
     name  = pays.name.lower ()
     if name    == conf.konakry:
@@ -784,12 +784,12 @@ def add_project(req , pays):
                         pass
                    # get the projet remained args from post data
                    #  bailleur , decsription  ,date creattion
-                   d   =dict ()
-                   args  = ['bailleur' , 'titre',
-                      'description' ]
-                   for key in req.POST.iterkeys ():
+                   d      = dict ()
+                   args   = ['bailleur' , 'titre','description' ]
+                   dict   = req.POST
+                   for key in  dict.iterkeys ():
                              if key in  args:
-                                    d[str(key)] = req.POST [key]
+                                    d[str(key)] = dict [key]
                    Project.create_project (villages , indicators ,**d)
                    msg.append (_("Le projet a bien ete sauvegarde"))          
                 except (KeyError, Exception):
@@ -915,14 +915,26 @@ def add_submission (req , fiche_id , submission_id):
             if not submission:
                 submission    = Submission.objects.create(fiche= fiche)
                 submission_id = submission.pk
-            indicator_input_values =[]
+                
+            # Add header informations to the submission like
+            # The village  , date edition
+            
+            form_header  = HeaderSubmissionForm(req.POST)
+            if form_header.is_valid ():
+                data  = form_header.cleaned_data 
+                submission.village   =  data ['village']
+                submission.date      =  data ['date']
+                submission.save ()
+                #return HttpResponse ('village   : ' + str (submission.village.pk)  +
+                #'\n  , date  : ' + str(submission.date))
+            indicator_input_values   =[]
             for k , val in form.cleaned_data.items ():
                 pk_indicator = k.split ("_")[-1]
                 indicator = Indicator.objects.get (pk =pk_indicator)
                 if type (val)==list :
                     # This is a indicator list 
                     for v in val:
-                        indicator_value = get_object_or_404( IndicatorValue , id =int (v))
+                        indicator_value = get_object_or_404(IndicatorValue , id =int (v))
                         submission.indicatorvalues.add(indicator_value)
                 else:
                     submission.indicatorvalues.get_or_create(indicator = indicator, value =val)

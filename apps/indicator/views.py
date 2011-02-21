@@ -25,7 +25,7 @@ import codecs
 import csv
 import cStringIO
 
-ITEM_PER_PAGE = 2
+ITEM_PER_PAGE = 30
 
 def index (req):
     '''Go to indicator dashboard page'''
@@ -361,20 +361,20 @@ def cast_village (top , pays_name):
         ...
         ... '''
     coms  = []
-    if pays_name  ==conf.senegal:
-        com_arrs= cast_commune(top)
-    elif pays_name ==conf.konakry:
-        com_arrs= cast_sub_prefecture(top)
-    elif pays_name == conf.bissau:
-        com_arrs= cast_secteur(top)
-    elif pays_name == conf.gambie:
-        com_arrs= cast_district(top)
-    elif pays_name == conf.somalie:
-        com_arrs= cast_region(top)
-    elif pays_name ==conf.djibouti:
-        com_arrs= cast_region(top)
-    elif pays_name ==conf.mauritanie:
-        com_arrs= cast_departement(top)
+    if pays_name    == conf.senegal:
+           com_arrs =  cast_commune(top)
+    elif pays_name  == conf.konakry:
+        com_arrs    =  cast_sub_prefecture(top)
+    elif pays_name  == conf.bissau:
+        com_arrs    =  cast_secteur(top)
+    elif pays_name  == conf.gambie:
+        com_arrs    =  cast_district(top)
+    elif pays_name  == conf.somalie:
+        com_arrs    =  cast_region(top)
+    elif pays_name  == conf.djibouti:
+        com_arrs    =  cast_region(top)
+    elif pays_name  == conf.mauritanie:
+        com_arrs    =  cast_departement(top)
     else :
         com_arrs=None
     for com_arr in com_arrs:
@@ -412,19 +412,19 @@ def add_village (req, id):
     pays  = get_object_or_404(Pays ,name__icontains = id )
     regions =[]
     if id.lower () == conf.senegal:
-        regions= cast_commune(pays)
-    elif id.lower()==conf.konakry:
-        regions =cast_sub_prefecture (pays)
-    elif id.lower()==conf.bissau:
-        regions = cast_secteur (pays)
-    elif id.lower()==conf.gambie:
-        regions = cast_district (pays)
-    elif id.lower()==conf.somalie:
-        regions = cast_region(pays)
-    elif id.lower()==conf.djibouti:
-        regions = cast_region(pays)
-    elif id.lower()==conf.mauritanie:
-        regions = cast_departement(pays)
+        regions    =  cast_commune(pays)
+    elif id.lower()== conf.konakry:
+        regions    =  cast_sub_prefecture (pays)
+    elif id.lower()== conf.bissau:
+        regions    =  cast_secteur (pays)
+    elif id.lower()== conf.gambie:
+        regions    =  cast_district (pays)
+    elif id.lower()== conf.somalie:
+        regions    =  cast_region(pays)
+    elif id.lower()== conf.djibouti:
+        regions    =  cast_region(pays)
+    elif id.lower()== conf.mauritanie:
+        regions    =  cast_departement(pays)
     else :
         regions  =[]
     msg = []
@@ -436,23 +436,25 @@ def add_village (req, id):
         form = form_class (req.POST)
         if form.is_valid ():
             #form.save ()
-            if id.lower() ==conf.senegal:
-                parent = Commune.objects.get (pk =req.POST["region"])
-            elif id.lower()==conf.konakry:
-                parent = SubPrefecture.objects.get (pk =req.POST["region"])
-            elif id.lower()==conf.bissau:
-                parent = Secteur.objects.get (pk =req.POST["region"])
-            elif id.lower()==conf.gambie:
-                parent = District.objects.get (pk =req.POST["region"])
-            elif id.lower()==conf.somalie:
-                parent = Region.objects.get (pk =req.POST["region"])
-            elif id.lower()==conf.djibouti:
-                parent = Region.objects.get (pk =req.POST["region"])
-            elif id.lower()==conf.mauritanie:
-                parent = Departement.objects.get (pk =req.POST["region"])
+            dict = req.POST
+            region  = dict.get ('region')
+            if id.lower()  == conf.senegal:
+                parent     =  Commune.objects.get (pk =region)
+            elif id.lower()== conf.konakry:
+                parent     =  SubPrefecture.objects.get (pk =region)
+            elif id.lower()== conf.bissau:
+                parent     =  Secteur.objects.get (pk =region)
+            elif id.lower()== conf.gambie:
+                parent     =  District.objects.get (pk =region)
+            elif id.lower()== conf.somalie:
+                parent     =  Region.objects.get (pk =region)
+            elif id.lower()== conf.djibouti:
+                parent     =  Region.objects.get (pk =region)
+            elif id.lower()== conf.mauritanie:
+                parent     =  Departement.objects.get (pk =region)
             else :
                 parent  =None 
-            IndicatorVillage.objects.create (parent =parent ,name =req.POST.get ("name"))
+            IndicatorVillage.objects.create (parent =parent ,name =dict.get ("name"))
             msg.append (_("OK"))
             return render_to_response (req,"indicator/add_village.html",\
              {"form" : form ,"msg": msg,"regions": IndicatorVillage.objects.all ()})
@@ -706,19 +708,19 @@ def get_pays_form (pays):
                "villages":cast_village (pays ,"mauritanie")}
     
     name  = pays.name.lower ()
-    if name  ==conf.konakry:
+    if name    == conf.konakry:
         return get_konakry_form () 
-    elif name == conf.bissau:
+    elif name  == conf.bissau:
         return get_bissau_form ()
-    elif name == conf.gambie :
+    elif name  == conf.gambie :
         return get_gambie_form ()
-    elif name == conf.senegal:
+    elif name  == conf.senegal:
         return get_senegal_form ()
-    elif name ==conf.somalie:
+    elif name  == conf.somalie:
         return get_somalie_form ()
-    elif name == conf.djibouti:
+    elif name  == conf.djibouti:
         return get_djibouti_form ()
-    elif name ==conf.mauritanie:
+    elif name == conf.mauritanie:
         return get_mauritanie_form ()
     else :
         return []
@@ -732,7 +734,6 @@ def  edit_project (req , id):
      project  = get_object_or_404(Project , pk= id)
      form  = ProjectForm (instance = project)
      if req.method  =='POST':
-          #return HttpResponse ( ''.join ( [ '%s:%s \n'%(k, v)  for(k ,v) in req.POST.items ()] ))
           if 'delete' in req.POST:
                #delete request was sent
                project.delete()
@@ -757,13 +758,13 @@ def add_project(req , pays):
     template = 'indicator/add_project.html'
     pays= get_object_or_404(Pays , name__icontains = pays.lower ())
     #Get the village filter form
-    vil_form_data         =get_pays_form (pays)
-    ind_form_data         =indicators_list()
+    vil_form_data         = get_pays_form (pays)
+    ind_form_data         = indicators_list()
     #Go to create dynamically a project from based on the vil_from_filter and the indicator_form
-    form_village_class   =_get_village_form (vil_form_data)
-    form_village         =form_village_class ()
-    form_indicator_class =_get_indicator_form (ind_form_data)
-    form_indicator       =form_indicator_class ()
+    form_village_class    = _get_village_form (vil_form_data)
+    form_village          = form_village_class ()
+    form_indicator_class  = _get_indicator_form (ind_form_data)
+    form_indicator        = form_indicator_class ()
     msg  =[]
     if req.method.lower () == "post":
         form_village   = form_village_class(req.POST)
@@ -900,6 +901,11 @@ def add_submission (req , fiche_id , submission_id):
         submission_id = req.GET.get('submission_id')
     except :
         pass
+    form_header =None 
+    if page ==1 :
+        # Add  form to allow user choice the suprvisor's name  ,
+        # The date of submission  and the village  from data
+        form_header =HeaderSubmissionForm ()
     if req.method =='POST':
         form  = form_class (req.POST)
         if form.is_valid ():
@@ -922,10 +928,9 @@ def add_submission (req , fiche_id , submission_id):
                     submission.indicatorvalues.get_or_create(indicator = indicator, value =val)
             msg.append ("Les elements precedents sont bien sauvegarde")
           
-                
     template = 'indicator/add_submission.html'
     return render_to_response ( req ,template , {"indicators":indicators ,"submissions": Submission.objects.all () ,
-               "form": form  ,"fiche": fiche,"msg" : msg  , "submission_id" :submission_id})          
+        "form": form  ,"fiche": fiche,"msg" : msg  , "submission_id" :submission_id , 'form_header' : form_header})          
 
 def _init_indicator_value_from_indicator (values  , indicator):
      ''' create a list fo indicateur values , initialise it  '''

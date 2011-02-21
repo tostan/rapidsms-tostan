@@ -325,9 +325,11 @@ class Submission (models.Model):
     # The user who is editing this submission
     # Le secretaire aui saisie la fiche
     user = models.ForeignKey(User , null =True ,blank =True)
+    # The month of edition 
     date = models.DateField (auto_now_add =True)
     fiche= models.ForeignKey("Fiche" , related_name = "submissions")
     village =  models.ForeignKey("Area" , null =True , blank =True)
+    supervisor = models.CharField(max_length= 200 , blank =True , null =True)
     
     
     

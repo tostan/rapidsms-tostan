@@ -72,7 +72,18 @@ class  SearchIndicatorForm(forms.Form):
         name = cleaned_data["name"]
         if not name or name.strip() =="":
             raise ValidationError (_("Vous devez saisir une valeur pour effectuer une recherche"))
-        return  name 
+        return  name
+    
+class  HeaderSubmissionForm (forms.Form):
+     date    = forms.DateField (label =_('Le mois de saisie') , 
+         widget =SelectDateWidget , required =True)
+     village = forms.ModelChoiceField (
+                label = _("Le Village "),
+                #Uniquement les utilsateurs du groupe des indicateurs
+                queryset=IndicatorVillage.objects.all () , required =True)
+     # Le nom du superviseure de la fiche 
+     #supervisor   =models.CharField  (max_length  = 200 , blank =True , null =True)
+     
 class IndicatorStatForm (forms.Form):
     '''
     Create form to display statistiques data related of the indicator

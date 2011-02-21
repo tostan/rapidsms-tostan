@@ -21,8 +21,8 @@
 <table>
 <tr>
 	<form action =""   method ="post">
-			<td  coslpan =2>
-			  <table>
+			 <table>
+				 <tr><td colspan =2>{{form_header.as_table }}</td></td></tr>
 				 <tr> 
 				 <td>{{ form.as_table }} </td>
 				 <td><input type ='hidden' name ='submission_id' value ='{{ submission_id }}'></td>
@@ -30,7 +30,6 @@
 				 <tr>
 				 	<td><input type ="submit"  value ="{% trans  "Enregistrer"  %}"> </td>
 				 </tr>
-				 
 			  </table>
 			</td>
 	</form>

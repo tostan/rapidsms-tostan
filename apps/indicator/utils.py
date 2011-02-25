@@ -57,7 +57,12 @@ def _get_area_form(qs, area_parent):
      fields = {"name" :None  , "surface" :None , "latitude":None , "longitude":None}
      for k in fields :
          fields [k]  = forms.CharField (label = k , widget =forms.TextInput ({"size":"50"}) )
-     fields[area_parent]  = forms.ChoiceField (label =area_parent , choices = qs)
+
+     # Tres important
+     # Le label est generic , cela veut  dire que ce form est tulise quand  nous
+     # creons une region , un  departement
+     # un arrondissement , ou je ne sais quoi d'aute 
+     fields[area_parent]  = forms.ChoiceField (label ='La Zone qui contient la zone a creer' , choices = qs)
      
      def clean (self):
          return self.cleaned_data

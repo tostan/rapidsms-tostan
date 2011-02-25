@@ -1,3 +1,4 @@
+#!/usr/bin/env python 
 # Create your webui views here.
 #from django.shortcuts import render_to_response
 from django.http import HttpResponse ,HttpResponseRedirect
@@ -34,8 +35,7 @@ def index (req):
 @login_required
 def edition_fiche (req):
     '''Go to indicator dashboard page'''
-    return render_to_response (req,"indicator/edition_fiche.html" ,\
-           { "projects":Project.objects.all()})
+    return render_to_response (req,"indicator/edition_fiche.html" ,{ "projects":Project.objects.all()})
 
 @login_required
 def parametrage(req):
@@ -71,20 +71,17 @@ def add_pays(req):
     '''Add new contry'''
     msg = list()
     template ="indicator/add_pays.html"
-    if req.method.lower ()=="post":
+    if req.method=="POST":
         form =PaysForm (req.POST)
         if form.is_valid ():
             form.save ()
             msg.append (_("Element sauvegarde"))
-            return render_to_response (req,template , {"form": form ,"pays":Pays.objects.all () ,\
-                 "msg"  : msg })
+            return render_to_response (req,template ,{"form": form ,"pays":Pays.objects.all () ,"msg"  : msg })
         else :
             msg.append (_("Erreur dans le formulaire"))
-            #msg.append (form.errors)  
     else :
         form  = PaysForm ()    
-    return render_to_response (req, template , {"form" : form , "pays" : Pays.objects.all () , 
-            "msg": msg })
+    return render_to_response (req, template ,{"form" : form , "pays" : Pays.objects.all () ,"msg": msg })
     
 def add_region (req, id):
     '''if senegal , flatten  pays to regions'''
@@ -93,24 +90,22 @@ def add_region (req, id):
     msg = []
     #as tuple to fill the form choice fields dynamique 
     if id.lower() =="somalie":
-        regions  =cast_etat (pays)
+        regions   = cast_etat (pays)
     else :
-        regions  =[pays]
+        regions   = [pays]
     data = as_tuple (regions) 
     form_class  = _get_area_form (data,"region")
     form   = form_class ()
-    if  req.method.lower ()=="post":
+    if  req.method =="POST":
         form = form_class (req.POST)
         if form.is_valid ():
             #form.save ()
             Region.objects.create (parent =pays , name =req.POST.get ("name"))
             msg.append (_("OK"))
-            return render_to_response (req,"indicator/add_region.html",{"form" : form ,\
-                  "msg": msg,"regions": Region.objects.all () })
+            return render_to_response (req,"indicator/add_region.html",{"form" : form ,"msg": msg,"regions": Region.objects.all () })
         else :
-            msg.append (_("Not OK"))        
-    return render_to_response (req,"indicator/add_region.html", {"form" : form ,\
-          "msg": msg,"regions": Region.objects.all () })
+            msg.append (_("Not OK")) 
+    return render_to_response (req,"indicator/add_region.html", {"form" : form ,"msg": msg,"regions": Region.objects.all () })
     
 def  edit_pays (req , id ):
     '''Edit the given contry'''
@@ -118,23 +113,22 @@ def  edit_pays (req , id ):
     template = "indicator/edit_pays.html"
     contry =  get_object_or_404 (Pays , pk = id)
     form = PaysForm (instance = contry)
-    if req.method.lower () == "post":
+    if req.method  == "POST":
             form  = PaysForm (req.POST)
             if form.is_valid ():
                 form.save ()
                 msg.append (_("Element sauvegarde"))
-                return render_to_response (req , template , {"form" : PaysForm (),\
-                    "pays" : Pays.objects.all (),"msg" : msg })
+                return render_to_response (req , template ,
+                    {"form" : PaysForm (),"pays" : Pays.objects.all (),"msg" : msg })
             else :
                 msg.append (_("Erreur dans le formulaire"))
-    return render_to_response (
-            req ,template  , {"form": form,"pays" : Pays.objects.all ()})
+    return render_to_response (req ,template  , {"form": form,"pays" : Pays.objects.all ()})
     
 def delete_pays (req, id):
     '''Given an contry , delete it'''
     template = "indicator/confirm_delete.html"    
     contry  = get_object_or_404 (Pays , pk = id )
-    if req.method.lower () =="post":
+    if req.method  =="POST":
         try:
             req.POST.get ("confirm_delete")
             contry.delete ()
@@ -158,6 +152,7 @@ def delete_user(req, id):
     else:
         return render_to_response(req, template , {})
      
+
 def as_tuple (qs):
     '''Given a list of objets return a tuple'''
     return [ (q.pk , q.__unicode__()) for q in qs]
@@ -165,6 +160,8 @@ def as_tuple (qs):
 def add_commune (req , pays):
     '''Add new commune'''
     pass
+
+
 def add_communaute_rurale (req):
     '''Add new rurale community'''
     pass
@@ -179,19 +176,17 @@ def add_commune_arrondissement(req, pays):
     data =as_tuple (regions)
     form_class  = _get_area_form (data,"region")
     form   = form_class ()
-    if  req.method.lower ()=="post":
+    if  req.method =="POST":
         form = form_class (req.POST)
         if form.is_valid ():
             #form.save ()
             parent = Arrondissement.objects.get (pk =req.POST["region"])
             CommuneArrondissement.objects.create (parent =parent ,name =req.POST.get ("name"))
             msg.append (_("OK"))
-            return render_to_response (req,"indicator/add_commune_arrondissement.html",
-              {"form" : form, "msg": msg,"regions": CommuneArrondissement.objects.all ()})
+            return render_to_response (req,"indicator/add_commune_arrondissement.html",{"form" : form, "msg": msg,"regions": CommuneArrondissement.objects.all ()})
         else :
             msg.append (_("Not OK"))        
-    return render_to_response (req,"indicator/add_region.html",{"form" : form ,\
-          "msg": msg,"regions": CommuneArrondissement.objects.all ()})
+    return render_to_response (req,"indicator/add_region.html", {"form" : form ,"msg": msg,"regions": CommuneArrondissement.objects.all ()})
 
 def add_commune (req, pays):
     '''
@@ -205,19 +200,19 @@ def add_commune (req, pays):
     data =as_tuple (regions)
     form_class  = _get_area_form (data,"region")
     form   = form_class ()
-    if  req.method.lower ()=="post":
+    if  req.method  =="POST":
         form = form_class (req.POST)
         if form.is_valid ():
             #form.save ()
             parent = CommuneArrondissement.objects.get (pk =req.POST["region"])
             Commune.objects.create (parent =parent ,name =req.POST.get ("name"))
             msg.append (_("OK"))
-            return render_to_response (req,"indicator/add_commune.html",{"form" : form ,\
-             "msg": msg,"regions": Commune.objects.all () })
+            return render_to_response (req,"indicator/add_commune.html",{"form" : form ,"msg": msg,"regions": Commune.objects.all () })
         else :
-            msg.append (_("Not OK"))        
-    return render_to_response (req,"indicator/add_commune.html",{"form" : form ,\
-          "msg": msg,"regions": Commune.objects.all ()})
+            msg.append (_("Not OK"))
+            
+    return render_to_response (req,"indicator/add_commune.html",{"form" : form ,"msg": msg,"regions": Commune.objects.all ()})
+
 
 def add_arrondissement (req, pays):
     '''if senegal , flatten  pays to regions'''
@@ -227,22 +222,20 @@ def add_arrondissement (req, pays):
     msg = []
     #as tuple to fill the form choice fields dynamique 
     data =as_tuple (regions)
-    form_class  = _get_area_form (data,"region")
+    form_class  = _get_area_form (data,"region" , 'departement')
     form   = form_class ()
     if  req.method.lower ()=="post":
-        form = form_class (req.POST)
+        form = form_class (req.POST) 
         if form.is_valid ():
             #form.save ()
             parent = Departement.objects.get (pk =req.POST["region"])
             Arrondissement.objects.create (parent =parent ,name =req.POST.get ("name"))
             msg.append (_("OK"))
-            return render_to_response (req,"indicator/add_arrondissement.html",\
-             {"form" : form ,"msg": msg,"regions": Arrondissement.objects.all () } )
+            return render_to_response (req,"indicator/add_arrondissement.html",{"form" : form ,"msg": msg,"regions": Arrondissement.objects.all () } )
         else :
-            msg.append (_("Not OK"))        
+            msg.append (_("Not OK"))
     return render_to_response (req,
-        "indicator/add_arrondissement.html",{"form" : form,"msg": msg,\
-        "regions": Arrondissement.objects.all() })
+        "indicator/add_arrondissement.html",{"form" : form,"msg": msg,"regions": Arrondissement.objects.all() })
 
 def cast_departement (top):
     '''Get childrens of top , only the departments childrens'''
@@ -253,6 +246,7 @@ def cast_departement (top):
             d = dep._downcast(klass =Departement)
             if d and type (d)==Departement:
                 deps.append (d)
+                
     return deps
 
 def cast_prefecture (top):
@@ -260,7 +254,9 @@ def cast_prefecture (top):
     deps = []
     regions = cast_region(top)
     for region in regions:
+        
         for dep in region.children.all():
+            
             d = dep._downcast(klass =Prefecture)
             if d and type (d)==Prefecture:
                 deps.append (d)
@@ -269,8 +265,10 @@ def cast_prefecture (top):
 def cast_region(top):
     ''' Get the chilrens , only the regions  types'''
     regions =[]
+    
     for child in top.children.all ():
         d = child._downcast(klass=Region)
+        
         if type (d)==Region:
             regions.append(d)
     return regions
@@ -278,18 +276,22 @@ def cast_region(top):
 def cast_etat(top):
     '''Get the childrens ,only the etats types'''
     regions =[]
+    
     for child in top.children.all ():
         d = child._downcast(klass=Etat)
         if type (d)==Etat:
             regions.append(d)
+            
     return regions
 
 def cast_secteur(top):
     '''Get the chilrens , only the secteurs type'''
+    
     deps = []
     regions = cast_region(top)
     for region in regions:
         for dep in region.children.all():
+            
             d = dep._downcast(klass =Secteur)
             if d and type (d)==Secteur:
                 deps.append (d)
@@ -299,6 +301,7 @@ def cast_district(top):
     '''Cast the childrens ,only the districts types'''
     deps = []
     regions = cast_region(top)
+    
     for region in regions:
         for dep in region.children.all():
             d = dep._downcast(klass =District)
@@ -311,6 +314,7 @@ def cast_sub_prefecture (top):
     '''Get the childrens ,only the prefetures types'''
     deps = []
     regions = cast_prefecture(top)
+    
     for region in regions:
         for dep in region.children.all():
             d = dep._downcast(klass =SubPrefecture)
@@ -322,7 +326,9 @@ def cast_arrondissement(top):
     '''Get the childrens only the arrondissement types '''
     arrs  = []
     deps = cast_departement(top)
+    
     for dep in deps:
+        
         for arr in dep.children.all ():
             a = arr._downcast(klass =Arrondissement)
             if a and type(a)==Arrondissement:
@@ -333,6 +339,7 @@ def cast_commune_arrondissement(top):
     '''Get childrens ,only the arrondissements types'''
     coms  = []
     com_arrs= cast_arrondissement(top)
+    
     for com_arr in com_arrs:
         for com in com_arr.children.all ():
             c= com._downcast(klass =CommuneArrondissement)
@@ -344,13 +351,32 @@ def cast_commune(top):
     '''Get childrens ,only the communes types'''
     coms  = []
     com_arrs= cast_commune_arrondissement(top)
+    
     for com_arr in com_arrs:
+        
         for com in com_arr.children.all ():
             c= com._downcast(klass =Commune)
             if c and type(c)==Commune:
                 coms.append (c)                
     return coms
 
+
+def _get_village_parent_objects_from_pays (parent_obj , name):
+    name  =  name.upper ()
+    dict  = {'SENEGAL' :cast_commune   , 'KONAKRY' : cast_sub_prefecture , 'BISSAU' : cast_secteur  ,  'GAMBIE' :  cast_district ,
+             'SOMALIE' :cast_region , 'DJIBOUTI' : cast_region , 'MAURITANIE': cast_departement}
+    com_arrs    = dict [name](parent_obj)
+
+def _get_village_parent_object_from_pays (name , id )
+    dict  = {'SENEGAL' :Commune   , 'KONAKRY' : SubPrefecture , 'BISSAU' : Secteur  ,  'GAMBIE' :  District ,
+             'SOMALIE' :Region , 'DJIBOUTI' : Region , 'MAURITANIE': Departement}
+    try:
+        return dict [name.upper ()].objects.get (pk  = id)
+    except  Exception , e :
+        #object does not exits
+        return None
+        
+     
 def cast_village (top , pays_name):
     '''
     Get villages chidrens ,only the village 
@@ -360,23 +386,7 @@ def cast_village (top , pays_name):
         *a secteur if gambie*
         ...
         ... '''
-    coms  = []
-    if pays_name    == conf.senegal:
-           com_arrs =  cast_commune(top)
-    elif pays_name  == conf.konakry:
-        com_arrs    =  cast_sub_prefecture(top)
-    elif pays_name  == conf.bissau:
-        com_arrs    =  cast_secteur(top)
-    elif pays_name  == conf.gambie:
-        com_arrs    =  cast_district(top)
-    elif pays_name  == conf.somalie:
-        com_arrs    =  cast_region(top)
-    elif pays_name  == conf.djibouti:
-        com_arrs    =  cast_region(top)
-    elif pays_name  == conf.mauritanie:
-        com_arrs    =  cast_departement(top)
-    else :
-        com_arrs=None
+    com_arrs=_get_village_parent_objects_from_pays (top ,pays_name)
     for com_arr in com_arrs:
         for com in com_arr.children.all ():
             c= com._downcast(klass =IndicatorVillage)
@@ -393,74 +403,46 @@ def add_departement (req, pays):
     data =as_tuple (regions)
     form_class  = _get_area_form (data,"region")
     form   = form_class ()
-    if  req.method.lower ()=="post":
+    if  req.method =="POST":
         form = form_class (req.POST)
         if form.is_valid ():
             #form.save ()
             parent = Region.objects.get (pk =req.POST["region"])
             Departement.objects.create (parent =parent ,name =req.POST.get ("name"))
             msg.append (_("OK"))
-            return render_to_response (req,"indicator/add_departement.html",{"form" : form ,\
-                  "msg": msg, "regions": Departement.objects.all ()})
+            return render_to_response (req,"indicator/add_departement.html",{"form" : form ,"msg": msg, "regions": Departement.objects.all ()})
         else :
-            msg.append (_("Not OK"))        
-    return render_to_response (req,"indicator/add_region.html",
-             {"form" : form ,"msg": msg,"regions": Departement.objects.all ()})
+            msg.append (_("Not OK"))
+            
+    return render_to_response (req,"indicator/add_region.html",{"form" : form ,"msg": msg,"regions": Departement.objects.all ()})
     
 def add_village (req, id):
     '''Add new village'''
+    
     pays  = get_object_or_404(Pays ,name__icontains = id )
-    regions =[]
-    if id.lower () == conf.senegal:
-        regions    =  cast_commune(pays)
-    elif id.lower()== conf.konakry:
-        regions    =  cast_sub_prefecture (pays)
-    elif id.lower()== conf.bissau:
-        regions    =  cast_secteur (pays)
-    elif id.lower()== conf.gambie:
-        regions    =  cast_district (pays)
-    elif id.lower()== conf.somalie:
-        regions    =  cast_region(pays)
-    elif id.lower()== conf.djibouti:
-        regions    =  cast_region(pays)
-    elif id.lower()== conf.mauritanie:
-        regions    =  cast_departement(pays)
-    else :
-        regions  =[]
+    regions  =_get_village_parent_objects_from_pays (pays ,id)
     msg = []
     #as tuple to fill the form choice fields dynamique 
     data =as_tuple (regions)
     form_class  = _get_area_form (data,"region")
     form   = form_class ()
-    if  req.method.lower ()=="post":
+    if  req.method  =="POST":
         form = form_class (req.POST)
         if form.is_valid ():
             #form.save ()
             dict = req.POST
             region  = dict.get ('region')
-            if id.lower()  == conf.senegal:
-                parent     =  Commune.objects.get (pk =region)
-            elif id.lower()== conf.konakry:
-                parent     =  SubPrefecture.objects.get (pk =region)
-            elif id.lower()== conf.bissau:
-                parent     =  Secteur.objects.get (pk =region)
-            elif id.lower()== conf.gambie:
-                parent     =  District.objects.get (pk =region)
-            elif id.lower()== conf.somalie:
-                parent     =  Region.objects.get (pk =region)
-            elif id.lower()== conf.djibouti:
-                parent     =  Region.objects.get (pk =region)
-            elif id.lower()== conf.mauritanie:
-                parent     =  Departement.objects.get (pk =region)
-            else :
-                parent  =None 
+           
+            parent  =None 
             IndicatorVillage.objects.create (parent =parent ,name =dict.get ("name"))
             msg.append (_("OK"))
-            return render_to_response (req,"indicator/add_village.html",\
+            
+            return render_to_response (req,"indicator/add_village.html",
              {"form" : form ,"msg": msg,"regions": IndicatorVillage.objects.all ()})
         else :
-            msg.append (_("Not OK"))        
-    return render_to_response (req,"indicator/add_village.html",\
+            msg.append (_("Not OK"))
+            
+    return render_to_response (req,"indicator/add_village.html",
          {"form" : form, "msg": msg,"regions": IndicatorVillage.objects.all ()})
     
 def add_prefecture (req, pays):
@@ -474,19 +456,19 @@ def add_prefecture (req, pays):
     data =as_tuple (regions)
     form_class  = _get_area_form (data,"region")
     form   = form_class ()
-    if  req.method.lower ()=="post":
+    if  req.method  =="POST":
         form = form_class (req.POST)
         if form.is_valid ():
             #form.save ()
             parent = Region.objects.get (pk =req.POST["region"])
             Prefecture.objects.create (parent =parent , name =req.POST.get ("name"))
             msg.append (_("OK"))
-            return render_to_response (req,"indicator/add_prefecture.html",\
-            {"form" : form ,"msg": msg,"regions": Prefecture.objects.all () })
+            return render_to_response (req,"indicator/add_prefecture.html",{"form" : form ,"msg": msg,"regions": Prefecture.objects.all () })
+        
         else :
-            msg.append (_("Not OK"))        
-    return render_to_response (req,"indicator/add_prefecture.html",\
-          {"form" : form, "msg": msg,"regions": Prefecture.objects.all ()})
+            msg.append (_("Not OK"))
+    return render_to_response (req,"indicator/add_prefecture.html",{"form" : form, "msg": msg,"regions": Prefecture.objects.all ()})
+
 
 def add_sub_prefecture (req, pays):
     '''Add new commune'''
@@ -499,15 +481,15 @@ def add_sub_prefecture (req, pays):
     data =as_tuple (regions)
     form_class  = _get_area_form (data,"region")
     form   = form_class ()
-    if  req.method.lower ()=="post":
+    if  req.method  =="POST":
         form = form_class (req.POST)
         if form.is_valid ():
             #form.save ()
             parent = Prefecture.objects.get (pk =req.POST["region"])
             SubPrefecture.objects.create (parent =parent ,name =req.POST.get ("name"))
             msg.append (_("OK"))
-            return render_to_response (req,"indicator/add_sub_prefecture.html",{"form" : form ,\
-            "msg": msg,"regions": SubPrefecture.objects.all () })
+            return render_to_response (req,"indicator/add_sub_prefecture.html",{"form" : form ,"msg": msg,"regions": SubPrefecture.objects.all () })
+        
         else :
             msg.append (_("Not OK"))        
     return render_to_response (req,
@@ -524,19 +506,19 @@ def add_commune_hurbaine (req, pays):
     data =as_tuple (regions)
     form_class  = _get_area_form (data,"region")
     form   = form_class ()
-    if  req.method.lower ()=="post":
+    if  req.method  == "POST":
         form = form_class (req.POST)
         if form.is_valid ():
             #form.save ()
             parent = Region.objects.get (pk =req.POST["region"])
             CommuneHurbaine.objects.create (parent =parent ,name =req.POST.get ("name"))
             msg.append (_("OK"))
-            return render_to_response (req,"indicator/add_commune_hurbaine.html",
-             {"form" : form ,"msg": msg,"regions": CommuneHurbaine.objects.all () } )
+            return render_to_response (req,"indicator/add_commune_hurbaine.html",{"form" : form ,"msg": msg,"regions": CommuneHurbaine.objects.all () } )
         else :
             msg.append (_("Not OK"))        
     return render_to_response (req,"indicator/add_commune_hurbaine.html",
          {"form" : form, "msg": msg,"regions": CommuneHurbaine.objects.all ()})
+
 
 def add_village_guinee (req, pays):
     '''Add new commune'''
@@ -549,22 +531,22 @@ def add_village_guinee (req, pays):
     data =as_tuple (regions)
     form_class  = _get_area_form (data,"region")
     form   = form_class ()
-    if  req.method.lower ()=="post":
+    if  req.method  =="POST":
         form = form_class (req.POST)
         if form.is_valid ():
             #form.save ()
             parent = Region.objects.get (pk =req.POST["region"])
             IndicatorVillage.objects.create (parent =parent ,name =req.POST.get ("name"))
             msg.append (_("OK"))
-            return render_to_response (req,"indicator/add_village.html",\
-             {"form" : form ,"msg": msg,"regions": IndicatorVillage.objects.all () })
+            return render_to_response (req,"indicator/add_village.html",{"form" : form ,"msg": msg,"regions": IndicatorVillage.objects.all () })
         else :
-            msg.append (_("Not OK"))        
-    return render_to_response (req,"indicator/add_village.html",\
-         {"form" : form, "msg": msg,"regions": IndicatorVillage.objects.all ()})
+            msg.append (_("Not OK"))
+            
+    return render_to_response (req,"indicator/add_village.html",{"form" : form, "msg": msg,"regions": IndicatorVillage.objects.all ()})
             
 def add_secteur (req, pays):
     '''Add new secteur'''
+    
     pays  = get_object_or_404(Pays ,name__icontains = pays )
     regions =[]
     # For Guinee Bissau,secteur should have regions as parent
@@ -574,15 +556,14 @@ def add_secteur (req, pays):
     data =as_tuple (regions)
     form_class  =_get_area_form (data,"region")
     form   = form_class ()
-    if  req.method.lower ()=="post":
+    if  req.method  == "POST":
         form = form_class (req.POST)
         if form.is_valid ():
             #form.save ()
             parent = Region.objects.get (pk =req.POST["region"])
             Secteur.objects.create (parent =parent ,name =req.POST.get ("name"))
             msg.append (_("OK"))
-            return render_to_response (req,"indicator/add_secteur.html",\
-             {"form" : form ,"msg": msg,"regions": Secteur.objects.all ()})
+            return render_to_response (req,"indicator/add_secteur.html",{"form" : form ,"msg": msg,"regions": Secteur.objects.all ()})
         else :
             msg.append (_("Not OK"))        
     return render_to_response (req,"indicator/add_secteur.html",
@@ -599,19 +580,19 @@ def add_district(req, pays):
     data =as_tuple (regions)
     form_class  = _get_area_form (data,"region")
     form   = form_class ()
-    if  req.method.lower ()=="post":
+    if  req.method  == "POST":
         form = form_class (req.POST)
         if form.is_valid ():
             #form.save ()
             parent = Region.objects.get (pk =req.POST["region"])
             District.objects.create (parent =parent ,name =req.POST.get ("name"))
             msg.append (_("OK"))
-            return render_to_response (req,"indicator/add_district.html",\
+            return render_to_response (req,"indicator/add_district.html",
              {"form" : form ,"msg": msg,"regions": District.objects.all () } )
         else :
-            msg.append (_("Not OK"))        
-    return render_to_response (req,"indicator/add_district.html",{"form" : form, 
-          "msg": msg,"regions": District.objects.all () })
+            msg.append (_("Not OK"))            
+    return render_to_response (req,"indicator/add_district.html",{"form" : form, "msg": msg,"regions": District.objects.all () })
+
     
 def add_etat(req, pays):
     '''Add new etat'''
@@ -625,19 +606,17 @@ def add_etat(req, pays):
     data =as_tuple (regions)
     form_class  = _get_area_form (data,"region")
     form   = form_class ()
-    if  req.method.lower ()=="post":
+    if  req.method   =="POST":
         form = form_class (req.POST)
         if form.is_valid ():
             #form.save ()
             parent = Pays.objects.get (pk =req.POST["region"])
             Etat.objects.create (parent =parent ,name =req.POST.get ("name"))
             msg.append (_("OK"))
-            return render_to_response (req,"indicator/add_etat.html",
-             {"form" : form ,"msg": msg,"regions": Etat.objects.all ()} )
+            return render_to_response (req,"indicator/add_etat.html", {"form" : form ,"msg": msg,"regions": Etat.objects.all ()} )
         else :
-            msg.append (_("Not OK"))        
-    return render_to_response (req,"indicator/add_etat.html",
-         {"form" : form, "msg": msg,"regions": Etat.objects.all ()})
+            msg.append (_("Not OK"))   
+    return render_to_response (req,"indicator/add_etat.html", {"form" : form, "msg": msg,"regions": Etat.objects.all ()})
     
 def get_village (pays , id):
     ''' Selon le  decoupage , le dernier maillon de la chaine peut etre 
@@ -645,85 +624,58 @@ def get_village (pays , id):
      
     def get_konakry_village (id):
         IndicatorVillage.objects.get (pk =id)
+        
     def get_senegal_village (id):
         IndicatorVillage.objects.get (pk =id)
+
+        
     def get_bissau_village (id):
         Secteur.objects.get (pk =id)
+        
     def get_gambie_village (id):
         District.objects.get (pk =id)
+        
     def get_somalie_village (id):
         Region.objects.get (pk =id)
+        
     def get_djibouti_village (id):
         Region.objects.get (pk =id)
+        
     def get_mauritanie_village (id):
         Deparetement.objects.get (pk =id)
-            
+
+
+
 def get_pays_form (pays):
     '''
     Pour chaque pays nous devons lui permettre de selectionner 
     les villages , ou secteurs , ou  regions a ajouter au projet
     '''
-    def get_konakry_form():
-        return {"regions" : cast_region (pays),
-            "prefectures" : cast_prefecture (pays),
-         "subprefectures" : cast_sub_prefecture (pays),
-               "villages" : cast_village(pays , "guinee_conakry")}
+    dict  = { 'KONAKRY': {"regions" : cast_region (pays), "prefectures" : cast_prefecture (pays),
+                          "subprefectures" : cast_sub_prefecture (pays), "villages":  cast_village(pays , "guinee_conakry")
+              },
+              'BISSAU' : { "regions" :  cast_region(pays) , "secteurs" :  cast_secteur(pays),
+                           "villages" :  cast_village(pays , "guinee_bissau")
+              },
+              'GAMBIE' : {"regions" :  cast_region(pays), "districts" :  cast_district (pays),
+                          "villages" :  cast_village(pays , "gambie")},        
+              'SENEGAL' :{ "regions" :  cast_region (pays), "arrondissements" :  cast_arrondissement (pays),
+                          "departements" :  cast_departement (pays),  "commune_arrondissements" :  cast_arrondissement (pays),
+                           "villages"  :  cast_village (pays , "senegal")
+              },
+              'SOMALIE' : { "etats" :      cast_etat (pays), "regions"  :  cast_region (pays),
+                              "villages" :  cast_village (pays , "somalie")
+              },
+              'DJIBOUTI': {"regions":  cast_region (pays), "villages": cast_village (pays , "djibouti")}
+              }
+              'MAURITANIE':{ "regions": cast_region (pays),"departements": cast_departement (pays),
+                             "villages": cast_village (pays ,"mauritanie")
+              }
+     }
     
-    def get_bissau_form ():
-        return {"regions" :  cast_region(pays) ,
-               "secteurs" :  cast_secteur(pays),
-               "villages" :  cast_village(pays , "guinee_bissau")}
-    
-    def get_gambie_form ():
-        return {"regions" :  cast_region(pays),
-              "districts" :  cast_district (pays),
-               "villages" :  cast_village(pays , "gambie")}
-        
-    def get_senegal_form ():
-        return {"regions" :  cast_region (pays),
-        "arrondissements" :  cast_arrondissement (pays),
-           "departements" :  cast_departement (pays),
-"commune_arrondissements" :  cast_arrondissement (pays),
-                #The last element list to be asspciated to the project
-              "villages"  :  cast_village (pays , "senegal")}
-    
-    def get_somalie_form ():
-        '''Des regions qui sont regroupes en etats'''
-        return  {"etats" :  cast_etat (pays),
-        # The last element to be associated to the projects
-              "regions"  :  cast_region (pays),
-              "villages" :  cast_village (pays , "somalie")}
-        
-    def get_djibouti_form ():
-        ''' Des regions '''
-        # The last element list to be associated to the projet 
-        return {"regions": cast_region (pays),
-               "villages": cast_village (pays , "djibouti")}
-    
-    def get_mauritanie_form ():
-        ''' Regions qui sont partages en departements '''
-        return {"regions": cast_region (pays),
-                # The elelements list to be associated to the projects
-           "departements": cast_departement (pays),
-               "villages": cast_village (pays ,"mauritanie")}
-    
-    name  = pays.name.lower ()
-    if name    == conf.konakry:
-        return get_konakry_form () 
-    elif name  == conf.bissau:
-        return get_bissau_form ()
-    elif name  == conf.gambie :
-        return get_gambie_form ()
-    elif name  == conf.senegal:
-        return get_senegal_form ()
-    elif name  == conf.somalie:
-        return get_somalie_form ()
-    elif name  == conf.djibouti:
-        return get_djibouti_form ()
-    elif name == conf.mauritanie:
-        return get_mauritanie_form ()
-    else :
-        return []
+    return  dict [pays.name.lower ()]
+     
+
       
 def indicators_list():
     #The indicator list to be associated to the project
@@ -734,6 +686,7 @@ def  edit_project (req , id):
      project  = get_object_or_404(Project , pk= id)
      form  = ProjectForm (instance = project)
      if req.method  =='POST':
+          # User  need  to delete data
           if 'delete' in req.POST:
                #delete request was sent
                project.delete()
@@ -744,11 +697,11 @@ def  edit_project (req , id):
           if form.is_valid ():
                form.save()
                msg.append (_('Sauvegarde reussie'))
+
           else:
                msg.append (_('Formulaire invalide'))
      template  = 'indicator/edit_project.html'
      return  render_to_response (req ,  template , { 'form':form})
-     
           
 def add_project(req , pays):
     '''
@@ -766,17 +719,22 @@ def add_project(req , pays):
     form_indicator_class  = _get_indicator_form (ind_form_data)
     form_indicator        = form_indicator_class ()
     msg  =[]
-    if req.method.lower () == "post":
-        form_village   = form_village_class(req.POST)
+    if req.method == "POST":
+        form_village = form_village_class(req.POST)
         form_indicator = form_indicator_class (req.POST)
         if form_village.is_valid  ()  and form_indicator.is_valid ():
                 try:
                    villages, indicators =[], []
+                   #Get list of the   projet's villages 
                    for vil_pk in  req.POST.getlist("villages"):
                        villages.append(IndicatorVillage.objects.get (pk =vil_pk)) 
+                   #  Get the list of the projet 's indicators 
                    for ind_pk in req.POST.getlist ('indicators'):
                        indicators.append(Indicator.objects.get (pk =ind_pk))
                    dt = date = datetime.now().date ()
+                   #Try  to get the project' date of  creattion
+                   # If the user not provide the   date_of_creation of the project , now is used
+                   # as   default  value
                    try:
                          year, month ,day  = req.POST.get( 'edited_date' ,None)
                          dt = datetime(year, month, day).date ()
@@ -784,21 +742,24 @@ def add_project(req , pays):
                         pass
                    # get the projet remained args from post data
                    #  bailleur , decsription  ,date creattion
-                   d      = dict ()
-                   args   = ['bailleur' , 'titre','description' ]
+                   #  Set  other  value  needed  when creatin  new projet  ,
+                   #  The  user provide thde   bailleur , the  titre   and   the description of the
+                   #  projet   we will  fill  aother   value later
+                   d      = {}
+                   args   = ['bailleur' , 'titre','description']
                    dict   = req.POST
-                   for key in  dict.iterkeys ():
-                             if key in  args:
-                                    d[str(key)] = dict [key]
+                   for key in  dict.iterkeys ()  :
+                        if key in  args:d[str(key)] = dict [key]
+                        else : pass
+                   # Now  we  can  create  the   projet
                    Project.create_project (villages , indicators ,**d)
                    msg.append (_("Le projet a bien ete sauvegarde"))          
                 except (KeyError, Exception):
                    #print  '--*POOF*--'
-                   #raise 
+                   raise 
                    msg.append(_("Vous devez choisir le dernier element dans le filtre"))
         else:
-                msg.append (_("Le formulaire est invalide ,verifiez que tous\
-                    les champs obligatoires sont bien renseignes"))
+                msg.append (_("Le formulaire est invalide ,verifiez que tous les champs obligatoires sont bien renseignes"))
     return render_to_response (req , template ,{ "form_village" : form_village ,
            "form_indicator": form_indicator , "projects" :Project.objects.all (), "msg" :msg })
 
@@ -807,38 +768,35 @@ def search_project (req,pays):
     form_class  =_get_search_project_form()
     form  = form_class ()
     projects  = Project.objects.all ()
-    if req.POST :
+    if req.POST  == 'POST':
         form  = form_class (req.POST)
         if form.is_valid ():
             try:
-                    def _project_search_args():
-                    #Help fonction , return a  dict or args to find projet
-                         return  {
-                         "indicators__in": [Indicator.objects.get (id =int (id))\
-                                    for id in  form.cleaned_data["indicators"]],
-                         "villages__in"  :[IndicatorVillage.objects.get (id =int (pk))\
-                                    for pk in form.cleaned_data["villages"] ],
-                         "name" : form.cleaned_data ["name"]
-                    }
+
+                    #  create  a dict  neeed  
+                    dict  = {
+                         "indicators__in": [Indicator.objects.get (id =int (id))for id in  form.cleaned_data["indicators"]],
+                         "villages__in"  : [IndicatorVillage.objects.get (id =int (pk)) for pk in form.cleaned_data["villages"] ],
+                         "name" : form.cleaned_data ["name"]}
                     project_search_args  =_project_search_args ()
-                    projects =Project.objects.filter (**project_search_args).all ()            
+                    projects =Project.objects.filter (**dict).all ()            
             except Exception  ,e :
-                     #raise 
-                     projects  = Project.objects.all ()
-                     
+                #raise 
+                projects  = Project.objects.all ()                
     template ='indicator/search_project.html'
-    return render_to_response (req , template , 
-        {"projects" : projects ,"form" : form})
+    return render_to_response (req , template , {"projects" : projects ,"form" : form})
 
 def list_project(req , pays):
     '''Go to list projects'''
-    return render_to_response (req,"indicator/list_project.html" ,\
-           { "projects":Project.objects.all()})
+    return render_to_response (req,"indicator/list_project.html" ,{ "projects":Project.objects.all()})
+
+
 
 def project_indicators (req , id):
      project = get_object_or_404 (Project , pk  = id)
-     return   render_to_response (req , 'indicator/project_indicators.html' , {'indicators':project.indicators.all()}) 
-     
+     return   render_to_response (req , 'indicator/project_indicators.html' ,{'indicators':project.indicators.all()}) 
+
+
 def edit_submission (req , submission_pk):
     '''Edit Submission '''
     dict =[]
@@ -851,32 +809,40 @@ def edit_submission (req , submission_pk):
     if req.method =="POST":
         form =  form_class(req.POST)
         if form.is_valid ():
+            #Tous les indicateurs    
             for k , val in form.cleaned_data.items ():
                 pk_indicator = k.split ("_")[-1]
                 indicator = Indicator.objects.get (pk =pk_indicator)
+                # si le type est un type list  alors  on cree les indicateurs values
+                # correspondants
+                # sinon on cree l'indicateur  value correspondant              
                 if type (val)==list :
                     for v in val:
-                        indicator_value = get_object_or_404( IndicatorValue , id =int (v))
+                        indicator_value = get_object_or_404(IndicatorValue , id =int (v))
                         submission.indicatorvalues.add(indicator_value)
                 else:
                     submission.indicatorvalues.get_or_create(indicator = indicator, value =val)
             msg.append ("Les elements precedents sont bien sauvegarde")
+
     template ="indicator/edit_submission.html"
-    return render_to_response (req, template  , 
-        {"form": form  , "submission": submission , "msg": msg , "submissions": Submission.objects.all ()})
+    
+    return render_to_response (req, template  , {"form": form  , "submission": submission , "msg": msg , "submissions": Submission.objects.all ()})
+
 
 def  delete_submission(req , id):
     submission = get_object_or_404 (Submission,pk =id)
     template = "indicator/confirm_delete.html"
-    if req.POST:
+    if req.POST == 'POST':
         try:
             req.POST.get ("confirm_delete")
             submission.delete ()
-            return HttpResponseRedirect (reverse('parametrage_project'))
+            return HttpResponseRedirect (reverse('parametrage_project'))  
         except KeyError , err:
-            pass 
+            pass
+        
     return render_to_response(req, 
          template , {})
+
                 
 def add_submission (req , fiche_id , submission_id):
     '''Get a request '''
@@ -909,35 +875,46 @@ def add_submission (req , fiche_id , submission_id):
     if req.method =='POST':
         form  = form_class (req.POST)
         if form.is_valid ():
+            # Si une premiere partie du form a deja ete  valide  , donc
+            # si il existe deja une  submission
+            # Sinon , nous  somme a la premiere etate de la saisie 
             if "submission_id" in req.POST:
                  if req.POST.get('submission_id').isdigit():
                      submission    = get_object_or_404 (Submission , pk =req.POST.get('submission_id'))
             if not submission:
+                #  Recuperer la submission deja existante
                 submission    = Submission.objects.create(fiche= fiche)
-                submission_id = submission.pk
-                
+                submission_id = submission.pk  
             # Add header informations to the submission like
             # The village  , date edition
-            
+
+            # Mettre  l'entete s'il   y'a lieu
+            # A cet  instant on commence  la submssion donc a l'ecran un
+            # Dans l'entete  , nous avons le nom du village  , la date  date la saisie
+            # enfin si necessaire le superviseur de la fiche qu'on saisie
             form_header  = HeaderSubmissionForm(req.POST)
             if form_header.is_valid ():
                 data  = form_header.cleaned_data 
+                # Le village 
                 submission.village   =  data ['village']
+                # La date 
                 submission.date      =  data ['date']
                 submission.save ()
-                #return HttpResponse ('village   : ' + str (submission.village.pk)  +
-                #'\n  , date  : ' + str(submission.date))
             indicator_input_values   =[]
             for k , val in form.cleaned_data.items ():
                 pk_indicator = k.split ("_")[-1]
                 indicator = Indicator.objects.get (pk =pk_indicator)
+                # Si l'indicateur est de  type list  dans ce cas  plusieurs  valeurs
+                # sont crees autant d'element de  la   list
                 if type (val)==list :
                     # This is a indicator list 
                     for v in val:
                         indicator_value = get_object_or_404(IndicatorValue , id =int (v))
                         submission.indicatorvalues.add(indicator_value)
                 else:
+                    # Si non un seul element est cree nous somme en  presence d'un numeric  , text ou double
                     submission.indicatorvalues.get_or_create(indicator = indicator, value =val)
+                    
             msg.append ("Les elements precedents sont bien sauvegarde")
           
     template = 'indicator/add_submission.html'
@@ -962,30 +939,42 @@ def add_indicator(req):
     form_value =IndicatorValueForm ()
     template = "indicator/add_indicator.html"
     msg  = []
-    if req.method.lower ()=="post":
+    if req.method   ==  "POST":
         form = IndicatorForm (req.POST)
         form_value =IndicatorValueForm(req.POST) 
         if form.is_valid ():
+            # Nous enregistrons l'indicateur  sans  ses valeurs 
             indicator =form.save ()
             try:
+
                         value =form_value.save(commit =False)
                         values  =  list ()
+                        # value doit etre remplit que lorsque  l'indicateur est  de type list
+                        #si ce n'est pas le cas donc  value  ne doit pas  etre  rempli
+                        # L'indicateur  n'est pas de type list   et  value n'est pas vide probleme
                         if value.value.strip()!=""  and indicator.type !=Indicator.TYPE_LIST:
                             raise forms.ValidationError("La liste des valeurs doit etre saisie si l'indicateur est de type list")
+                        # L'indicateur est de type list donc  value est vide donct probleme
+                        # si l'indicateur est de type list donc  value  doit etre automatiquement  remplit 
                         if value.value.strip()==""  and indicator.type ==Indicator.TYPE_LIST:
                             raise forms.ValidationError("La liste des valeurs est obligatoire si l'indicateur est de type list") 
+                        # L'indicateur est de type text 
                         if indicator.type ==Indicator.TYPE_TEXT:
                              values =  ['text']
+                        # L'indicateur est de type date 
                         elif indicator.type ==Indicator.TYPE_DATE:
                              values  =['date']
+                        # l'indicateur est de type numeric
                         elif indicator.type ==Indicator.TYPE_NUMERIC:
-                             values = ['numeric']    
+                             values = ['numeric']
+                        # L'indicateur est de type list   alors  split sur les indicateurs  et cree les
+                        # indicateurs  values  correspondants
                         elif indicator.type ==Indicator.TYPE_LIST:
                             values  = [v for  v  in value.value.split ('\r\n')  if v.strip() !='' ]
                         else :
                               pass
                         if len (values)>0:
-                              #create init values
+                              # Si il y'a lieu  de creer  les indicateur  values
                               _init_indicator_value_from_indicator (values , indicator)
                         msg.append (_("OK"))
             except forms.ValidationError as err:
@@ -997,8 +986,7 @@ def add_indicator(req):
             msg.append (form_value.errors)
             #return HttpResponse (form.errors)
     return render_to_response (
-            req, template , {"form":form , "form_value": form_value ,\
-             "msg": msg,"indicators" : Indicator.objects.all ()})
+            req, template , {"form":form , "form_value": form_value ,"msg": msg,"indicators" : Indicator.objects.all ()})
 
 def edit_indicator(req , id):
      indicator = get_object_or_404(Indicator , pk =id)
@@ -1020,7 +1008,7 @@ def edit_indicator(req , id):
                       if indicator.type ==Indicator.TYPE_TEXT:
                               values =  ['text']
                       elif indicator.type ==Indicator.TYPE_DATE:
-                              values  =['date']
+                              values  =['date']        
                       elif indicator.type ==Indicator.TYPE_NUMERIC:
                               values = ['numeric']    
                       elif indicator.type ==Indicator.TYPE_LIST:
@@ -1038,21 +1026,23 @@ def edit_indicator(req , id):
                               #create init values
                               _init_indicator_value_from_indicator (values , indicator)
                       msg.append (_("OK"))
+                      
                except forms.ValidationError as err:
                      #return HttpResponse (str(err))
                      msg.append (str(err))
           else :
             msg.append(form.errors)
      template  = 'indicator/add_indicator.html'
-     return render_to_response(req,template,{ 'form' :form ,
-          'msg': msg , 'form_value' :form_value,'indicators':Indicator.objects.all()}) 
+     return render_to_response(req,template,
+        { 'form' :form ,'msg': msg , 'form_value' :form_value,'indicators':Indicator.objects.all()}) 
+
 
 def search_indicator (req):
     template ="indicator/search_indicator.html"
     form = SearchIndicatorForm()
     msg =[]
     indicators  = Indicator.objects.all ()
-    if req.method.lower ()=="post":
+    if req.method  =="POST":
         form =SearchIndicatorForm (req.POST)
         if form.is_valid ():
             ind = form.cleaned_data ["name"]
@@ -1062,13 +1052,12 @@ def search_indicator (req):
                 indicators = Indicator.objects.all ()
             else :
                 msg.append (_("La recherche a touve ces indicateurs"))
-    return  render_to_response(req,template , {"msg": msg , "indicators": indicators  ,\
-            "form": form})
+    return  render_to_response(req,template , {"msg": msg , "indicators": indicators  ,"form": form})
 
 def  delete_indicator(req , id):
     indicator = get_object_or_404 (Indicator,pk =id)
     template = "indicator/confirm_delete.html"
-    if req.POST:
+    if req.method  == "POST":
         try:
             req.POST.get ("confirm_delete")
             indicator.delete ()
@@ -1077,16 +1066,17 @@ def  delete_indicator(req , id):
             pass 
     return render_to_response(req, 
          template , {})
+
 def list_indicator (req):
     ''' list all indicator '''
     '''Go to list projects'''
-    return render_to_response (req,"indicator/list_indicator.html" ,\
-           { "indicators":Indicator.objects.all()})
+    return render_to_response (req,"indicator/list_indicator.html" ,{ "indicators":Indicator.objects.all()})
+
 
 def  delete_project(req , id):
     project= get_object_or_404 (Project,pk =id)
     template = "indicator/confirm_delete.html"
-    if req.POST:
+    if req.method == 'POST':
         try:
             req.POST.get ("confirm_delete")
             project.delete ()
@@ -1104,17 +1094,16 @@ def search_user (req):
     form = UserSearchForm()
     msg  = []
     users  = User.objects.filter (groups__name="indicator_edit")
-    if req.POST:
+    if req.method  =='POST':
         form  = UserSearchForm(req.POST)
+        
         if form.is_valid ():
            data  = form.cleaned_data
            users  =User.objects.filter (
                     Q(username__icontains=data['first_name'])| Q(username__icontains=data['last_name']))
     template ="indicator/add_user.html"
     return render_to_response (req , template ,
-    {"form": form ,
-      "users" : users,
-     "msg" : msg})
+    {"form": form ,"users" : users,"msg" : msg})
 
 
         
@@ -1155,10 +1144,13 @@ def user_exports (req):
     msg  = []
     if req.method =="POST":
         form  = UserExportForm(req.POST)
+
         if form.is_valid ():
             users   = form.cleaned_data ['users']
+
             if len (users):
                 return export(users)
+
             return  export (User.objects.filter (groups__name__in = ['indicator_edit', 'indicator_admin']))
     template = "indicator/user_exports.html"
     return render_to_response (req,template ,{"form": form})
@@ -1176,74 +1168,62 @@ def village_exports(req):
     template = "indicator/village_exports.html"
     return render_to_response (req,template ,{"form": form})
 
+
 def stats (req):
     template ="indicator/index_stats.html"
     return render_to_response (req, template  , {})
+
 
 def indicator_stats (req):
     '''
     Dashboard stats indicator
     '''
     form =IndicatorStatForm ()
-    stat_data ={}
-    if req.POST :
+    dict  ={}
+    if req.method  == 'POST':
         if form.is_valid ():
-            data = form.cleaned_data
-            project = data ["indicator"]
-            stat_data = _get_stat_data_for_indicator (project)  
+            args  = form.cleaned_data
     template = "indicator/indicator_stats.html"
     return render_to_response (req,
-        template ,{"form": form  , "stat_data"  : stat_data})
+        template ,{"form": form  , "data"  : dict})
+
+
     
 def project_stats (req):
     '''Dashorboard project stat '''
     form =ProjectStatForm ()
-    stat_data ={}
-    if req.POST :
+    dict ={}
+    if req.method  =='POST' :
         form  = ProjectStatForm(req.POST)
         if form.is_valid (): 
-            data = form.cleaned_data
-            project = data ["project"]
-            stat_data['indicator_count'] = project.indicators.count()
-            stat_data['village_count']   = project.villages.count ()
-            stat_data =_get_stat_data_for_project (project)
+            args = form.cleaned_data
     template = "indicator/project_stats.html"
     return render_to_response (req,
-        template ,
-        {"form": form  , "stat_data"  : stat_data})
+        template , {"form": form  , "data"  : dict})
+
 
 def village_stats (req):
     '''Dashorboard village  stat'''
     form =VillageStatForm ()
-    stat_data ={}
-    if req.POST :
+    dict  ={}
+    if req.method  == 'POST' :
         form  = VillageStatForm(req.POST)
         if form.is_valid (): 
-            data = form.cleaned_data
-            village = data ["village"]
-            stat_data = _get_stat_data_for_village (village)
+            args = form.cleaned_data
     template = "indicator/village_stats.html"
     return render_to_response (req,
-        template ,
-        {"form": form  , "stat_data"  : stat_data})
+        template ,{"form": form  , "stat_data"  : stat_data})
 
 def user_stats (req):
      ''' Nothing  to display here we will see later what-to-do '''
      return HttpResponseRedirect (reverse ('indicator_dashboard'))
 
-def _get_stat_data_for_project (project) :
-      return  project.indicatorvalues
-           
-def _get_stat_data_for_indicator(indicator) :
-          return  {}
-def _get_stat_data_for_village(village) :
-          return  {}
-     
+
 def add_user (req):
     '''Add new user'''
     form = UserForm()
     msg  = []
-    if req.POST:
+    if req.method  == 'POST':
         form  = UserForm(req.POST)
         if form.is_valid ():
              try:
@@ -1253,19 +1233,17 @@ def add_user (req):
                  msg.append (str(err))
     template ="indicator/add_user.html"
     return render_to_response (req , template ,
-    {"form": form ,
-      # Get teh list of users that have  a profil to edit  from Web UI of the indicators app
-      "users" : User.objects.filter (groups__name__in = ['indicator_edit', 'indicator_admin']),"msg" : msg})
+    {"form": form ,"users" : User.objects.filter (groups__name__in = ['indicator_edit', 'indicator_admin']),"msg" : msg})
+
 
 def edit_user (req , id):
     '''Edit new user'''
     user  = get_object_or_404(User ,pk =id)
-    form  = UserForm(initial = {'first_name' : user.first_name  , 'last_name' : user.last_name ,
-          'username': user.username , 'password' :''})
+    form  = UserForm(initial ={'first_name' : user.first_name  ,'last_name' : user.last_name ,'username': user.username ,'password' :''})
     msg  = []
-    if req.POST:
+    if req.method == 'POST':
         form  = UserForm(req.POST)
-        if form.is_valid ():
+      if form.is_valid ():
              try:
                  # delete the exiting user before save change to avoid key duplicate
                  # If the  password is empty skip
@@ -1273,7 +1251,7 @@ def edit_user (req , id):
                  if form.cleaned_data ['password'] !='':
                       user.delete()
                       form.save ()
-                      msg.append (_("Element sauvegarge"))
+                      msg.append (_("Element sauvegarge"))  
                  # return to the add_user to avoid user hit dabase   for deleted user :)
                  return HttpResponseRedirect(reverse ('add_user'))
              except Exception , err:
@@ -1282,32 +1260,40 @@ def edit_user (req , id):
     return render_to_response (req , template ,
     {"form": form ,'users':User.objects.filter (groups__name__in = ['indicator_edit', 'indicator_admin']),"msg" : msg})
 
-
-                
+    
 def data_export (req):
     form  = DataExportForm()
     if req.method=="POST":
         form =DataExportForm(req.POST)
+        
         if form.is_valid ():
             data  = form.cleaned_data
-            #return HttpResponse ("<br/>".join ( "%s :%s "%(k,v) for (k,v) in data.items ()))
+            # La le village  dont on veut exporter la saisie , ou bien les village du projet concerne 
             villages =data['villages']
+            # Le projet concerne 
             project =data['project']
+            # Filtre sur les villages du projet
             if not len(villages):
-                villages = project.villages.all () 
+                villages = project.villages.all ()
+            # Le mois de la saisie , lorsque l'utilisateur saisie une  fiche   il precise le mois conerne
+            # de la  chaque saisie correspond donc a un  mois donnee
             date_edit=  data['date_edit']
             response = HttpResponse (mimetype ="text/csv")
-            response ["Content-Disposition"]="attachment; filename =%s_%s_%s.xls"%(project.name,
-                    villages[0].name ,date_edit)
+            response ["Content-Disposition"]="attachment; filename =%s_%s_%s.xls"%(project.name,villages[0].name ,date_edit)
             writer  = UnicodeWriter (response)
             projet= ["Projet" , "Village" , "Indicator" , "Valeur"]
             for village in villages:
                 for fiche in  project.fiches.all ():
-                        for submission  in fiche.submissions.filter (village =village ,
-                             date__month =date_edit.month , date__year=date_edit.year):
-                                indicator =map(lambda v: v.indicator.name , submission.indicatorvalues.all ())
-                                value     =map(lambda v: v.indicator.value , submission.indicatorvalues.all ())
-                                writer.writerow([projet.name , village.name ,indicator,value])
+                        # chaque submission conerne uniquement le village selectioonne 
+                        # pour chaque village , chaque mois  , la sisie des   indicateurs concernes
+                        for submission  in fiche.submissions.filter (village =village ,date__month =date_edit.month , date__year=date_edit.year):
+                                # L'indicateur et la valeur enregistree lors de la sumission
+                                # il se peut que l'indicateur  aie plusieurs valeurs et dans ce cas
+                                # nous prenons  un separateur  ; sur la liste
+                                for indicator in project.indicators.all():
+                                       indicatorvalues =submission.indicatorvalues.filter (indicator =indicator)
+                                       indicator_submission_value =';'.join (indicatorvalues.values_list ('value' , flat =True ))
+                                       writer.writerow ([projet.name  , village.name ,  indicator_submission_value ])                                
             return response
     template ='indicator/data_export.html'
     return render_to_response (req,template , {'form': form})

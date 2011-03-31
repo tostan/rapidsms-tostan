@@ -6,24 +6,28 @@
 		<link type="text/css" rel="stylesheet" href="/static/webui/stylesheets/modules.css" />
 {% endblock %}
 {% block content %}
+<div class  ='module'>
+{% if msg %}
+<p>
+{%  for m in msg %}
+{{ m }}
+{% endfor %}
+</p>
+{% endif %}
+<h2>{% trans "Rechercher un indicateur" %}</a></h2>
+<div class ='indicator-menu'>
+  <a href = '/indicator'>{% trans  "Retour Accueil"%}</a>
+</div>
 <table width =100% cellpadding = 0 cellspacing = 0 border = 0>
-<tr>
-<td>
-	<h3>  {% trans "Gestion des projects" %}</h3>
-	<ul>
-		<li><a href = "/indicator/">{% trans "Retour a la page d'accueil de Indicateur" %}</a></li>
-	</ul>
-</td>
-</tr>
-
 <tr>
 <td>
 	<h3>  {% trans "Fiches des projets" %}</h3>
 	{%  for project  in projects %}
-	 <p>{{ project.title }}- {{ project.bailleur }}</p>
 	 <ul>
 		{% for fiche in project.fiches.all %}
-			<a href ='/indicator/fiche/{{fiche.pk}}/add_submission'>{{ fiche.project.title }} - {{ fiche.get_period_display }}</a>
+			<li><a href ='/indicator/fiche/{{fiche.pk}}/add_submission'>
+			{%trans  "Saisie fiche " %} &nbsp; {{ fiche.get_period_display }}&nbsp; {% trans  "du projet" %}&nbsp; 
+			{{ fiche.project.title }} &nbsp; {{ project.bailleur }} </li></a>
 		{% endfor %}
 	 </ul>
 	{% endfor %}
@@ -31,5 +35,5 @@
 </tr>
 
 </table>
-
+</div>
 {% endblock %}

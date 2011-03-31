@@ -41,6 +41,7 @@
 			 <tr>
 				 <th>{% trans "Nom" %} </th>
 				 <th>{% trans "type" %} </th>
+				 <th>{% trans "Periode" %} </th>
 				 <th>{% trans "Liste des valeurs" %} </th>
 				 <th>{% trans "Date de creation" %}</th> 
 				 <th>{% trans "Actions" %}
@@ -51,6 +52,8 @@
 				    <tr>
 					  <td>{{  indicator.name }}</td>
 					  <td>{{  indicator.type_str }}</td>
+					  <td>{{  indicator.get_period_display}}</td>
+
 					   <td>
 					    <ul>
 					   	{% for value in indicator.values.all %}

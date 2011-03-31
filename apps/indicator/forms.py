@@ -193,19 +193,45 @@ class  UserForm (forms.Form):
 	   '''
 	   Save the user and add to the indicator_editor group'''
            data  = self.cleaned_data
-           user =User.objects.create_user(email = '' , password =data['password'] , username = data['username'])
-           user.groups.add (data['group'])
+           # Login must be unique
+           #update
+           perm_list  = [Permission.objects.get(codename = 'can_admin') ,
+                         Permission.objects.get(codename = 'can_edit')]
+           group_list  = [Group.objects.get(name = 'indicator_edit') ,
+                         Group.objects.get(name  = 'indicator_admin')]
+           try:
+               #Updatting user 
+               user = User.objects.get (username = data['username'])
+           except:
+               # creating user
+               user =User.objects.create_user(
+                        email = '' ,
+                        password =data['password'] ,
+                        username = data['username'])
+           user.first_name = data ['first_name']
+           user.last_name  = data ['last_name']
            # Add permission to admin  to the user if it is into the group admin
            user.save ()
+           # IF update remove the existing perimssion 
+           for  perm in  perm_list :
+                try:
+                    user.user_permissions.remove (perm)
+                except :
+                    pass
+           #If update group
+           #A user should not to be in two groups in  the same time 
+           for group in  group_list :
+                try:
+                     user.groups.remove(group)
+                except :
+                    pass
+           user.groups.add (data['group'])
            if  'indicator_admin' in data['group'].name:
-                # Add the Admin permission to the user
-                perm =Permission.objects.get(codename = 'can_admin')
-           else:
-                # Add the Edit permission to the user
-                perm =Permission.objects.get(codename = 'can_edit')
-           user.user_permissions.add (perm)
-           user.first_name = data ['first_name']
-           user.last_name = data ['last_name']
+                 # Add the Admin permission to the user
+                 user.user_permissions.add (perm_list [0])
+           else: user.user_permissions.add (perm_list [1])
+           
+           #Set user to be actif
            user.is_active =True          
            user.save ()
            

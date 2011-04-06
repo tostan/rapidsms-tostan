@@ -7,19 +7,10 @@
 {% endblock %}
 {% block content %}
 <div class  ='module'>
-{% if msg %}
-<p>
-{%  for m in msg %}
-{{ m }}
-{% endfor %}
-</p>
-{% endif %}
-<h2>{% trans "Creer un nouveau sous prefecture " %}</a></h2>
-<div class ='indicator-menu'>
-  <a href = '/indicator'>{% trans  "Retour Accueil"%}</a>
-</div>
-
+<h2>{% trans "Creer un nouveau sous prefecture" %}</a></h2>
+<div class ='indicator-menu'><a href = '/indicator'>{% trans  "Retour Accueil"%}</a></div>
 <table>
+<tr>{% if msg %}<td>{%  for m in msg %}{{ m }}{% endfor %}</td>{% endif %}</tr>
 <tr>
 	<form action = ""   method ="post">
 			<td  coslpan =2>
@@ -58,8 +49,8 @@
 				  <td>{{ region.longitude}}</td>
 				  <td>{{ region.surface}}</td>
 				  <td>{{ region.created|date:"Y-m-d" }}</td>
-				  <td><a href = "/indicator/delete_village/{{ pay.pk }}">{% trans "Delete" %}</td>
-			      <td><a href = "/indicator/edit_village/{{ pay.pk }}">{% trans "Edit" %}</td>
+				  <td><a href = "/indicator/delete_subprefecture/{{ region.pk }}/subprefecture">{% trans "Delete" %}</td>
+			      <td><a href = "/indicator/edit_subprefecture/{{ region.pk }}/subprefecture">{% trans "Edit" %}</td>
 			    </tr>
 			 {% endfor %}
 		  </tbody>

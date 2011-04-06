@@ -7,18 +7,10 @@
 {% endblock %}
 {% block content %}
 <div class  ='module'>
-{% if msg %}
-<p>
-{%  for m in msg %}
-{{ m }}
-{% endfor %}
-</p>
-{% endif %}
 <h2>{% trans "Creer un indicateur" %}</a></h2>
-<div class ='indicator-menu'>
-  <a href = '/indicator'>{% trans  "Retour Accueil"%}</a>
-</div>
+<div class ='indicator-menu'><a href = '/indicator'>{% trans  "Retour Accueil"%}</a></div>
 <table>
+<tr>{% if msg %}<td>{%  for m in msg %}{{ m }}{% endfor %}</td>{% endif %}</tr>
 <tr>
 	<form action = ""   method ="post">
 			<td>

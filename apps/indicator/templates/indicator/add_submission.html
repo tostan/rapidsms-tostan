@@ -7,22 +7,16 @@
 {% endblock %}
 {% block content %}
 <div class  ='module'>
-{% if msg %}
-<p>
-{%  for m in msg %}
-{{ m }}
-{% endfor %}
-</p>
-{% endif %}
 <h2>{% trans "Saisie de fiche" %} {{ fiche.get_period_display }}</a></h2>
-<div class ='indicator-menu'> 
-  <a href = '/indicator'>{% trans  "Retour Accueil"%}</a>
-</div>
+<div class ='indicator-menu'> <a href = '/indicator'>{% trans  "Retour Accueil"%}</a></div>
 <table>
+<tr>{% if msg %}<td>{%  for m in msg %}{{ m }}{% endfor %}</td>{% endif %}</tr>
 <tr>
 	<form action =""   method ="post">
 			 <table>
-				 <tr><td colspan =2>{{form_header.as_table }}</td></td></tr>
+				 <tr><td colspan =2>{{form_header.as_table }}</td></tr>
+				 <tr><td><input type ="submit"  name ="filtre" value = "filtre" /></td></tr>
+				 </tr>
 				 <tr> 
 				 <td>{{ form.as_table }} </td>
 				 <td><input type ='hidden' name ='submission_id' value ='{{ submission_id }}'></td>
@@ -62,22 +56,20 @@
 	  <table>
 	         <thead>
 			 <tr>
-				 <th>{% trans "Nom du Saisisseur" %} </th>
-				 <th>{% trans "Date de Saisie" %} </th>
-				 <th>{% trans "Type de la Fiche" %}</th> 
-				 <th>{% trans "Titre du  Projet " %}</th>
-				 <th>{% trans "Bailleur du  Projet " %}</th>
+				 <th>{% trans "Date de saisie" %} </th>
+				 <th>{% trans "Fiche" %} </th>
+				 <th>{% trans "Projet" %}</th> 
+				 <th>{% trans "village" %}</th>
 				 <th>{% trans "Actions " %}</th>
 			</tr>
 			</thead>
 			<tbody>
 			 {% for  submission in submissions %}
 			 	<tr>     
-				 		 <td>{{  submission.user}} </td>
 				 		 <td>{{  submission.date|date:"Y-m-d"}} </td>
-						 <td>{{  submission.fiche.get_period_display }}</td>
-						 <td>{{  submission.fiche.project.title }} </td>
-						 <td>{{  submission.fiche.project.bailleur }}</td>
+						 <td>{{  submission.fiche }}</td>
+						 <td>{{  submission.fiche.project}} </td>
+						 <td>{{  submission.village }}</td>
 						 <td>
 						 	<a href = '/indicator/submission/{{ submission.pk }}/edit_submission'>[{% trans "Edition" %}]</a>
 						 	<a href = '/indicator/submission/{{ submission.pk }}/delete_submission'>[{% trans "Delete" %}]</a>
@@ -88,7 +80,6 @@
 		</table>
 </td>
 </tr>
-
 </table>
 </div>
 {% endblock %}

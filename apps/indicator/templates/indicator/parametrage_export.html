@@ -7,17 +7,8 @@
 {% endblock %}
 {% block content %}
 <div class  ='module'>
-{% if msg %}
-<p>
-{%  for m in msg %}
-{{ m }}
-{% endfor %}
-</p>
-{% endif %}
 <h2>{% trans "Export des donnees du projet" %}</a></h2>
-<div class ='indicator-menu'>
-  <a href = '/indicator'>{% trans  "Retour Accueil"%}</a>
-</div>
+<div class ='indicator-menu'><a href = '/indicator'>{% trans  "Retour Accueil"%}</a></div>
 <table>
 <td>
 	<ul>

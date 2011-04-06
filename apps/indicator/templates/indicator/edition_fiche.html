@@ -7,33 +7,25 @@
 {% endblock %}
 {% block content %}
 <div class  ='module'>
-{% if msg %}
-<p>
-{%  for m in msg %}
-{{ m }}
-{% endfor %}
-</p>
-{% endif %}
-<h2>{% trans "Rechercher un indicateur" %}</a></h2>
-<div class ='indicator-menu'>
-  <a href = '/indicator'>{% trans  "Retour Accueil"%}</a>
-</div>
+<h2>{% trans "Saisie des fiches des projets (cliquez sur un lien pour saisir la fiche)" %}</a></h2>
+<div class ='indicator-menu'><a href = '/indicator'>{% trans  "Retour Accueil"%}</a></div>
 <table width =100% cellpadding = 0 cellspacing = 0 border = 0>
-<tr>
-<td>
-	<h3>  {% trans "Fiches des projets" %}</h3>
-	{%  for project  in projects %}
-	 <ul>
-		{% for fiche in project.fiches.all %}
-			<li><a href ='/indicator/fiche/{{fiche.pk}}/add_submission'>
-			{%trans  "Saisie fiche " %} &nbsp; {{ fiche.get_period_display }}&nbsp; {% trans  "du projet" %}&nbsp; 
-			{{ fiche.project.title }} &nbsp; {{ project.bailleur }} </li></a>
+<tr>{% if msg %}<td>{%  for m in msg %}{{ m }}{% endfor %}</td>{% endif %}</tr>
+{% for name , project_list  in projects %}
+	<tr>
+	<td>
+		 <dd>{{ name }}</dd>
+		 {% for project in project_list %}
+		 <ul>
+			{% for fiche in project.fiches.all %}
+				<li><a href ='/indicator/fiche/{{fiche.pk}}/add_submission/{{ fiche.project.pays.pk }}'>
+				{%trans  "Fiche " %} &nbsp; {{ fiche.get_period_display }}&nbsp; {% trans  "du projet" %}&nbsp; {{ fiche.project.title }} &nbsp; {{ project.bailleur }} </li></a>
+			{% endfor %}
+		 </ul>
 		{% endfor %}
-	 </ul>
-	{% endfor %}
-</td>
-</tr>
-
+	</td>
+	</tr>
+{% endfor %}
 </table>
 </div>
 {% endblock %}

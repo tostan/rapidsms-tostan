@@ -13,7 +13,7 @@ class PaysForm (forms.ModelForm):
     '''
     name   =forms.CharField(
              label =_("Pays") ,
-             widget= forms.TextInput({"size": "50"}))
+             widget= forms.TextInput())
     class Meta:
         model  =Pays
         fields = ("name")
@@ -24,10 +24,10 @@ class RegionForm(forms.Form):
     '''
     name = forms.CharField (
             label =_("Region"),
-            widget= forms.TextInput({"size": "50"}))
+            widget= forms.TextInput())
     pays = forms.ModelChoiceField (
             queryset = Pays.objects.all () ,
-            empty_label = "-"*50 )
+            empty_label = "-" )
     def save (self ,*args , **kwargs):
         super (RegionForm , self).save (*args , **kwargs)
     class Meta :
@@ -40,7 +40,7 @@ class IndicatorValueForm (forms.ModelForm):
     value = forms.CharField(
             label =_("Liste des valeurs de l'indicateur"),
             required =False,
-            widget= forms.Textarea (attrs  ={"rows":"10" , "cols": "50"}))
+            widget= forms.Textarea ())
     class Meta:
         model =IndicatorValue
         exclude = ("indicator" , "submission")
@@ -74,26 +74,6 @@ class  SearchIndicatorForm(forms.Form):
             raise ValidationError (_("Vous devez saisir une valeur pour effectuer une recherche"))
         return  name
     
-class  HeaderSubmissionForm (forms.Form):
-     date    = forms.DateField (label =_('Le mois de saisie') , 
-         widget =SelectDateWidget , required =True)
-     village = forms.ModelChoiceField (
-                label = _("Le Village "),
-                #Uniquement les utilsateurs du groupe des indicateurs
-                queryset=IndicatorVillage.objects.all () , required =True)
-     # Le nom du superviseure de la fiche 
-     #supervisor   =models.CharField  (max_length  = 200 , blank =True , null =True)
-     
-class IndicatorStatForm (forms.Form):
-    '''
-    Create form to display statistiques data related of the indicator
-    '''
-    indicator = forms.ModelChoiceField (
-                label = _("Choisir un seul Indicateur"),
-                queryset=Indicator.objects.all ())
-    projects  = forms.ModelMultipleChoiceField(
-                label = _("CHoisir les projects"),
-                queryset =Project.objects.all ())
 
 
 class IndicatorExportForm (forms.Form):
@@ -112,28 +92,19 @@ class ProjectStatForm (forms.Form):
     '''
     Create form to display statistiques date related of the  projet
     '''
-    project = forms.ModelChoiceField (
-                label = _("Choisir un seul projet"),
-                queryset=Project.objects.all ())
-    indicators  = forms.ModelMultipleChoiceField(
-                label = _("Choisir les  indicateurs"),
-                queryset =Indicator.objects.all ())
+    project    = forms.ModelChoiceField(queryset =Project.objects.all ())
+    indicator  = forms.ModelChoiceField(queryset =Indicator.objects.all ()) 
+    village    = forms.ModelChoiceField(queryset =IndicatorVillage.objects.all ())
+    date1      = forms.DateField (label ="Le mois de saisie (1)" ,widget =SelectDateWidget , required =False)
+    date2      = forms.DateField (label ="Le mois de saisie (2)" ,widget =SelectDateWidget , required =False)
 
 class ProjectExportForm (forms.Form):
     '''
     Create form to display statistiques data related of the indicator
     '''
-    projects  = forms.ModelMultipleChoiceField(
-                label = _("Choisir le ou les  projets a exporter"),queryset =Project.objects.all () ,required=False) 
+    projects    = forms.ModelMultipleChoiceField(queryset =Project.objects.all() ,required =False)
+  
 
-class VillageStatForm (forms.Form):
-    '''
-    The village list for export not for stat
-    '''
-    villages = forms.ModelMultipleChoiceField (
-                label = _("Choisir les utilisateurs a expoter"),
-                #Uniquement les utilsateurs du groupe des indicateurs
-                queryset=IndicatorVillage.objects.all ())
 
 class VillageExportForm (forms.Form):
     '''
@@ -146,6 +117,7 @@ class VillageExportForm (forms.Form):
 class DataExportForm (forms.Form):
       project = forms.ModelChoiceField (
                 label = _("Choisir un projet"),
+                required =False,
                 queryset=Project.objects.all ())
       villages  = forms.ModelMultipleChoiceField(
                 label = _("Les villages"),
@@ -175,17 +147,17 @@ class  UserForm (forms.Form):
        '''create a form to create user , update .The user is the editor od the indicator system'''
        first_name  = forms.CharField (
                      label = _("Nom de l'employer pour la saisie") , 
-                     widget =forms.TextInput ({"size":"50"}))
+                     widget =forms.TextInput ())
        last_name  = forms.CharField (
                      label = _("Prenom de l'employer pour la saisie") , 
-                     widget =forms.TextInput ({"size":"50"}))
+                     widget =forms.TextInput ())
        # to pass to django.contrib.auth.views as login
        username  = forms.CharField (
                      label = _("Le login") , 
-                     widget =forms.TextInput ({"size":"50"}))
+                     widget =forms.TextInput ())
        password  =  forms.CharField (
                      label = _("Mot de passe pour la saisie") ,
-                      widget =forms.PasswordInput ({"size":"50"}))
+                      widget =forms.PasswordInput ())
        group     = forms.ModelChoiceField(
                 label = _("Choisir le groupe de l'utilsateur"),
                 queryset=Group.objects.all ().filter (name__in= ['indicator_edit' , 'indicator_admin'] )) 
@@ -242,8 +214,47 @@ class  UserSearchForm (forms.Form):
        first_name  = forms.CharField (
                      required =False,
                      label = _("Nom de l'employer pour la saisie") , 
-                     widget =forms.TextInput ({"size":"50"}))
+                     widget =forms.TextInput ())
        last_name  = forms.CharField (
                      required=False,
                      label = _("Prenom de l'employer pour la saisie") , 
-                     widget =forms.TextInput ({"size":"50"}))
+                     widget =forms.TextInput ())
+
+class RegionForm_(forms.ModelForm):
+    class Meta:
+        model  = Region
+        
+class DepartementForm(forms.ModelForm):
+    class Meta:
+        model  = Departement
+class ArrondissementForm(forms.ModelForm):
+    class Meta:
+        model  = Arrondissement
+class CommuneArrondissementForm(forms.ModelForm):
+    class Meta:
+        model  = CommuneArrondissement
+        
+class CommuneForm(forms.ModelForm):
+    class Meta:
+        model  = Commune
+
+class  IndicatorVillageForm(forms.ModelForm):
+    class Meta:
+        model  = IndicatorVillage
+
+class  PrefectureForm(forms.ModelForm):
+    class Meta:
+        model  = Prefecture
+        
+class  SuPrefectureForm(forms.ModelForm):
+    class Meta:
+        model  = SubPrefecture
+
+class  SecteurForm(forms.ModelForm):
+    class Meta:
+        model  = Secteur
+        
+class  DistrictForm(forms.ModelForm):
+    class Meta:
+        model  = District
+        

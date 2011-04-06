@@ -9,6 +9,7 @@ from django.contrib.admin.models import User
 from django import forms 
 from datetime import date 
 from django.forms.extras.widgets import SelectDateWidget
+import re
 
 class Project(models.Model):
     '''
@@ -38,7 +39,9 @@ class Project(models.Model):
     # Village of the projects
     villages   = models.ManyToManyField ("Area" , null =True , blank =True)
     created    = models.DateTimeField (auto_now_add =True)
-
+    
+    # Store the contry name of the project here
+    pays       = models.ForeignKey ("Pays" ,null =True , blank =True , related_name ="project")
     class Meta:
         permissions = (
             ("can_admin", "Active Member"),
@@ -182,7 +185,7 @@ class IndicatorValue(models.Model):
                 max_length = 200 , null =True , blank =True,
                 help_text =_("Saisir ici la liste des valeurs de l'indicateur si l'indicacteur est une liste de choix")) 
     def __unicode__(self):
-        return "%s" %(self.value)
+        return u"%s=%s" %(unicode (self.indicator), self.value)
 
 class Fiche (models.Model):  
       '''
@@ -214,7 +217,7 @@ class Fiche (models.Model):
       indicators = models.ManyToManyField("Indicator", null =True , blank =True)
       period     = models.CharField (max_length = 2 , choices  = FICHE_PERIOD_CHOICES)
       created    = models.DateTimeField (auto_now_add =True)
-
+    
       @classmethod 
       def create_fiche (cls , project , indicators):
             dict  = {"m" : [] , "s" :[] , 't' :[] , 'a':[]}  
@@ -259,7 +262,7 @@ class Fiche (models.Model):
               if indicator.type in (Indicator.TYPE_TEXT ,Indicator.TYPE_NUMERIC):
                  fields["indicator_%s"%indicator.pk] = forms.CharField (
                                             label =_(indicator.name) ,
-                                            widget =forms.TextInput (attrs  ={"size" : "50"}),
+                                            widget =forms.TextInput (),
                                             )
               elif indicator.type == Indicator.TYPE_DATE:
                   fields['indicator_%s'%indicator.pk] = forms.DateField(
@@ -270,7 +273,7 @@ class Fiche (models.Model):
                 fields["indicator_%s"%indicator.pk] = forms.MultipleChoiceField (
                         label = _(indicator.name),
                         widget = forms.CheckboxSelectMultiple() , 
-                        choices  = as_tuple(indicator.values.all ())
+                        choices  = as_tuple(indicator.values.filter(submission__isnull =True))
                 )
           def clean (self):
              return self.cleaned_data
@@ -280,14 +283,14 @@ class Fiche (models.Model):
     
       def form_edit (self ,submission ,indicator_values):
           '''
-	  Basically different to the first submission form ,only  for edition
-	  '''
+	      Basically different to the first submission form ,only  for edition
+	      '''
           fields  ={}   
           for indicator_value in indicator_values:
               if indicator_value.indicator.type in (Indicator.TYPE_TEXT ,Indicator.TYPE_NUMERIC):
                  fields["indicator_%s"%indicator_value.indicator.pk] = forms.CharField (
                                 label =_(indicator_value.indicator.name),
-                                widget =forms.TextInput (attrs  ={"size" : "50"}),
+                                widget =forms.TextInput (),
                                 initial =str (indicator_value.value))
               elif indicator_value.indicator.type in (Indicator.TYPE_DATE):
                  fields["indicator_%s"%indicator_value.indicator.pk] = forms.CharField (
@@ -299,10 +302,12 @@ class Fiche (models.Model):
                         label  = _(indicator_value.indicator.name),
                         widget = forms.CheckboxSelectMultiple (), 
                         initial= as_ids (IndicatorValue.objects.filter (
-				indicator=indicator_value.indicator , 
-				submission = submission).all ()),
+			                                             indicator=indicator_value.indicator , 
+			                                             submission = submission).all ()),
+                        # Add submission to the filter 
+                        # I will chekh later if it is a good filter
                         choices= as_tuple(IndicatorValue.objects.filter (
-				indicator =indicator_value.indicator).all()))
+				                            indicator =indicator_value.indicator , submission =submission).all()))
        
           def clean (self):
              return self.cleaned_data  
@@ -311,7 +316,7 @@ class Fiche (models.Model):
                        {"base_fields" : fields , "clean" :clean})
       
       def __unicode__(self):
-          return "%s , %s"%(self.pk, self.period)
+          return "<Fiche %s>"%(self.get_period_display())
 
 def as_ids (queryset):
           return  ["%s" %obj.pk for obj in queryset ]
@@ -331,8 +336,12 @@ class Submission (models.Model):
     village =  models.ForeignKey("Area" , null =True , blank =True)
     supervisor = models.CharField(max_length= 200 , blank =True , null =True)
     
-    
-    
+    @property
+    def project (self):
+        if hasattr (self.fiche , "project") and self.fiche.project:
+            return  self.fiche.project
+        return None
+      
 class Area(models.Model):
     '''
     An are can be 
@@ -433,6 +442,7 @@ class  Arrondissement(Area):
     pass
 class  CommuneArrondissement(Area):
     pass
+Communearrondissement = CommuneArrondissement
 class CommunauteRurale (Area):
     pass
 class Commune(Area):
@@ -443,6 +453,7 @@ class Prefecture (Area):
     pass
 class SubPrefecture (Area):
     pass
+Subprefecture  =SubPrefecture
 class Secteur (Area):
     pass
 class Etat(Area):
@@ -453,11 +464,17 @@ class District (Area):
     pass
 class CommuneArrondissement(Area):
     pass
+Communearrondissement  = CommuneArrondissement
 class CommuneHurbaine (Area):
     pass
-class IndicatorVillage (Area):
+class IndicatorVillage(Area):
     '''
     This not be null , but Iam not sure
     '''
     village = models.ForeignKey(SuiviVillage , 
 	null =True , blank =True)
+
+    def __unicode(self):
+       return self.village
+
+Indicatorvillage  = IndicatorVillage 

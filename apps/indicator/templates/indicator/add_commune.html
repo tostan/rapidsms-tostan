@@ -5,21 +5,12 @@
 		<link type="text/css" rel="stylesheet" href="/static/indicator/stylesheets/layout.css" />
 		<link type="text/css" rel="stylesheet" href="/static/webui/stylesheets/modules.css" />
 {% endblock %}
-
 {% block content %}
 <div class  ='module'>
-{% if msg %}
-<p>
-{%  for m in msg %}
-{{ m }}
-{% endfor %}
-</p>
-{% endif %}
 <h2>{% trans "Creer une commune" %}</a></h2>
-<div class ='indicator-menu'>
-  <a href = '/indicator'>{% trans  "Retour Accueil"%}</a>
-</div>
+<div class ='indicator-menu'><a href = '/indicator'>{% trans  "Retour Accueil"%}</a></div>
 <table>
+<tr>{% if msg %}<td>{%  for m in msg %}{{ m }}{% endfor %}</td>{% endif %}</tr>
 <tr>
 	<form action = ""   method ="post">
 			<td  coslpan =2>
@@ -57,8 +48,8 @@
 					  <td>{{ region.longitude}}</td>
 					  <td>{{ region.surface}}</td>
 					  <td>{{ region.created|date:"Y-m-d" }}</td>
-					  <td><a href = "/indicator/delete_commune/{{ pay.pk }}">{% trans "Delete" %}</td>
-				      <td><a href = "/indicator/edit_commune/{{ pay.pk }}">{% trans "Edit" %}</td>
+					  <td><a href = "/indicator/delete_commune/{{ region.pk }}/commune">{% trans "Delete" %}</td>
+				      <td><a href = "/indicator/edit_commune/{{ region.pk }}/commune">{% trans "Edit" %}</td>
 				    </tr>
 				 {% endfor %}
 			 </tbody>

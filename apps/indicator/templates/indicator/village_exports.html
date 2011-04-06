@@ -10,28 +10,19 @@
   {% block javascripts %} 
   {% endblock %}
   {% block content %}
-	<div class  ='module'>
-	{% if msg %}
-	<p>
-	{%  for m in msg %}
-	{{ m }}
-	{% endfor %}
-	</p>
-	{% endif %}
-	<h2>{% trans "Expoter les indicateurs" %}</a></h2>
-	<div class ='indicator-menu'>
-	  <a href = '/indicator'>{% trans  "Retour Accueil"%}</a>
-	</div>
-	<table>
-        <tr>
-	       	<form action =""  method ="post">
-		       	<td valign='top'>
+<div class  ='module'>
+<h2>{% trans "Expoter les indicateurs" %}</a></h2>
+<div class ='indicator-menu'><a href = '/indicator'>{% trans  "Retour Accueil"%}</a></div>
+<table>
+     <tr>
+	    <form action =""  method ="post">
+		    <td valign='top'>
 		    		{{ form.as_ul}}
 		  		 <br/>
 		  		 <input  type = "submit"  value ="{% trans  'GO' %}" />
 		  	</td>
 		</form>
 	 </tr> 	
-	 </table>
+</table>
  </div>
 {% endblock %}

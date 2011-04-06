@@ -7,29 +7,18 @@
 {% endblock %}
 {% block content %}
 <div class  ='module'>
-{% if msg %}
-<p>
-{%  for m in msg %}
-{{ m }}
-{% endfor %}
-</p>
-{% endif %}
 <h2>{% trans "Gerer les statistiques" %}</a></h2>
-<div class ='indicator-menu'>
-  <a href = '/indicator'>{% trans  "Retour Accueil"%}</a>
-</div>
+<div class ='indicator-menu'><a href = '/indicator'>{% trans  "Retour Accueil"%}</a></div>
 <table>
 <tr>
 <td>
 	<ul>
 		<li><a href = "/indicator/project_stats">{% trans "Statistiques projets"%}</a></li>
-		<li><a href = "/indicator/user_stats">{% trans "Statistiques utilisateurs" %}</a></li>
-	        <li><a href = "/indicator/indicator_stats">{% trans "Statistiques indicateurs" %}</a></li>
+	    <li><a href = "/indicator/indicator_stats">{% trans "Statistiques indicateurs" %}</a></li>
 		<li><a href = "/indicator/village_stats">{% trans "Statistiques villages" %}</a></li>
 	</ul>
 </td>
 </tr>
-
 </table>
 </div>
 {% endblock %}

@@ -7,25 +7,13 @@
 {% endblock %}
 {% block content %}
 <div class="module">
-	
-      <div class  ='module'>
-{% if msg %}
-<p>
-{%  for m in msg %}
-{{ m }}
-{% endfor %}
-</p>
-{% endif %}
 <h2>{% trans "Creer une nouvelle prefecture" %}</a></h2>
-<div class ='indicator-menu'>
-  <a href = '/indicator'>{% trans  "Retour Accueil"%}</a>
-</div>
-
+<div class ='indicator-menu'><a href = '/indicator'>{% trans  "Retour Accueil"%}</a></div>
       <ul>
 		<li><a href = "/indicator/add_user">
 		 {% trans "Ajouter un nouveau utilisateur" %}</a></li>
 		<li><a href = "/indicator/search_user">
 		{% trans "Rechercher des utilisateurs " %}</a></li>
 	</ul>
- </div>
+</div>
 {% endblock %}

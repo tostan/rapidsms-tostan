@@ -45,7 +45,7 @@ urlpatterns = patterns('',
     url(r'^indicator/list_project/(?P<pays>\w+)/?$',views.list_project,  name="list_project"),
     url(r'^indicator/project_indicators/(?P<id>\d+)/?$',views.project_indicators,  name="project_indicators"),  
     # Fiche and submission
-    url(r'^indicator/fiche/(?P<fiche_id>\d+)/add_submission/(?P<submission_id>(\d+)?)/?$',views.add_submission,  name="add_submission"),
+    url(r'^indicator/fiche/(?P<fiche_id>\d+)/add_submission/(?P<pays_id>\d+)/?$',views.add_submission,  name="add_submission"),
     url(r'^indicator/submission/(\d+)/edit_submission/?$',views.edit_submission,  name="edit_submission"), 
     url(r'^indicator/submission/(\d+)/delete_submission/?$',views.delete_submission,  name="delete_submission"),   
     #Users
@@ -63,10 +63,35 @@ urlpatterns = patterns('',
     url (r'^indicator/data_export/?$' ,views.data_export , name ="data_export"),
     #Statistiques
     url(r'indicator/parametrage_stat/?$' , views.parametrage_stat , name  ="parametrage_stat"),
-    url(r'^indicator/indicator_stats/?$',views.indicator_stats,  name="indicator_stats"),
+    url(r'^indicator/indicator_stats/?$',views.project_stats,  name="project_stats"),
     url(r'^indicator/project_stats/?$',views.project_stats,  name="project_stats"),
-    url(r'^indicator/user_stats/?$',views.user_stats,   name="user_stats"),
-    url(r'^indicator/village_stats/?$',views.village_stats,   name="village_stats"),
+    url(r'^indicator/village_stats/?$',views.project_stats,   name="project_stats"),
                        
+    url(r'^indicator/delete_region/(\w+)/(\w+)?$',views.delete_region,  name="delete_region"),
+    url(r'^indicator/delete_departement/(\w+)/(\w+)?$',views.delete_region,  name="delete_region"),
+    url(r'^indicator/delete_arrondissement/(\w+)/(\w+)?$',views.delete_region,  name="delete_region"),
+    url(r'^indicator/delete_commune_arrondissement/(\w+)/(\w+)?$',views.delete_region,  name="delete_region"),
+    url(r'^indicator/delete_commune/(\w+)/(\w+)?$',views.delete_region,  name="delete_region"),
+    url(r'^indicator/delete_village/(\w+)/(\w+)?$',views.delete_region,  name="delete_region"),
+    url(r'^indicator/delete_prefecture/(\w+)/(\w+)?$',views.delete_region,  name="delete_region"),
+    url(r'^indicator/delete_subprefecture/(\w+)/(\w+)?$',views.delete_region,  name="delete_region"),
+    url(r'^indicator/delete_secteur/(\w+)/(\w+)?$',views.delete_region,  name="delete_region"),
+    url(r'^indicator/delete_district/(\w+)/(\w+)?$',views.delete_region,  name="delete_region"),
+    url(r'^indicator/delete_etat/(\w+)/(\w+)?$',views.delete_region,  name="delete_region"),
+    
+    
+    url(r'^indicator/edit_region/(\w+)/(\w+)?$',views.edit_region,  name="edit_region"),
+    url(r'^indicator/edit_departement/(\w+)/(\w+)?$',views.edit_region,  name="edit_region"),
+    url(r'^indicator/edit_arrondissement/(\w+)/(\w+)?$',views.edit_region,  name="edit_region"),
+    url(r'^indicator/edit_commune_arrondissement/(\w+)/(\w+)?$',views.edit_region,  name="edit_region"),
+    url(r'^indicator/edit_commune/(\w+)/(\w+)?$',views.edit_region,  name="edit_region"),
+    url(r'^indicator/edit_village/(\w+)/(\w+)?$',views.edit_region,  name="edit_region"),
+    url(r'^indicator/edit_prefecture/(\w+)/(\w+)?$',views.edit_region,  name="edit_region"),
+    url(r'^indicator/edit_subprefecture/(\w+)/(\w+)?$',views.edit_region,  name="edit_region"),
+    url(r'^indicator/edit_secteur/(\w+)/(\w+)?$',views.edit_region,  name="edit_region"),
+    url(r'^indicator/edit_district/(\w+)/(\w+)?$',views.edit_region,  name="edit_region"),
+    url(r'^indicator/edit_etat/(\w+)/(\w+)?$',views.edit_region,  name="edit_region"),
+
+    
     
 )

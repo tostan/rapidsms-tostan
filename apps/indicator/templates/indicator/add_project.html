@@ -7,25 +7,17 @@
 {% endblock %}
 {% block content %}
 <div class  ='module'>
-{% if msg %}
-<p>
-{%  for m in msg %}
-{{ m }}
-{% endfor %}
-</p>
-{% endif %}
 <h2>{% trans "Creer un nouveau projet" %}</a></h2>
-<div class ='indicator-menu'>
-  <a href = '/indicator'>{% trans  "Retour Accueil"%}</a>
-</div>
+<div class ='indicator-menu'><a href = '/indicator'>{% trans  "Retour Accueil"%}</a></div>
 <table>
+<tr>{% if msg %}<td>{%  for m in msg %}{{ m }}{% endfor %}</td>{% endif %}</tr>
 <tr>
 	<form action = ""   method ="post">
 			<td>			 
 					<table>
 					 <tr><td>{%trans  "Choisir les villages pour le projet village "%}</td></tr>
 					 <tr><td>{{ form_village.as_table}}</td></tr>
-			             <tr><td><input type ="submit"  value ="{% trans "Filtrer les villages" %}" /></td></tr>
+			             <tr><td><input type ="submit" name ="filtre" value ="{% trans "filtre" %}" /></td></tr>
 					 <tr><td>{% trans  "Choisir les indicateurs  pour le projet village "%}</td></tr>
 				 	 <tr><td>{{ form_indicator.as_table}}</td></tr>
 				 	 <tr><td><input type ="submit"  value ="{% trans  "OK"  %}"></td></tr>
@@ -54,7 +46,7 @@
 				   <td>
 					    <ol>
 					   	{% for fiche in project.fiches.all %}
-					   		<li><a href = '/indicator/fiche/{{ fiche.pk }}/add_submission'>[{{ fiche.get_period_display  }}]</a></li>
+					   		<li>[{{ fiche.get_period_display  }}]</li>
 					    {% endfor %}
 					    </ol>
 				   </td>

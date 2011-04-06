@@ -5,36 +5,12 @@
 		<link type="text/css" rel="stylesheet" href="/static/indicator/stylesheets/layout.css" />
 		<link type="text/css" rel="stylesheet" href="/static/webui/stylesheets/modules.css" />
 {% endblock %}
-
 {% block content %}
-
-
-
-<style>
-.line {
-	boder : solid 1px ;
-}
-</style>
+<div class  ='module'>
+<h2>{% trans "Ajouter un pays" %}</a></h2>
+<div class ='indicator-menu'><a href = '/indicator'>{% trans  "Retour Accueil"%}</a></div>
 <table  width=100% cellpadding= 0 cellspacing =0  border= 0>
-{% if msg %}
-		<tr>
-		<td>
-		{%  for m in msg %}
-			{{ m }}
-		{% endfor %}
-		</td>
-		</tr>
-{% endif %}
-
-<tr>
-<td>
-	<h3>  {% trans "Ajouter un nouveau pays" %}</h3>
-	<ul>
-		<li><a href = "/indicator/">{% trans "Retour a la page d'accueil de Indicateur" %}</a></li>
-	</ul>
-</td>
-</tr>
-
+<tr>{% if msg %}<td>{%  for m in msg %}{{ m }}{% endfor %}</td>{% endif %}</tr>
 <tr>
 	<form action = ""   method ="post">
 			<td  coslpan =2>
@@ -50,14 +26,10 @@
 			</td>
 	</form>
 </tr>
-
-
-
 <tr>
 <td>
-	  <table>
+  <table>
 			 <tr><th>{% trans "Nom" %} </th><th>{% trans "Date de creation" %}</th> {% trans "Action" %}</tr>
-			 
 			{% for  pay in  pays %}
 			    <tr>
 				  <td>{{  pay.name }}</td><td>{{ pay.created }}<td></td>
@@ -68,5 +40,5 @@
 		</table>
 </tr>
 </table>
-
+</div>
 {% endblock %}

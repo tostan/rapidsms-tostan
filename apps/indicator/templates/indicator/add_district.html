@@ -6,22 +6,13 @@
 		<link type="text/css" rel="stylesheet" href="/static/webui/stylesheets/modules.css" />
 {% endblock %}
 {% block content %}
-
 <div class  ='module'>
-{% if msg %}
-<p>
-{%  for m in msg %}
-{{ m }}
-{% endfor %}
-</p>
-{% endif %}
 <h2>{% trans "Creer un district" %}</a></h2>
-<div class ='indicator-menu'>
-  <a href = '/indicator'>{% trans  "Retour Accueil"%}</a>
-</div>
+<div class ='indicator-menu'><a href = '/indicator'>{% trans  "Retour Accueil"%}</a></div>
 <table>
+<tr>{% if msg %}<td>{%  for m in msg %}{{ m }}{% endfor %}</td>{% endif %}</tr>
 <tr>
-	<form action = ""   method ="post">
+<form action = ""   method ="post">
 			<td  coslpan =2>
 			  <table>
 				 <tr> 
@@ -58,8 +49,8 @@
 							  <td>{{ region.longitude}}</td>
 							  <td>{{ region.surface}}</td>
 							  <td>{{ region.created|date:"Y-m-d" }}</td>
-							  <td><a href = "/indicator/delete_district/{{ pay.pk }}">{% trans "Delete" %}</td>
-						      <td><a href = "/indicator/edit_district/{{ pay.pk }}">{% trans "Edit" %}</td>
+							  <td><a href = "/indicator/delete_district/{{ region.pk }}/district">{% trans "Delete" %}</td>
+						      <td><a href = "/indicator/edit_district/{{ region.pk }}/district">{% trans "Edit" %}</td>
 					    </tr>
 					 {% endfor %}
 			 </tbody>

@@ -10,17 +10,10 @@
   {% block javascripts %} 
   {% endblock %}
   {% block content %}
-	<div class  ='module'>
-	{% if msg %}
-	<p>
-	{%  for m in msg %}
-	{{ m }}
-	{% endfor %}
-	</p>
-	{% endif %}
+<div class  ='module'>
 	<h2>{% trans "Expoter les indicateurs" %}</a></h2>
 	<div class ='indicator-menu'>
-	  <a href = '/indicator'>{% trans  "Retour Accueil"%}</a>
+	    <a href = '/indicator'>{% trans  "Retour Accueil"%}</a>
 	</div>
 	<table>
         <tr>

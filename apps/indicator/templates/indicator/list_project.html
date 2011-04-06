@@ -7,17 +7,8 @@
 {% endblock %}
 {% block content %}
 <div class  ='module'>
-{% if msg %}
-<p>
-{%  for m in msg %}
-{{ m }}
-{% endfor %}
-</p>
-{% endif %}
 <h2>{% trans "Liste de  tous les projets" %}</a></h2>
-<div class ='indicator-menu'>
-  <a href = '/indicator'>{% trans  "Retour Accueil"%}</a>
-</div>
+<div class ='indicator-menu'><a href = '/indicator'>{% trans  "Retour Accueil"%}</a></div>
 <table>
 	  <thead>
 			 <tr>
@@ -37,7 +28,7 @@
 				   <td>
 					    <ol>
 					   	{% for fiche in project.fiches.all %}
-					   		<li><a href = '/indicator/fiche/{{ fiche.pk }}/add_submission'>[{{ fiche.get_period_display  }}]</a></li>
+					   		<li>[{{ fiche.get_period_display  }}]</li>
 					    {% endfor %}
 					    </ol>
 				   </td>
